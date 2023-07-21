@@ -9,36 +9,77 @@ const ScreenContainer = ({ children, style, steps }) => {
 	const navigation = useNavigation();
 
 	const Header = useCallback(() => {
-		if (!navigation.canGoBack()) return null;
+		if (!navigation.canGoBack() || !steps) return null;
 		return (
-			<View style={sytles.headerContainer}>
-				{navigation.canGoBack() && (<Button textOnly label={'Back'} />)}
-				
+			<View style={styles.headerContainer}>
+				{
+					navigation.canGoBack() && (
+						<View style={styles.absolute}>
+							<Button textOnly caption label={'Back'} onPress={navigation.goBack} />
+						</View>
+					)
+				}
+				<View style={styles.headerCenter}>
+					{steps?.total && (
+						<View style={styles.row}>
+							{
+								Array(steps.total).fill('').map((_, index) => {
+									return (
+										<View key={index} style={[styles.slide, { borderColor: index < steps?.current ? themeColors.primary : themeColors.white }]}>
+
+										</View>
+									)
+								})
+							}
+						</View>
+					)}
+				</View>
 			</View>
 		)
 	}, [])
 
 	return (
-		<SafeAreaView style={sytles.container}>
+		<SafeAreaView style={styles.container}>
 			<StatusBar barStyle={'light-content'} />
 			<Header />
-			<View style={[{ flex: 1 }, style]}>
+			<View style={[{ flex: 1 }, style, styles.fixedStyle]}>
 				{children}
 			</View>
 		</SafeAreaView>
 	)
 }
 
-const sytles = StyleSheet.create({
+const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		backgroundColor: themeColors.background
 	},
 	headerContainer: {
-		borderWidth: 1,
-		borderColor: 'white',
 		flexDirection: 'row',
-		alignItems: "center"
+		alignItems: "center",
+		height: 50
+	},
+	fixedStyle: {
+		paddingHorizontal: 14
+	},
+	headerCenter: {
+		flex: 1,
+		justifyContent: "center",
+		alignItems: "center",
+	},
+	absolute: {
+		position: "absolute",
+		zIndex: 100
+	},
+	row: {
+		flexDirection: "row"
+	},
+	slide: {
+		borderWidth: 1,
+		width: 30,
+		borderWidth: 2,
+		marginRight: 4,
+		borderRadius: 10
 	}
 })
 

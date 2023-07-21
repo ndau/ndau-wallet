@@ -41,10 +41,10 @@ const CustomText = ({
 		...(color && { color }),
 	})
 
-	return <Text style={[sytles.text, getStyles()]}>{children}</Text>
+	return <Text style={[styles.text, getStyles()]}>{children}</Text>
 }
 
-const sytles = StyleSheet.create({
+const styles = StyleSheet.create({
 	text: {
 		color: themeColors.font
 	}

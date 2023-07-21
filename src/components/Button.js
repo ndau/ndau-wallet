@@ -3,13 +3,13 @@ import { StyleSheet, TouchableOpacity } from "react-native";
 import { themeColors } from "../config/colors";
 import CustomText from "./CustomText";
 
-const Button = ({ label, onPress, disabled, textOnly = false }) => {
+const Button = ({ label, onPress, disabled, textOnly = false, caption = false }) => {
 	return (
 		<TouchableOpacity
 			disabled={disabled}
 			onPress={onPress}
 			style={[
-				sytles.container,
+				styles.container,
 				textOnly && { backgroundColor: undefined },
 				disabled && { backgroundColor: themeColors.buttonDisabled }
 			]}
@@ -18,13 +18,14 @@ const Button = ({ label, onPress, disabled, textOnly = false }) => {
 				<CustomText
 					button
 					semiBold
+					caption={caption}
 					color={disabled && themeColors.buttonDisabledText}>{label}</CustomText>
 			</>
 		</TouchableOpacity>
 	)
 }
 
-const sytles = StyleSheet.create({
+const styles = StyleSheet.create({
 	container: {
 		height: 54,
 		backgroundColor: themeColors.buttonPrimary,

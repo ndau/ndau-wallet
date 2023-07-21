@@ -5,15 +5,15 @@ import Button from "../components/Button";
 import CustomText from "../components/CustomText";
 import ScreenContainer from "../components/Screen";
 
-const AuthLoading = () => {
+const CreateAccount = () => {
 	return (
-		<ScreenContainer>
+		<ScreenContainer steps={{ total: 4, current: 1 }}>
 			<View style={styles.container}>
 				<CustomText h6 semiBold>nDau Wallet</CustomText>
 				<CustomText body>So lets begin</CustomText>
 			</View>
-			<Button label={'Create Account'} />
-			<Button label={'Sign in'} textOnly />
+			<Button disabled={true} label={'Create Account'} />
+			<Button label={'Privacy Policy and Terms of Service apply'} textOnly caption />
 		</ScreenContainer>
 	)
 }
@@ -26,4 +26,4 @@ const styles = StyleSheet.create({
 	}
 })
 
-export default AuthLoading;
+export default CreateAccount;
