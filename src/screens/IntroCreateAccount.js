@@ -13,8 +13,10 @@ const IntroCreateAccount = () => {
 	return (
 		<ScreenContainer>
 			<View style={styles.container}>
-				<CustomText h6 semiBold>nDau Wallet</CustomText>
-				<CustomText body>So lets begin</CustomText>
+			</View>
+			<View style={styles.textContainer}>
+				<CustomText h6 semiBold style={styles.text1}>Buy, Sell & Swap NFT</CustomText>
+				<CustomText body>Easily and securely manage your crypto with just a few taps from your wallet. Exchange, swap, and transfer your assets instantly and effortlessly. Enjoy seamless control over your crypto funds.</CustomText>
 			</View>
 			<Button label={'Create Account'} onPress={() => navigation.navigate(ScreenNames.CreateAccount)} />
 			<Button label={'Sign in'} textOnly />
@@ -27,6 +29,14 @@ const styles = StyleSheet.create({
 		flex: 1,
 		justifyContent: "center",
 		alignItems: "center"
+	},
+	textContainer: {
+		paddingVertical: 10,
+		marginBottom: 20
+	},
+	text1: {
+		width: 200,
+		marginBottom: 10
 	}
 })
 

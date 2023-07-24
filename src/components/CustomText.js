@@ -15,7 +15,8 @@ const CustomText = ({
 	regular = true,
 	light, medium, semiBold, bold,
 
-	color = themeColors.font
+	color = themeColors.font,
+	style = {}
 }) => {
 
 	const getStyles = () => ({
@@ -41,7 +42,7 @@ const CustomText = ({
 		...(color && { color }),
 	})
 
-	return <Text style={[styles.text, getStyles()]}>{children}</Text>
+	return <Text style={[styles.text, style, getStyles()]}>{children}</Text>
 }
 
 const styles = StyleSheet.create({
