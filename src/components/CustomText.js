@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, Text, TouchableOpacity } from "react-native";
+import { StyleSheet, Text } from "react-native";
 import { themeColors } from "../config/colors";
 import { typography } from "../config/typography";
 
@@ -15,6 +15,8 @@ const CustomText = ({
 	regular = true,
 	light, medium, semiBold, bold,
 
+	titilium = false,
+
 	color = themeColors.font,
 	style = {}
 }) => {
@@ -29,7 +31,7 @@ const CustomText = ({
 		...(h6 && { fontSize: typography.h6 }),
 
 		...(subtitle && { fontSize: typography.subtitle }),
-		...(body && { fontSize: typography.bÏody }),
+		...(body && { fontSize: typography.body }),
 		...(body2 && { fontSize: typography.body2 }),
 		...(button && { fontSize: typography.button }),
 		...(caption && { fontSize: typography.caption }),
@@ -40,6 +42,9 @@ const CustomText = ({
 		...(semiBold && { fontFamily: "ClashDisplay-Semibold" }),
 		...(bold && { fontFamily: "ClashDisplay-Bold" }),
 		...(color && { color }),
+		
+		// for input text
+		...(titilium && { fontFamily: "TitiliumWeb-Regular" }),
 	})
 
 	return <Text style={[styles.text, style, getStyles()]}>{children}</Text>

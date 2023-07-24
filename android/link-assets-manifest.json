@@ -48,6 +48,50 @@
     {
       "path": "src/assets/fonts/ClashDisplay-Variable.ttf",
       "sha1": "63e020df60007f8077f7d2b86a5cc2573fb26022"
+    },
+    {
+      "path": "src/assets/fonts/TitilliumWeb-Black.ttf",
+      "sha1": "b1a1895600318ad730b7209984e4f352787321b3"
+    },
+    {
+      "path": "src/assets/fonts/TitilliumWeb-Bold.ttf",
+      "sha1": "1de05d92173edf1cf44696d3c8a5842ebbf1e75f"
+    },
+    {
+      "path": "src/assets/fonts/TitilliumWeb-BoldItalic.ttf",
+      "sha1": "c26e544aca7f0f4776d1c0fd7f111b26f020fdac"
+    },
+    {
+      "path": "src/assets/fonts/TitilliumWeb-ExtraLight.ttf",
+      "sha1": "808273d2e7dd456c7709897e0fc4a2c5d72c4de8"
+    },
+    {
+      "path": "src/assets/fonts/TitilliumWeb-ExtraLightItalic.ttf",
+      "sha1": "badc41bb05c461d365831f4a8c0e93cc3677f30a"
+    },
+    {
+      "path": "src/assets/fonts/TitilliumWeb-Italic.ttf",
+      "sha1": "1babc993e83c4853bf1fe7e75694efdd5b3df1de"
+    },
+    {
+      "path": "src/assets/fonts/TitilliumWeb-Light.ttf",
+      "sha1": "401ed0b1b7d9da4ee730467bcf4fcac8167f7993"
+    },
+    {
+      "path": "src/assets/fonts/TitilliumWeb-LightItalic.ttf",
+      "sha1": "2daa91ace5be94d0493e0a6bf3ae132d83a095e4"
+    },
+    {
+      "path": "src/assets/fonts/TitilliumWeb-Regular.ttf",
+      "sha1": "c1d91bd86751bd0a186ac0323dcf47de4d0c0981"
+    },
+    {
+      "path": "src/assets/fonts/TitilliumWeb-SemiBold.ttf",
+      "sha1": "3ec2a03e4f87634460200b350ba7fdb8cc37934f"
+    },
+    {
+      "path": "src/assets/fonts/TitilliumWeb-SemiBoldItalic.ttf",
+      "sha1": "44ae5e1e566cf8917826fdbdbb7f18f0338bf15a"
     }
   ]
 }

@@ -36,7 +36,7 @@ const ScreenContainer = ({ children, style, steps }) => {
 				</View>
 			</View>
 		)
-	}, [])
+	}, [steps])
 
 	return (
 		<SafeAreaView style={styles.container}>

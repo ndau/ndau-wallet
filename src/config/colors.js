@@ -82,9 +82,12 @@ const themeColors = {
     background: mainPallet.black,
     tab: mainPallet.primary,
     font: mainPallet.white,
+    fontLight: colors.black100,
     buttonPrimary: colors.primary500,
     buttonDisabled: colors.white600,
-    buttonDisabledText: colors.black200
+    buttonDisabledText: colors.black200,
+    error: mainPallet.error,
+    success: mainPallet.success,
 }
 
 export {
