@@ -58,8 +58,6 @@ const CreateAccount = () => {
 		})
 	}
 
-	console.log('aslkjdfh', JSON.stringify({ data, isValidated }, null, 2));
-
 	return (
 		<ScreenContainer steps={{ total: 4, current: 1 }}>
 			<View style={styles.container}>
