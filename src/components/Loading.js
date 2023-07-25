@@ -17,12 +17,12 @@ const Loading = ({ label }) => {
 
 		const animationConfig = () => {
 			const threshold = 20;
-			av1.value = withRepeat(withTiming(threshold, { duration: 1000 }), 2, true);
-			av2.value = withDelay(1500, withRepeat(withTiming(threshold, { duration: 1000 }), 2, true));
-			av3.value = withDelay(2500, withRepeat(withTiming(threshold, { duration: 1000 }), 2, true));
+			av1.value = withRepeat(withTiming(threshold, { duration: 500 }), 2, true);
+			av2.value = withDelay(1000, withRepeat(withTiming(threshold, { duration: 500 }), 2, true));
+			av3.value = withDelay(2000, withRepeat(withTiming(threshold, { duration: 500 }), 2, true));
 		}
 		animationConfig();
-		const intervalId = setInterval(animationConfig, 2500);
+		const intervalId = setInterval(animationConfig, 3000);
 		return () => {
 			clearInterval(intervalId);
 		}
@@ -46,7 +46,7 @@ const styles = StyleSheet.create({
 		top: -50,
 		justifyContent: "center",
 		alignItems: "center",
-		backgroundColor: "rgba(0,0,0,1)",
+		backgroundColor: "rgba(0,0,0,.9)",
 		zIndex: 100,
 	},
 	dotContainer: {

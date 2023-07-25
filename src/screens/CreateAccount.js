@@ -25,6 +25,7 @@ const CreateAccount = () => {
 			success: []
 		},
 	})
+	const [loading, setLoading] = useState(false);
 
 	const isValidated =
 		data.fName.value.length &&
@@ -59,9 +60,16 @@ const CreateAccount = () => {
 		})
 	}
 
+	const handleSubmit = () => {
+		setLoading(true);
+		setTimeout(() => {
+			setLoading(false)
+		}, 4000);
+	}
+
 	return (
 		<ScreenContainer steps={{ total: 4, current: 1 }}>
-			{/* <Loading label={'Creating Account'}/> */}
+			{loading && <Loading label={'Creating Account'} />}
 			<View style={styles.container}>
 				<CustomText h6 semiBold style={styles.margin}>Create your account</CustomText>
 				<CustomTextInput
@@ -88,7 +96,7 @@ const CreateAccount = () => {
 					success={data.password.success}
 				/>
 			</View>
-			<Button disabled={!isValidated} label={'Create Account'} />
+			<Button disabled={!isValidated} label={'Create Account'} onPress={handleSubmit} />
 			<Button label={'Privacy Policy and Terms of Service apply'} textOnly caption />
 		</ScreenContainer>
 	)

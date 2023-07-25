@@ -16,7 +16,9 @@ const CustomTextInput = ({
 
 	const RenderMsg = useCallback(({ msg, isError }) => {
 		return (
-			<Animated.View style={styles.msgBox} entering={FadeInDown} exiting={FadeOutDown}>
+			<Animated.View style={styles.msgBox}
+				// entering={FadeInDown} exiting={FadeOutDown}
+			>
 				<View style={[styles.icon, { backgroundColor: isError ? themeColors.error : themeColors.success }]} />
 				<CustomText>{msg}</CustomText>
 			</Animated.View>
