@@ -5,82 +5,91 @@ import { useNavigation } from "@react-navigation/native";
 import Button from "./Button";
 
 const ScreenContainer = ({ children, style, steps }) => {
+  const navigation = useNavigation();
 
-	const navigation = useNavigation();
+  const Header = useCallback(() => {
+    if (!navigation.canGoBack() || !steps) return null;
+    return (
+      <View style={styles.headerContainer}>
+        {navigation.canGoBack() && (
+          <View style={styles.absolute}>
+            <Button
+              textOnly
+              caption
+              label={"Back"}
+              onPress={navigation.goBack}
+            />
+          </View>
+        )}
+        <View style={styles.headerCenter}>
+          {steps?.total && (
+            <View style={styles.row}>
+              {Array(steps.total)
+                .fill("")
+                .map((_, index) => {
+                  return (
+                    <View
+                      key={index}
+                      style={[
+                        styles.slide,
+                        {
+                          borderColor:
+                            index < steps?.current
+                              ? themeColors.primary
+                              : themeColors.white,
+                        },
+                      ]}
+                    ></View>
+                  );
+                })}
+            </View>
+          )}
+        </View>
+      </View>
+    );
+  }, [steps]);
 
-	const Header = useCallback(() => {
-		if (!navigation.canGoBack() || !steps) return null;
-		return (
-			<View style={styles.headerContainer}>
-				{
-					navigation.canGoBack() && (
-						<View style={styles.absolute}>
-							<Button textOnly caption label={'Back'} onPress={navigation.goBack} />
-						</View>
-					)
-				}
-				<View style={styles.headerCenter}>
-					{steps?.total && (
-						<View style={styles.row}>
-							{
-								Array(steps.total).fill('').map((_, index) => {
-									return (
-										<View key={index} style={[styles.slide, { borderColor: index < steps?.current ? themeColors.primary : themeColors.white }]}>
-
-										</View>
-									)
-								})
-							}
-						</View>
-					)}
-				</View>
-			</View>
-		)
-	}, [steps])
-
-	return (
-		<SafeAreaView style={styles.container}>
-			<StatusBar barStyle={'light-content'} />
-			<Header />
-			<View style={[{ flex: 1 }, style, styles.fixedStyle]}>
-				{children}
-			</View>
-		</SafeAreaView>
-	)
-}
+  return (
+    <SafeAreaView style={styles.container}>
+      <StatusBar barStyle={"light-content"} />
+      <Header />
+      <View style={[{ flex: 1 }, style, styles.fixedStyle]}>{children}</View>
+    </SafeAreaView>
+  );
+};
 
 const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		backgroundColor: themeColors.background
-	},
-	headerContainer: {
-		flexDirection: 'row',
-		alignItems: "center",
-		height: 50
-	},
-	fixedStyle: {
-		paddingHorizontal: 14
-	},
-	headerCenter: {
-		flex: 1,
-		justifyContent: "center",
-		alignItems: "center",
-	},
-	absolute: {
-		position: "absolute",
-		zIndex: 100
-	},
-	row: {
-		flexDirection: "row"
-	},
-	slide: {
-		borderWidth: 1,
-		width: 30,
-		borderWidth: 2,
-		marginRight: 4,
-		borderRadius: 10
-	}
-})
+  container: {
+    flex: 1,
+    backgroundColor: themeColors.background,
+  },
+  headerContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    height: 50,
+  },
+  fixedStyle: {
+    paddingHorizontal: 14,
+  },
+  headerCenter: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  absolute: {
+    position: "absolute",
+    zIndex: 100,
+  },
+  row: {
+    flexDirection: "row",
+  },
+  slide: {
+    borderWidth: 1,
+    width: 30,
+    borderWidth: 2,
+    marginRight: 4,
+    borderRadius: 10,
+  },
+});
 
 export default ScreenContainer;
