@@ -5,6 +5,7 @@ import Button from "../components/Button";
 import CustomText from "../components/CustomText";
 import ScreenContainer from "../components/Screen";
 import CustomTextInput from "../components/CustomTextInput";
+import Loading from "../components/Loading";
 
 const CreateAccount = () => {
 
@@ -60,6 +61,7 @@ const CreateAccount = () => {
 
 	return (
 		<ScreenContainer steps={{ total: 4, current: 1 }}>
+			{/* <Loading label={'Creating Account'}/> */}
 			<View style={styles.container}>
 				<CustomText h6 semiBold style={styles.margin}>Create your account</CustomText>
 				<CustomTextInput
