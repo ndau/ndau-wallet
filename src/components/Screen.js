@@ -1,8 +1,17 @@
 import React, { useCallback } from "react";
-import { SafeAreaView, StatusBar, StyleSheet, View } from "react-native";
+import {
+  SafeAreaView,
+  StatusBar,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { themeColors } from "../config/colors";
 import { useNavigation } from "@react-navigation/native";
 import Button from "./Button";
+import { BackSVGComponent } from "../assets/svgs/components";
+import CustomText from "./CustomText";
+import Spacer from "./Spacer";
 
 const ScreenContainer = ({ children, style, steps }) => {
   const navigation = useNavigation();
@@ -12,14 +21,13 @@ const ScreenContainer = ({ children, style, steps }) => {
     return (
       <View style={styles.headerContainer}>
         {navigation.canGoBack() && (
-          <View style={styles.absolute}>
-            <Button
-              textOnly
-              caption
-              label={"Back"}
-              onPress={navigation.goBack}
-            />
-          </View>
+          <TouchableOpacity style={styles.absolute} onPress={navigation.goBack}>
+            <BackSVGComponent />
+            <Spacer width={10} />
+            <CustomText caption semiBold>
+              Back
+            </CustomText>
+          </TouchableOpacity>
         )}
         <View style={styles.headerCenter}>
           {steps?.total && (
@@ -79,6 +87,9 @@ const styles = StyleSheet.create({
   absolute: {
     position: "absolute",
     zIndex: 100,
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
   },
   row: {
     flexDirection: "row",
