@@ -13,7 +13,7 @@ import { BackSVGComponent } from "../assets/svgs/components";
 import CustomText from "./CustomText";
 import Spacer from "./Spacer";
 
-const ScreenContainer = ({ children, style, steps }) => {
+const ScreenContainer = ({ children, style, steps, preventBackPress }) => {
   const navigation = useNavigation();
 
   const Header = useCallback(() => {
@@ -21,7 +21,7 @@ const ScreenContainer = ({ children, style, steps }) => {
     return (
       <View style={styles.headerContainer}>
         {navigation.canGoBack() && (
-          <TouchableOpacity style={styles.absolute} onPress={navigation.goBack}>
+          <TouchableOpacity style={styles.absolute} onPress={() => preventBackPress ? preventBackPress() : navigation.goBack()}>
             <BackSVGComponent />
             <Spacer width={10} />
             <CustomText caption semiBold>

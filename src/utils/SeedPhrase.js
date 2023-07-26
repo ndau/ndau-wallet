@@ -15,20 +15,22 @@ export const SeedPhrase = {
     return parseInt(Math.random() * (max - min) + min);
   },
 
+  sortAsc: seed => seed.sort((itemA, itemB) => itemA.index < itemB.index ? -1 : 1),
+
   generateSeed: () => {
     return [
-      'ridge',
-      'during',
-      'describe',
-      'idle',
-      'dynamic',
-      'minor',
-      'discover',
-      'obtain',
-      'taxi',
-      'banana',
-      'high',
-      'universe'
+      { seed: 'ridge', index: 0 },
+      { seed: 'during', index: 1 },
+      { seed: 'describe', index: 2 },
+      { seed: 'idle', index: 3 },
+      { seed: 'dynamic', index: 4 },
+      { seed: 'minor', index: 5 },
+      { seed: 'discover', index: 6 },
+      { seed: 'obtain', index: 7 },
+      { seed: 'taxi', index: 8 },
+      { seed: 'banana', index: 9 },
+      { seed: 'high', index: 10 },
+      { seed: 'universe', index: 11 }
     ];
   }
 }
