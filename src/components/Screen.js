@@ -17,7 +17,7 @@ const ScreenContainer = ({ children, style, steps }) => {
   const navigation = useNavigation();
 
   const Header = useCallback(() => {
-    if (!navigation.canGoBack() || !steps) return null;
+    if (!navigation.canGoBack()) return null;
     return (
       <View style={styles.headerContainer}>
         {navigation.canGoBack() && (

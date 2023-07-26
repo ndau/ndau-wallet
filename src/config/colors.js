@@ -79,7 +79,9 @@ const colors = {
 const themeColors = {
     primary: mainPallet.primary,
     white: mainPallet.white,
+    black: mainPallet.black,
     background: mainPallet.black,
+    lightBackground: colors.white500 + "33",
     tab: mainPallet.primary,
     font: mainPallet.white,
     fontLight: colors.black100,

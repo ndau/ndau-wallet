@@ -1,17 +1,45 @@
 import React, { useEffect } from "react";
-import { ActivityIndicator, StyleSheet, View } from "react-native";
+import { StyleSheet, View } from "react-native";
+import Animated, { interpolateColor, useAnimatedStyle, useSharedValue, withDelay, withRepeat, withTiming } from "react-native-reanimated";
+
 import { themeColors } from "../config/colors";
 import CustomText from "./CustomText";
-import Animated, { useAnimatedStyle, useSharedValue, withDelay, withRepeat, withTiming } from "react-native-reanimated";
 
 const Loading = ({ label }) => {
 	const av1 = useSharedValue(0);
 	const av2 = useSharedValue(0);
 	const av3 = useSharedValue(0);
 
-	const as1 = useAnimatedStyle(() => ({ transform: [{ translateY: -av1.value }] }), [])
-	const as2 = useAnimatedStyle(() => ({ transform: [{ translateY: -av2.value }] }), [])
-	const as3 = useAnimatedStyle(() => ({ transform: [{ translateY: -av3.value }] }), [])
+	const as1 = useAnimatedStyle(() => ({
+		transform: [{
+			translateY: -av1.value,
+		}],
+		backgroundColor: interpolateColor(
+			av1.value,
+			[0, 1],
+			[themeColors.white, themeColors.primary]
+		),
+	}), [])
+	const as2 = useAnimatedStyle(() => ({
+		transform: [{
+			translateY: -av2.value,
+		}],
+		backgroundColor: interpolateColor(
+			av2.value,
+			[0, 1],
+			[themeColors.white, themeColors.primary]
+		),
+	}), [])
+	const as3 = useAnimatedStyle(() => ({
+		transform: [{
+			translateY: -av3.value,
+		}],
+		backgroundColor: interpolateColor(
+			av3.value,
+			[0, 1],
+			[themeColors.white, themeColors.primary]
+		),
+	}), [])
 
 	useEffect(() => {
 

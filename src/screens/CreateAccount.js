@@ -1,14 +1,19 @@
-import React, { useMemo, useState } from "react";
+import React, { useState } from "react";
 import { StyleSheet, View } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 
 import Button from "../components/Button";
 import CustomText from "../components/CustomText";
-import ScreenContainer from "../components/Screen";
 import CustomTextInput from "../components/CustomTextInput";
 import Loading from "../components/Loading";
+import ScreenContainer from "../components/Screen";
 import Spacer from "../components/Spacer";
+import { ScreenNames } from "./ScreenNames";
 
 const CreateAccount = () => {
+
+  const navigation = useNavigation()
+
   const [data, setData] = useState({
     fName: {
       value: "",
@@ -62,6 +67,9 @@ const CreateAccount = () => {
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
+      setTimeout(() => {
+        navigation.navigate(ScreenNames.IntroCreateWallet);
+      }, 400);
     }, 4000);
   };
 

@@ -3,7 +3,7 @@ import { StyleSheet, TouchableOpacity } from "react-native";
 import { themeColors } from "../config/colors";
 import CustomText from "./CustomText";
 
-const Button = ({ label, onPress, disabled, textOnly = false, caption = false }) => {
+const Button = ({ label, onPress, disabled, textOnly = false, caption = false, buttonContainerStyle = {}, rightIcon, buttonTextColor = undefined, titilium = false }) => {
 	return (
 		<TouchableOpacity
 			disabled={disabled}
@@ -11,7 +11,8 @@ const Button = ({ label, onPress, disabled, textOnly = false, caption = false })
 			style={[
 				styles.container,
 				textOnly && { backgroundColor: undefined },
-				disabled && { backgroundColor: themeColors.buttonDisabled }
+				buttonContainerStyle,
+				disabled && { backgroundColor: themeColors.buttonDisabled },
 			]}
 			activeOpacity={0.8}>
 			<>
@@ -19,7 +20,9 @@ const Button = ({ label, onPress, disabled, textOnly = false, caption = false })
 					button
 					semiBold
 					caption={caption}
-					color={disabled && themeColors.buttonDisabledText}>{label}</CustomText>
+					titiliumSemiBold
+					color={disabled ? themeColors.buttonDisabledText : buttonTextColor}>{label}</CustomText>
+				{rightIcon}
 			</>
 		</TouchableOpacity>
 	)

@@ -7,7 +7,8 @@ const CustomText = ({
 	children,
 	h1, h2, h3, h4, h5, h6,
 	subtitle,
-	body, body2,
+	body = false,
+	body2,
 	button,
 	caption,
 	size = 14,
@@ -16,6 +17,7 @@ const CustomText = ({
 	light, medium, semiBold, bold,
 
 	titilium = false,
+	titiliumSemiBold = false,
 
 	color = themeColors.font,
 	style = {}
@@ -42,9 +44,10 @@ const CustomText = ({
 		...(semiBold && { fontFamily: "ClashDisplay-Semibold" }),
 		...(bold && { fontFamily: "ClashDisplay-Bold" }),
 		...(color && { color }),
-		
+
 		// for input text
 		...(titilium && { fontFamily: "TitiliumWeb-Regular" }),
+		...(titiliumSemiBold && { fontFamily: "TitilliumWeb-SemiBold" }),
 	})
 
 	return <Text style={[styles.text, style, getStyles()]}>{children}</Text>
