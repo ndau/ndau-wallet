@@ -5,7 +5,10 @@ const ScreenNames = {
   CreateWallet: "CreateWallet",
   CreateWalletStarted: "CreateWalletStarted",
   SeedPhrase: "SeedPhrase",
-  TermsPolicy: "TermsPolicy"
+  TermsPolicy: "TermsPolicy",
+  ImportWallet: "ImportWallet",
+  ImportMultiCoinWallet: "ImportMultiCoinWallet",
+  ImportClassicWallet: "ImportClassicWallet",
 }
 
 export { ScreenNames }

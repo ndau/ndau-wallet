@@ -24,7 +24,7 @@ const IntroCreateWallet = () => {
 				<CustomText body2>Easily and securely manage your crypto with just a few taps from your wallet. Exchange, swap, and transfer your assets instantly and effortlessly. Enjoy seamless control over your crypto funds.</CustomText>
 			</View>
 			<Button label={'Create Wallet'} onPress={() => navigation.navigate(ScreenNames.CreateWallet)} />
-			<Button label={'I already have a wallet'} textOnly />
+			<Button label={'I already have a wallet'} textOnly onPress={() => navigation.navigate(ScreenNames.ImportWallet)}/>
 		</ScreenContainer>
 	)
 }

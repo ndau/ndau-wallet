@@ -37,7 +37,7 @@ const SeedPhraseCapsule = ({ disabled, style, selected, item, index, onSelect })
 				<View style={styles.inner}>
 					{fullSelection[item.index]?.showIndex && (
 						<View style={styles.selectedIndex}>
-							<CustomText titilium color={themeColors.black}>{indexInWord}</CustomText>
+							<CustomText titilium color={themeColors.black} caption>{indexInWord}</CustomText>
 						</View>
 					)}
 					<CustomText titilium h6>{item.seed}</CustomText>
