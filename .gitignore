@@ -65,6 +65,7 @@ android/app/release/app-release.apk
 android/app/release/output-metadata.json
 
 # Locks file
+*.lock
 yarn.lock
 package-json.lock
 /ios/Podfile.lock
