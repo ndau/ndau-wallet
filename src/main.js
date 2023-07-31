@@ -20,7 +20,7 @@ const ScreenOptions = { headerShown: false };
 
 const Stack = createStackNavigator();
 const MainStack = () => {
-  
+
   useEffect(() => {
     setTimeout(() => {
       SplashScreen.hide();
@@ -28,7 +28,7 @@ const MainStack = () => {
   }, []);
 
   return (
-    <Stack.Navigator screenOptions={ScreenOptions} initialRouteName={ScreenNames.IntroCreateWallet}>
+    <Stack.Navigator screenOptions={ScreenOptions}>
       <Stack.Screen name={ScreenNames.IntroCreateAccount} component={IntroCreateAccount} />
       <Stack.Screen name={ScreenNames.CreateAccount} component={CreateAccount} />
       <Stack.Screen name={ScreenNames.IntroCreateWallet} component={IntroCreateWallet} />
