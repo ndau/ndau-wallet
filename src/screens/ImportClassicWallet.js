@@ -92,7 +92,7 @@ const Address = ({ route: { params } }) => {
 
 const ImportClassicWallet = ({ route: { params } }) => {
   return (
-    <ScreenContainer steps={{ total: 4, current: 1 }}>
+    <ScreenContainer>
       <View style={styles.container}>
         <CustomText h6 semiBold style={styles.margin}>
           {`Import ${params?.name}`}
