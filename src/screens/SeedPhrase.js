@@ -14,20 +14,19 @@ import Loading from "../components/Loading";
 
 const SeedPhrase = () => {
 
-  const indeces = useRef([SeedPhraseGen.getChooseIndecies(0, 6), SeedPhraseGen.getChooseIndecies(7, 12)]).current;
+  const indeces = useRef([...Array(12)].map((_, i) => i)).current;
   const [seeds, setSeeds] = useState(SeedPhraseGen.generateSeed())
-  const [choosed, setChoosed] = useState({
-    [indeces[0]]: { showIndex: true, selected: false, index: indeces[0] },
-    [indeces[1]]: { showIndex: true, selected: false, index: indeces[1] }
-  });
+  const [choosed, setChoosed] = useState(indeces.reduce((prev, curr) => ({ ...prev, [curr]: { showIndex: true, selected: false, index: curr } }), []));
+
   const [seedWroteIt, setSeedWroteIt] = useState(false);
   const [buttonDisabled, setButtonDisabled] = useState(false);
   const [buttonText, setButtonText] = useState("Continue");
   const [loading, setLoading] = useState(false);
 
   const hideNumbers = (flag = false) => {
-    choosed[indeces[0]].showIndex = flag;
-    choosed[indeces[1]].showIndex = flag;
+    Object.keys(choosed).forEach((key) => {
+      choosed[key].showIndex = flag;  
+    })
   }
 
   const resetSeed = () => {
@@ -61,10 +60,7 @@ const SeedPhrase = () => {
 
     const selectingSeed = (selectedIndex) => {
       cachedSelected.push(selectedIndex);
-      const choosedKeyArray = Object.keys(choosed);
-      let isSequenced = true;
-      cachedSelected.map((key, index) => isSequenced = (key.index == choosedKeyArray[index]));
-      cachedSelected.length === 2 && isSequenced && success();
+      cachedSelected.length === Object.keys(choosed).length && success();
     }
 
     return (
@@ -76,6 +72,7 @@ const SeedPhrase = () => {
                 key={index}
                 disabled={!seedWroteIt}
                 onSelect={selectingSeed}
+                cachedSelected={cachedSelected}
                 index={index}
                 selected={choosed}
                 style={styles.flex}
@@ -90,6 +87,7 @@ const SeedPhrase = () => {
                 key={index}
                 disabled={!seedWroteIt}
                 onSelect={selectingSeed}
+                cachedSelected={cachedSelected}
                 index={index}
                 selected={choosed}
                 style={index == 3 && styles.flex}
@@ -104,6 +102,7 @@ const SeedPhrase = () => {
                 key={index}
                 disabled={!seedWroteIt}
                 onSelect={selectingSeed}
+                cachedSelected={cachedSelected}
                 index={index}
                 selected={choosed}
                 style={styles.flex}
@@ -118,6 +117,7 @@ const SeedPhrase = () => {
                 key={index}
                 disabled={!seedWroteIt}
                 onSelect={selectingSeed}
+                cachedSelected={cachedSelected}
                 index={index}
                 selected={choosed}
                 style={styles.flex}
@@ -132,6 +132,7 @@ const SeedPhrase = () => {
                 key={index}
                 disabled={!seedWroteIt}
                 onSelect={selectingSeed}
+                cachedSelected={cachedSelected}
                 index={index}
                 selected={choosed}
                 style={index == 9 && styles.flex}
@@ -155,7 +156,7 @@ const SeedPhrase = () => {
     <ScreenContainer
       preventBackPress={seedWroteIt ? resetSeed : undefined}
       steps={{ total: 4, current: 3 }}>
-      {!!loading && <Loading label={'Creating Wallet'}/>}
+      {!!loading && <Loading label={'Creating Wallet'} />}
       <Spacer height={16} />
       <View style={styles.container}>
         <CustomText h6 semiBold style={styles.margin}>{headings[0]}</CustomText>

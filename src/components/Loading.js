@@ -43,14 +43,15 @@ const Loading = ({ label }) => {
 
 	useEffect(() => {
 
+		const speed = 300;
 		const animationConfig = () => {
 			const threshold = 20;
-			av1.value = withRepeat(withTiming(threshold, { duration: 500 }), 2, true);
-			av2.value = withDelay(1000, withRepeat(withTiming(threshold, { duration: 500 }), 2, true));
-			av3.value = withDelay(2000, withRepeat(withTiming(threshold, { duration: 500 }), 2, true));
+			av1.value = withRepeat(withTiming(threshold, { duration: speed }), 2, true);
+			av2.value = withDelay(speed * 2, withRepeat(withTiming(threshold, { duration: speed }), 2, true));
+			av3.value = withDelay(speed * 4, withRepeat(withTiming(threshold, { duration: speed }), 2, true));
 		}
 		animationConfig();
-		const intervalId = setInterval(animationConfig, 3000);
+		const intervalId = setInterval(animationConfig, speed * 6);
 		return () => {
 			clearInterval(intervalId);
 		}

@@ -1,17 +1,17 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useRef, useState } from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 import Animated, { FadeInDown, FadeOutDown } from "react-native-reanimated";
 
 import { themeColors } from "../config/colors";
 import CustomText from "./CustomText";
 
-const SeedPhraseCapsule = ({ disabled, style, selected, item, index, onSelect }) => {
+const SeedPhraseCapsule = ({ disabled, style, selected, item, index, onSelect, cachedSelected }) => {
 	const [fullSelection, setFullSelection] = useState(selected);
 
 	const indexInWord = useMemo(() => item.index === 0 ? `${item.index + 1}st` : item.index === 1 ? `${item.index + 1}nd` : `${item.index + 1}th`, [])
 
 	const handleSelection = () => {
-		if (fullSelection?.[item.index]) {
+		if (fullSelection?.[item.index] && cachedSelected?.length === item.index) {
 			setFullSelection(_ => ({
 				..._,
 				[item.index]: {
@@ -21,6 +21,7 @@ const SeedPhraseCapsule = ({ disabled, style, selected, item, index, onSelect })
 				}
 			}))
 			onSelect?.(fullSelection?.[item.index])
+			console.log('item.index == index', JSON.stringify([item.index, index, fullSelection[item.index]], null, 2));
 		}
 	}
 
@@ -66,7 +67,7 @@ const styles = StyleSheet.create({
 	selectedIndex: {
 		position: "absolute",
 		top: -6,
-		right: -26,
+		left: -24,
 		height: 30,
 		width: 30,
 		borderRadius: 15,

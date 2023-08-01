@@ -29,8 +29,8 @@ const MainStack = () => {
 
   return (
     <Stack.Navigator screenOptions={ScreenOptions}>
-      <Stack.Screen name={ScreenNames.IntroCreateAccount} component={IntroCreateAccount} />
-      <Stack.Screen name={ScreenNames.CreateAccount} component={CreateAccount} />
+      {/* <Stack.Screen name={ScreenNames.IntroCreateAccount} component={IntroCreateAccount} />
+      <Stack.Screen name={ScreenNames.CreateAccount} component={CreateAccount} /> */}
       <Stack.Screen name={ScreenNames.IntroCreateWallet} component={IntroCreateWallet} />
       <Stack.Screen name={ScreenNames.CreateWallet} component={CreateWallet} />
       <Stack.Screen name={ScreenNames.CreateWalletStarted} component={CreateWalletStarted} />
