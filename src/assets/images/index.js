@@ -11,6 +11,10 @@ const images = {
   solanaIcon: require('./solanaIcon.png'),
   EmptyState: require('./EmptyState.png'),
   DashboardHeaderBack: require('./dashboardHeaderBack.png'),
+  ethereum: require('./ethereum.png'),
+  nDau: require('./nDau.png'),
+  nPay: require('./nPay.png'),
+  USDC: require('./USDC.png'),
 }
 
 export { images };

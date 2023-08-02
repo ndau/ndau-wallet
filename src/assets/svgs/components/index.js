@@ -8,6 +8,7 @@ import NDauLogo from "./NDauLogo";
 import DApps from "./DApps";
 import NotificationBell from "./NotificationBell";
 import Setting from "./Setting";
+import Search from "./Search";
 
 export {
   BackSVGComponent,
@@ -19,5 +20,6 @@ export {
   NDauLogo,
   DApps,
   NotificationBell,
-  Setting
+  Setting,
+  Search
 };

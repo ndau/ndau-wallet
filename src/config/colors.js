@@ -78,6 +78,7 @@ const colors = {
 
 const themeColors = {
     primary: mainPallet.primary,
+    collapsibleBackground: colors.primary100,
     white: mainPallet.white,
     black: mainPallet.black,
     background: mainPallet.black,
