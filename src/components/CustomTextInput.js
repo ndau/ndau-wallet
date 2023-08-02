@@ -11,7 +11,8 @@ const CustomTextInput = ({
 	maxLength = 50, //by default 50 characters
 	password = false,
 	errors = [],
-	success = []
+	success = [],
+	value = undefined
 }) => {
 
 	const RenderMsg = useCallback(({ msg, isError }) => {
@@ -29,6 +30,7 @@ const CustomTextInput = ({
 		<View style={styles.main}>
 			<CustomText body titilium>{label}</CustomText>
 			<TextInput
+				value={value}
 				maxLength={maxLength}
 				placeholder={placeholder}
 				placeholderTextColor={themeColors.fontLight}

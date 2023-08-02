@@ -14,6 +14,7 @@ import { SeedPhrase as SeedPhraseGen } from "../utils/SeedPhrase";
 import Loading from "../components/Loading";
 import Modal, { ModalImage } from "../components/Modal";
 import { ScreenNames } from "../screens/ScreenNames";
+import Clipboard from "@react-native-clipboard/clipboard";
 
 const SeedPhrase = () => {
 
@@ -187,7 +188,9 @@ const SeedPhrase = () => {
         </CustomText>
         <StateButton
           resetToPrevious
-          onButtonPress={() => null}
+          onButtonPress={() => {
+            Clipboard.setString(seeds.map(({ seed }) => seed).join(' '))
+          }}
           states={[
             (
               <View style={styles.buttonCopy}>

@@ -1,6 +1,6 @@
-import React, { useState } from "react";
-import { StyleSheet, View } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import React, { useRef, useState } from "react";
+import { StyleSheet, View } from "react-native";
 
 import Button from "../components/Button";
 import CustomText from "../components/CustomText";
@@ -8,60 +8,24 @@ import CustomTextInput from "../components/CustomTextInput";
 import Loading from "../components/Loading";
 import ScreenContainer from "../components/Screen";
 import Spacer from "../components/Spacer";
-import { ScreenNames } from "./ScreenNames";
 import { themeColors } from "../config/colors";
+import CustomModal, { ModalImage } from "../components/Modal";
+import PhraseHandler from "../components/PhraseHandler";
 
 const ImportMultiCoinWallet = () => {
 
+  const modalRef = useRef(null);
   const navigation = useNavigation()
 
   const [data, setData] = useState({
     fName: {
       value: "",
     },
-    lName: {
-      value: "",
-    },
-    email: {
-      value: "",
-    },
-    password: {
-      value: "",
-      errors: [],
-      success: [],
-    },
   });
   const [loading, setLoading] = useState(false);
 
-  const isValidated =
-    data.fName.value.length &&
-    data.lName.value.length &&
-    data.email.value.length &&
-    data.password.value.length >= 8;
-
-  const handleInput = (t, tag) => {
-    setData((prevState) => {
-      const valueToSet = { value: "" };
-      if (tag === "password") {
-        valueToSet.value = t;
-        if (t.length < 8) {
-          valueToSet.success = [];
-          valueToSet.errors = [
-            "Weak Password",
-            "Pasword must be at least 8 characters long",
-          ];
-        } else {
-          valueToSet.errors = [];
-          valueToSet.success = ["Looks Good!"];
-        }
-      } else {
-        valueToSet.value = t;
-      }
-      return {
-        ...prevState,
-        [tag]: valueToSet,
-      };
-    });
+  const handleDone = () => {
+    modalRef.current(false);
   };
 
   const handleSubmit = () => {
@@ -69,7 +33,7 @@ const ImportMultiCoinWallet = () => {
     setTimeout(() => {
       setLoading(false);
       setTimeout(() => {
-        navigation.navigate(ScreenNames.IntroCreateWallet);
+        modalRef.current(true);
       }, 400);
     }, 4000);
   };
@@ -88,20 +52,24 @@ const ImportMultiCoinWallet = () => {
           placeholder={"Wallet Name"}
           onChangeText={(t) => handleInput(t, "fName")}
         />
-        <CustomTextInput
+        <PhraseHandler
           label={"Phrase"}
           placeholder={"Enter or paste phrase here..."}
           onChangeText={(t) => handleInput(t, "lName")}
         />
-        <Button
-          label={"Paste Secret Phrase"}
-          onPress={handleSubmit}
-          buttonContainerStyle={styles.outlineButton}
-        />
       </View>
       <Button
         label={"Import"}
+        onPress={handleSubmit}
       />
+
+      <CustomModal bridge={modalRef}>
+        <View style={styles.modal}>
+          <ModalImage />
+          <CustomText titiliumSemiBold body>Your wallet was successfully imported</CustomText>
+        </View>
+        <Button label={'Done'} onPress={handleDone} />
+      </CustomModal>
     </ScreenContainer>
   );
 };
@@ -113,12 +81,10 @@ const styles = StyleSheet.create({
   margin: {
     marginBottom: 10,
   },
-  outlineButton: {
-    backgroundColor: undefined,
-    borderWidth: 2,
-    borderColor: themeColors.primary
+  modal: {
+    alignItems: "center",
+    marginVertical: 20
   }
-
 });
 
 export default ImportMultiCoinWallet;

@@ -62,7 +62,6 @@ const MainStack = () => {
   return (
     <Stack.Navigator screenOptions={ScreenOptions}>
 
-      <Stack.Screen name={ScreenNames.TabNav} component={MainTabs} />
       {/* <Stack.Screen name={ScreenNames.IntroCreateAccount} component={IntroCreateAccount} />
       <Stack.Screen name={ScreenNames.CreateAccount} component={CreateAccount} /> */}
 
@@ -75,6 +74,7 @@ const MainStack = () => {
       <Stack.Screen name={ScreenNames.ImportMultiCoinWallet} component={ImportMultiCoinWallet} />
       <Stack.Screen name={ScreenNames.ImportClassicWallet} component={ImportClassicWallet} />
       <Stack.Screen name={ScreenNames.ProtectWallet} component={ProtectWallet} />
+      <Stack.Screen name={ScreenNames.TabNav} component={MainTabs} />
     </Stack.Navigator>
   )
 }

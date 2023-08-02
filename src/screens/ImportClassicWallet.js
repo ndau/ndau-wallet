@@ -1,18 +1,15 @@
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import React, { useState } from "react";
 import { StyleSheet, View } from "react-native";
-import { useNavigation } from "@react-navigation/native";
-import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import Clipboard from '@react-native-clipboard/clipboard';
 
 import Button from "../components/Button";
 import CustomText from "../components/CustomText";
 import CustomTextInput from "../components/CustomTextInput";
-import Loading from "../components/Loading";
+import PhraseHandler from "../components/PhraseHandler";
 import ScreenContainer from "../components/Screen";
-import Spacer from "../components/Spacer";
-import { ScreenNames } from "./ScreenNames";
-import ImportMultiCoinWallet from "./ImportMultiCoinWallet";
-import { themeColors } from "../config/colors";
 import StateButton from "../components/StateButton";
+import { themeColors } from "../config/colors";
 
 
 const Tab = createMaterialTopTabNavigator();
@@ -41,13 +38,10 @@ const Phrase = ({ route: { params } }) => {
           label={"Wallet Name"}
           placeholder={"Wallet Name"}
         />
-        <CustomTextInput
+        <PhraseHandler
           label={"Phrase"}
           placeholder={"Enter or paste phrase here..."}
-        />
-        <Button
-          label={"Paste Secret Phrase"}
-          buttonContainerStyle={styles.outlineButton}
+          onChangeText={(t) => handleInput(t, "lName")}
         />
       </View>
       <Button
@@ -58,6 +52,7 @@ const Phrase = ({ route: { params } }) => {
 }
 
 const Address = ({ route: { params } }) => {
+  const [address, setAddress] = useState("");
   return (
     <View style={styles.screen}>
       <View style={styles.container}>
@@ -65,7 +60,7 @@ const Address = ({ route: { params } }) => {
           <View style={styles.pasteButton}>
             <StateButton
               label={'Paste'}
-              onButtonPress={() => null}
+              onButtonPress={() => Clipboard.getString().then(res => setAddress(res))}
               states={[
                 <View style={styles.paste}>
                   <CustomText titilium caption color={themeColors.black}>Paste</CustomText>
@@ -76,6 +71,8 @@ const Address = ({ route: { params } }) => {
           <CustomTextInput
             label={`${params?.name} Address`}
             placeholder={`Enter your ${params?.name} Address`}
+            value={address}
+            onChangeText={setAddress}
           />
         </View>
         <CustomTextInput
