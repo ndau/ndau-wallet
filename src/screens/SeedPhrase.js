@@ -1,5 +1,6 @@
 import React, { useCallback, useMemo, useRef, useState } from "react";
 import { StyleSheet, View } from "react-native";
+import { CommonActions, useNavigation } from "@react-navigation/native";
 
 import { Copy } from "../assets/svgs/components";
 import Button from "../components/Button";
@@ -11,10 +12,15 @@ import StateButton from "../components/StateButton";
 import { themeColors } from "../config/colors";
 import { SeedPhrase as SeedPhraseGen } from "../utils/SeedPhrase";
 import Loading from "../components/Loading";
+import Modal, { ModalImage } from "../components/Modal";
+import { ScreenNames } from "../screens/ScreenNames";
 
 const SeedPhrase = () => {
 
+  const navigation = useNavigation();
+
   const indeces = useRef([...Array(12)].map((_, i) => i)).current;
+  const modalRef = useRef(null);
   const [seeds, setSeeds] = useState(SeedPhraseGen.generateSeed())
   const [choosed, setChoosed] = useState(indeces.reduce((prev, curr) => ({ ...prev, [curr]: { showIndex: true, selected: false, index: curr } }), []));
 
@@ -25,7 +31,7 @@ const SeedPhrase = () => {
 
   const hideNumbers = (flag = false) => {
     Object.keys(choosed).forEach((key) => {
-      choosed[key].showIndex = flag;  
+      choosed[key].showIndex = flag;
     })
   }
 
@@ -41,6 +47,7 @@ const SeedPhrase = () => {
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
+      modalRef.current(true);
     }, 2000);
   }
 
@@ -51,6 +58,16 @@ const SeedPhrase = () => {
     setSeedWroteIt(true);
     setButtonDisabled(true);
     setButtonText("Create Wallet");
+  };
+
+  const handleDone = () => {
+    modalRef.current(false);
+    navigation.dispatch(
+      CommonActions.reset({
+        index: 0,
+        routes: [{ name: ScreenNames.ProtectWallet }],
+      })
+    );
   };
 
   const Phrase = useCallback(({ success }) => {
@@ -192,6 +209,13 @@ const SeedPhrase = () => {
         label={buttonText}
         onPress={handleContinue}
       />
+      <Modal bridge={modalRef}>
+        <View style={styles.modal}>
+          <ModalImage />
+          <CustomText titiliumSemiBold body>Your wallet was successfully created</CustomText>
+        </View>
+        <Button label={'Done'} onPress={handleDone} />
+      </Modal>
     </ScreenContainer>
   );
 };
@@ -241,6 +265,10 @@ const styles = StyleSheet.create({
   },
   flex: {
     flex: 1
+  },
+  modal: {
+    alignItems: "center",
+    marginVertical: 20
   }
 });
 

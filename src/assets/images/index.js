@@ -8,7 +8,9 @@ const images = {
   dogecoinIcon: require('./dogecoinIcon.png'),
   ethereumIcon: require('./ethereumIcon.png'),
   polygonIcon: require('./polygonIcon.png'),
-  solanaIcon: require('./solanaIcon.png')
+  solanaIcon: require('./solanaIcon.png'),
+  EmptyState: require('./EmptyState.png'),
+  DashboardHeaderBack: require('./dashboardHeaderBack.png'),
 }
 
 export { images };

@@ -9,6 +9,12 @@ const ScreenNames = {
   ImportWallet: "ImportWallet",
   ImportMultiCoinWallet: "ImportMultiCoinWallet",
   ImportClassicWallet: "ImportClassicWallet",
+  ProtectWallet: "ProtectWallet",
+  TabNav: "TabNav",
+  Dashboard: "Dashboard",
+  DApps: "DApps",
+  Notifications: "Notifications",
+  Setting: "Setting"
 }
 
 export { ScreenNames }

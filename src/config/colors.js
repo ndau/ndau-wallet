@@ -3,8 +3,8 @@ const mainPallet = {
     error: '#E31C1C',
     success: '#1EB35A',
     warning: '#FA9F47',
-    white: '#fff',
-    black: '#000'
+    white: '#ffffff',
+    black: '#000000'
 }
 
 const colors = {
@@ -90,6 +90,9 @@ const themeColors = {
     buttonDisabledText: colors.black200,
     error: mainPallet.error,
     success: mainPallet.success,
+    modalBackground: colors.black400,
+
+    applyOpacityOn: (color, opacity) => `${color}${opacity}`
 }
 
 export {

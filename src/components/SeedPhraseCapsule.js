@@ -21,7 +21,6 @@ const SeedPhraseCapsule = ({ disabled, style, selected, item, index, onSelect, c
 				}
 			}))
 			onSelect?.(fullSelection?.[item.index])
-			console.log('item.index == index', JSON.stringify([item.index, index, fullSelection[item.index]], null, 2));
 		}
 	}
 

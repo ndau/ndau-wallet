@@ -13,11 +13,10 @@ import { BackSVGComponent } from "../assets/svgs/components";
 import CustomText from "./CustomText";
 import Spacer from "./Spacer";
 
-const ScreenContainer = ({ children, style, steps, preventBackPress }) => {
+const ScreenContainer = ({ children, style, steps, preventBackPress, tabScreen = false }) => {
   const navigation = useNavigation();
 
   const Header = useCallback(() => {
-    if (!navigation.canGoBack()) return null;
     return (
       <View style={styles.headerContainer}>
         {navigation.canGoBack() && (
@@ -60,7 +59,7 @@ const ScreenContainer = ({ children, style, steps, preventBackPress }) => {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle={"light-content"} />
-      <Header />
+      {tabScreen ? null : <Header />}
       <View style={[{ flex: 1 }, style, styles.fixedStyle]}>{children}</View>
     </SafeAreaView>
   );
