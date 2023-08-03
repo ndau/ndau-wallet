@@ -1,15 +1,16 @@
-import React from "react";
-import { StyleSheet, View, Image } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import React, { useEffect } from "react";
+import { Image, StyleSheet, View } from "react-native";
+import { connect } from "react-redux";
 
+import { images } from "../assets/images";
 import Button from "../components/Button";
 import CustomText from "../components/CustomText";
 import ScreenContainer from "../components/Screen";
-import { ScreenNames } from "./ScreenNames";
-import { images } from "../assets/images";
 import { themeColors } from "../config/colors";
+import { ScreenNames } from "./ScreenNames";
 
-const IntroCreateWallet = () => {
+const IntroCreateWallet = ({ }) => {
 	const navigation = useNavigation();
 
 	return (
@@ -24,7 +25,7 @@ const IntroCreateWallet = () => {
 				<CustomText body2>Easily and securely manage your crypto with just a few taps from your wallet. Exchange, swap, and transfer your assets instantly and effortlessly. Enjoy seamless control over your crypto funds.</CustomText>
 			</View>
 			<Button label={'Create Wallet'} onPress={() => navigation.navigate(ScreenNames.CreateWallet)} />
-			<Button label={'I already have a wallet'} textOnly onPress={() => navigation.navigate(ScreenNames.ImportWallet)}/>
+			<Button label={'I already have a wallet'} textOnly onPress={() => navigation.navigate(ScreenNames.ImportWallet)} />
 		</ScreenContainer>
 	)
 }
@@ -56,4 +57,8 @@ const styles = StyleSheet.create({
 	}
 })
 
-export default IntroCreateWallet;
+const mapStateToProps = (state) => {
+	return {}
+}
+
+export default connect(mapStateToProps)(IntroCreateWallet)

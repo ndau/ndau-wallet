@@ -15,9 +15,11 @@ import Loading from "../components/Loading";
 import Modal, { ModalImage } from "../components/Modal";
 import { ScreenNames } from "../screens/ScreenNames";
 import Clipboard from "@react-native-clipboard/clipboard";
+import { useWallet } from "../redux/hooks";
 
 const SeedPhrase = () => {
 
+  const { addWallet } = useWallet();
   const navigation = useNavigation();
 
   const indeces = useRef([...Array(12)].map((_, i) => i)).current;
@@ -46,6 +48,9 @@ const SeedPhrase = () => {
 
   const createWallet = () => {
     setLoading(true);
+
+    addWallet({ name: "Main Wallet", privateKey: "", publicKey: "" });
+
     setTimeout(() => {
       setLoading(false);
       modalRef.current(true);
@@ -182,33 +187,37 @@ const SeedPhrase = () => {
         <Spacer height={16} />
         <Phrase success={() => setButtonDisabled(false)} />
       </View>
-      <View style={styles.row}>
-        <CustomText titilium style={{ flex: 1 }}>
-          Save these 12 words in a secure location, and never share them with anyone.
-        </CustomText>
-        <StateButton
-          resetToPrevious
-          onButtonPress={() => {
-            Clipboard.setString(seeds.map(({ seed }) => seed).join(' '))
-          }}
-          states={[
-            (
-              <View style={styles.buttonCopy}>
-                <CustomText titiliumSemiBolds>Copy</CustomText>
-                <Copy />
-              </View>
-            ),
-            (
-              <View style={styles.buttonCopied}>
-                <CustomText titiliumSemiBolds>Copied</CustomText>
-              </View>
-            )
-          ]}
-        />
-      </View>
+      {
+        !seedWroteIt && (
+          <View style={styles.row}>
+            <CustomText titilium style={{ flex: 1 }}>
+              Save these 12 words in a secure location, and never share them with anyone.
+            </CustomText>
+            <StateButton
+              resetToPrevious
+              onButtonPress={() => {
+                Clipboard.setString(seeds.map(({ seed }) => seed).join(' '))
+              }}
+              states={[
+                (
+                  <View style={styles.buttonCopy}>
+                    <CustomText titiliumSemiBolds>Copy</CustomText>
+                    <Copy />
+                  </View>
+                ),
+                (
+                  <View style={styles.buttonCopied}>
+                    <CustomText titiliumSemiBolds>Copied</CustomText>
+                  </View>
+                )
+              ]}
+            />
+          </View>
+        )
+      }
       <Spacer height={20} />
       <Button
-        disabled={buttonDisabled}
+        // disabled={buttonDisabled}
         label={buttonText}
         onPress={handleContinue}
       />

@@ -1,4 +1,5 @@
 const ScreenNames = {
+  AuthLoading: "AuthLoading",
   IntroCreateAccount: "IntroCreateAccount",
   CreateAccount: "CreateAccount",
   IntroCreateWallet: "IntroCreateWallet",

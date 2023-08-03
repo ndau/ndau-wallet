@@ -1,19 +1,31 @@
-import React from "react";
-import { StyleSheet, View } from "react-native";
+import { CommonActions, useNavigation } from "@react-navigation/native";
+import React, { useEffect } from "react";
+import { StyleSheet } from "react-native";
 
-import Button from "../components/Button";
-import CustomText from "../components/CustomText";
+import Loading from "../components/Loading";
 import ScreenContainer from "../components/Screen";
+import { useWallet } from "../redux/hooks";
+import { ScreenNames } from "./ScreenNames";
 
-const AuthLoading = () => {
+const AuthLoading = ({ }) => {
+
+	const { isWalletSetup } = useWallet();
+
+	const navigation = useNavigation();
+
+	useEffect(() => {
+		if (!isWalletSetup) {
+			setTimeout(() => {
+				navigation.dispatch(
+					CommonActions.reset({ index: 0, routes: [{ name: ScreenNames.IntroCreateWallet }] })
+				);
+			}, 1000);
+		}
+	}, [])
+
 	return (
 		<ScreenContainer>
-			<View style={styles.container}>
-				<CustomText h6 semiBold>nDau Wallet</CustomText>
-				<CustomText body>So lets begin</CustomText>
-			</View>
-			<Button label={'Create Account'} />
-			<Button label={'Sign in'} textOnly />
+			<Loading label={''} />
 		</ScreenContainer>
 	)
 }
