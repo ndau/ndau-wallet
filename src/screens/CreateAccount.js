@@ -1,5 +1,5 @@
-import React, { useMemo, useState } from "react";
-import { StyleSheet, View } from "react-native";
+import React, { useEffect, useMemo, useState } from "react";
+import { NativeModules, StyleSheet, View } from "react-native";
 
 import Button from "../components/Button";
 import CustomText from "../components/CustomText";
@@ -9,6 +9,30 @@ import Loading from "../components/Loading";
 import Spacer from "../components/Spacer";
 
 const CreateAccount = () => {
+
+
+
+
+
+  useEffect(() => {
+     function fetchData() {
+      // You can await here
+  
+      const x=NativeModules.KeyaddrManager
+   console.log(x,'jjjjjj')
+
+  
+      
+      // ...
+    }
+    fetchData();
+  }, []); 
+
+
+
+
+
+
   const [data, setData] = useState({
     fName: {
       value: "",
@@ -58,12 +82,22 @@ const CreateAccount = () => {
     });
   };
 
+
+
+
+
   const handleSubmit = () => {
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
     }, 4000);
   };
+
+
+
+
+
+
 
   return (
     <ScreenContainer steps={{ total: 4, current: 1 }}>
