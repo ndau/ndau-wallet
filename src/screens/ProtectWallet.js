@@ -17,37 +17,59 @@ const ProtectWallet = () => {
 
   const navigation = useNavigation();
   const [loading, setLoading] = useState(false);
+  const [pins, setPins] = useState({ pin: "", confirmPin: "" });
   const [biometrics, setBiometrics] = useState({
     isFaceId: false,
     isTouchId: false
   });
+  const [validate, setValidate] = useState({
+    errors: [],
+    success: []
+  });
 
   useEffect(() => {
-    
+    if (pins.pin !== "" && pins.confirmPin !== "" && pins.pin === pins.confirmPin) {
+      setValidate(_ => ({
+        ..._,
+        errors: [],
+        success: ['Looks Good!'],
+      }))
+      checkSensorsAvailability();
+    } else if (pins.pin.length && pins.confirmPin.length && pins.pin !== pins.confirmPin) {
+      setValidate(_ => ({
+        ..._,
+        errors: ['Passcode does not match'],
+        success: [],
+      }))
+    }
+  }, [pins])
+
+  const checkSensorsAvailability = () => {
     ReactNativeBiometricsLegacy.isSensorAvailable().then(res => {
       const data = {
         isFaceId: res.available && res.biometryType === BiometryTypes.FaceID,
         isTouchId: res.available && res.biometryType === BiometryTypes.TouchID
       }
       setBiometrics(data);
-      if (data.isFaceId) {
-        ReactNativeBiometricsLegacy.simplePrompt({ promptMessage: 'FaceId' }).then(({ success }) => {
-          if (success) {
-            setLoading(true);
-            setTimeout(() => {
-              setLoading(false)
-              navigation.dispatch(
-                CommonActions.reset({
-                  index: 0,
-                  routes: [{ name: ScreenNames.TabNav }],
-                })
-              );
-            }, 2000);
-          }
-        })
+    })
+  }
+
+  const verifyFaceId = () => {
+    ReactNativeBiometricsLegacy.simplePrompt({ promptMessage: 'FaceId' }).then(({ success }) => {
+      if (success) {
+        setLoading(true);
+        setTimeout(() => {
+          setLoading(false)
+          navigation.dispatch(
+            CommonActions.reset({
+              index: 0,
+              routes: [{ name: ScreenNames.TabNav }],
+            })
+          );
+        }, 2000);
       }
     })
-  }, [])
+  }
 
   return (
     <ScreenContainer steps={{ total: 4, current: 4 }}>
@@ -56,29 +78,31 @@ const ProtectWallet = () => {
       <View style={styles.container}>
         <CustomText h6 semiBold style={styles.margin}>Protect your wallet</CustomText>
         <CustomText titilium body2 style={styles.margin}>Create a secure 6-digit passcode to unlock your wallet and ensure the safety of your funds. Please note that this passcode cannot be used to recover your wallet.</CustomText>
-        <Spacer height={50} />
-        <PinHandler onPin={(pin) => null} />
+        <Spacer height={20} />
+        <PinHandler label={'Enter Passcode'} onPin={(pin) => setPins(_ => ({ ..._, pin }))} />
+        <PinHandler errors={validate.errors} success={validate.success} label={'Confirm Passcode'} onPin={(pin) => setPins(_ => ({ ..._, confirmPin: pin }))} />
       </View>
       <Spacer height={20} />
       <View style={styles.row}>
         {
-          !!biometrics.isFaceId && (
+          biometrics.isTouchId && (
             <View style={{ flex: 1, marginRight: 10 }}>
               <Button
                 buttonContainerStyle={styles.button}
-                label={'Touch ID  '}
+                label={'Unlock with Touch ID  '}
                 rightIcon={<Thumprint />}
               />
             </View>
           )
         }
         {
-          !!biometrics.isTouchId && (
+          biometrics.isFaceId && (
             <View style={{ flex: 1 }}>
               <Button
                 buttonContainerStyle={styles.button}
-                label={'Face ID  '}
+                label={'Unlock with Face ID  '}
                 rightIcon={<FaceId />}
+                onPress={verifyFaceId}
               />
             </View>
           )

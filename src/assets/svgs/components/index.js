@@ -9,6 +9,8 @@ import DApps from "./DApps";
 import NotificationBell from "./NotificationBell";
 import Setting from "./Setting";
 import Search from "./Search";
+import ErrorIcon from "./ErrorIcon";
+import SuccessIcon from "./SuccessIcon";
 
 export {
   BackSVGComponent,
@@ -21,5 +23,7 @@ export {
   DApps,
   NotificationBell,
   Setting,
-  Search
+  Search,
+  ErrorIcon,
+  SuccessIcon
 };
