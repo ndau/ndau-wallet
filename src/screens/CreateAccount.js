@@ -7,7 +7,6 @@ import CustomTextInput from "../components/CustomTextInput";
 import Loading from "../components/Loading";
 import ScreenContainer from "../components/Screen";
 import Spacer from "../components/Spacer";
-import NDAU from "@ndau/ndaujs"
 
 const CreateAccount = () => {
 
@@ -28,10 +27,6 @@ const CreateAccount = () => {
     }
     fetchData();
   }, []); 
-
-
-
-console.log(NDAU.APIAddressHelper,'hhhhhhhhhh')
 
 
   const [data, setData] = useState({
