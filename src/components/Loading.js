@@ -76,7 +76,7 @@ const styles = StyleSheet.create({
 		justifyContent: "center",
 		alignItems: "center",
 		backgroundColor: "rgba(0,0,0,.9)",
-		zIndex: 100,
+		zIndex: 1000,
 	},
 	dotContainer: {
 		flexDirection: "row",
