@@ -16,6 +16,7 @@ import Modal, { ModalImage } from "../components/Modal";
 import { ScreenNames } from "../screens/ScreenNames";
 import Clipboard from "@react-native-clipboard/clipboard";
 import { useWallet } from "../redux/hooks";
+import { ScrollView } from "react-native-gesture-handler";
 
 const SeedPhrase = () => {
 
@@ -180,12 +181,16 @@ const SeedPhrase = () => {
       preventBackPress={seedWroteIt ? resetSeed : undefined}
       steps={{ total: 4, current: 3 }}>
       {!!loading && <Loading label={'Creating Wallet'} />}
-      <Spacer height={16} />
+      <Spacer height={10} />
       <View style={styles.container}>
-        <CustomText h6 semiBold style={styles.margin}>{headings[0]}</CustomText>
-        <CustomText titilium body2 style={styles.margin}>{headings[1]}</CustomText>
+        <View style={{ height: 70 }}>
+          <CustomText h6 semiBold style={styles.margin}>{headings[0]}</CustomText>
+          <CustomText titilium body2 style={styles.margin}>{headings[1]}</CustomText>
+        </View>
         <Spacer height={16} />
-        <Phrase success={() => setButtonDisabled(false)} />
+        <ScrollView style={{ paddingTop: 10, paddingLeft: 10 }} bounces={false}>
+          <Phrase success={() => setButtonDisabled(false)} />
+        </ScrollView>
       </View>
       {
         !seedWroteIt && (
@@ -215,7 +220,7 @@ const SeedPhrase = () => {
           </View>
         )
       }
-      <Spacer height={20} />
+      <Spacer height={10} />
       <Button
         // disabled={buttonDisabled}
         label={buttonText}
@@ -246,9 +251,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20
   },
   seedContainer: {
-    flex: 1,
     borderRadius: 20,
-    borderColor: themeColors.fontLight,
     marginBottom: 20,
     justifyContent: "center"
   },

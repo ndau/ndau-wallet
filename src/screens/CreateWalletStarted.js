@@ -23,7 +23,7 @@ const CreateWalletStarted = () => {
         </CustomText>
         <Spacer height={16} />
         <View style={styles.imageContainer}>
-          <Image source={images.walletPhrase1} />
+          <Image style={styles.image} resizeMode="contain" source={images.walletPhrase1} />
         </View>
       </View>
       <CustomText semiBold style={{ textAlign: "center" }}>
@@ -54,6 +54,10 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     paddingHorizontal: 20
   },
+  image: {
+		height: "80%",
+		width: "80%"
+	},
   imageContainer: {
     alignItems: "center",
     justifyContent: "center",

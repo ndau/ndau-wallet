@@ -4,6 +4,7 @@ import Animated, { FadeInDown, FadeOutDown } from "react-native-reanimated";
 
 import { themeColors } from "../config/colors";
 import CustomText from "./CustomText";
+import { isSmallerDivce } from "../utils";
 
 const SeedPhraseCapsule = ({ disabled, style, selected, item, index, onSelect, cachedSelected }) => {
 	const [fullSelection, setFullSelection] = useState(selected);
@@ -40,7 +41,7 @@ const SeedPhraseCapsule = ({ disabled, style, selected, item, index, onSelect, c
 							<CustomText titilium color={themeColors.black} caption>{indexInWord}</CustomText>
 						</View>
 					)}
-					<CustomText titilium h6>{item.seed}</CustomText>
+					<CustomText titilium body>{item.seed}</CustomText>
 				</View>
 			</TouchableOpacity>
 		</Animated.View>
@@ -49,12 +50,12 @@ const SeedPhraseCapsule = ({ disabled, style, selected, item, index, onSelect, c
 
 const styles = StyleSheet.create({
 	container: {
-		height: 80,
-		minWidth: 100,
+		flex: 1,
+		height: isSmallerDivce() ? 60 : 80,
 		borderWidth: 2,
 		borderColor: themeColors.primary,
 		borderRadius: 100,
-		paddingHorizontal: 20,
+		paddingHorizontal: 10,
 		justifyContent: "center",
 		alignItems: "center",
 		marginRight: 10,
@@ -65,11 +66,11 @@ const styles = StyleSheet.create({
 	},
 	selectedIndex: {
 		position: "absolute",
-		top: -6,
-		left: -24,
-		height: 30,
-		width: 30,
-		borderRadius: 15,
+		top: 0,
+		left: -12,
+		height: 28,
+		width: 28,
+		borderRadius: 14,
 		backgroundColor: themeColors.white,
 		justifyContent: "center",
 		alignItems: "center"

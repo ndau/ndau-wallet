@@ -17,7 +17,7 @@ const IntroCreateWallet = ({ }) => {
 		<ScreenContainer>
 			<View style={styles.container}>
 				<View style={styles.imageContainer}>
-					<Image source={images.createWallet} />
+					<Image style={styles.image} resizeMode="contain" source={images.createWallet} />
 				</View>
 			</View>
 			<View style={styles.textContainer}>
@@ -43,6 +43,10 @@ const styles = StyleSheet.create({
 	text1: {
 		width: 200,
 		marginBottom: 10
+	},
+	image: {
+		height: "80%",
+		width: "80%"
 	},
 	imageContainer: {
 		alignItems: "center",

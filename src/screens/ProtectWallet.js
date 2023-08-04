@@ -91,6 +91,7 @@ const ProtectWallet = () => {
                 buttonContainerStyle={styles.button}
                 label={'Unlock with Touch ID  '}
                 rightIcon={<Thumprint />}
+                onPress={verifyFaceId}
               />
             </View>
           )

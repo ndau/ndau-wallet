@@ -86,10 +86,9 @@ const styles = StyleSheet.create({
 		marginBottom: 20
 	},
 	container: {
-		marginBottom: 10,
+		// marginBottom: 10,
 		textAlign: "center",
 		color: themeColors.white,
-		marginTop: 10,
 		fontFamily: 'TitiliumWeb-Regular',
 		fontSize: 24
 	},
@@ -110,6 +109,7 @@ const styles = StyleSheet.create({
 		marginRight: 5
 	},
 	textAlign: {
+		marginBottom: 10
 	},
 	msgBox: {
 		marginTop: 12,

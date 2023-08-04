@@ -59,7 +59,7 @@ const ScreenContainer = ({ children, style, steps, preventBackPress, tabScreen =
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle={"light-content"} />
-      {tabScreen ? null : <Header />}
+      {tabScreen ? <View style={{ height: 20 }}/> : <Header />}
       <View style={[{ flex: 1 }, style, styles.fixedStyle]}>{children}</View>
     </SafeAreaView>
   );

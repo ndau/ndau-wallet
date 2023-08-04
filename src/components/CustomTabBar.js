@@ -4,6 +4,7 @@ import { StyleSheet, View, Pressable, Dimensions } from "react-native";
 import { themeColors } from "../config/colors";
 import { NDauLogo, NotificationBell, Setting, DApps } from "../assets/svgs/components";
 import Animated, { FadeIn, interpolate, useAnimatedStyle, useSharedValue, withRepeat, withTiming } from "react-native-reanimated";
+import { isSmallerDivce } from "../utils";
 
 const CustomTabBar = ({ state, descriptors, navigation }) => {
 
@@ -21,7 +22,7 @@ const CustomTabBar = ({ state, descriptors, navigation }) => {
 
 		const expandStyle = useAnimatedStyle(() => {
 			return {
-				flex: interpolate(anim.value, [0, 1], [1, 2.5])
+				flex: interpolate(anim.value, [0, 1], [1.2, 2.5])
 			}
 		}, [])
 
@@ -75,12 +76,13 @@ const styles = StyleSheet.create({
 	mainContainer: {
 		flexDirection: 'row',
 		position: 'absolute',
-		bottom: 25,
+		bottom: isSmallerDivce() ? 10 : 35,
 		backgroundColor: themeColors.primary,
 		borderRadius: 24,
 		left: 14,
 		right: 14,
-		padding: 14
+		padding: 14,
+		marginHorizontal: 8
 	},
 	button: {
 		flex: 1,
