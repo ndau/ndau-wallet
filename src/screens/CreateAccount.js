@@ -1,6 +1,5 @@
-import React, { useState } from "react";
-import { StyleSheet, View } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import React, { useEffect, useMemo, useState } from "react";
+import { NativeModules, StyleSheet, View } from "react-native";
 
 import Button from "../components/Button";
 import CustomText from "../components/CustomText";
@@ -8,11 +7,32 @@ import CustomTextInput from "../components/CustomTextInput";
 import Loading from "../components/Loading";
 import ScreenContainer from "../components/Screen";
 import Spacer from "../components/Spacer";
-import { ScreenNames } from "./ScreenNames";
+import NDAU from "@ndau/ndaujs"
 
 const CreateAccount = () => {
 
-  const navigation = useNavigation()
+
+
+
+
+  useEffect(() => {
+     function fetchData() {
+      // You can await here
+  
+      const x=NativeModules.KeyaddrManager
+   console.log(x,'jjjjjj')
+
+  
+      
+      // ...
+    }
+    fetchData();
+  }, []); 
+
+
+
+console.log(NDAU.APIAddressHelper,'hhhhhhhhhh')
+
 
   const [data, setData] = useState({
     fName: {
@@ -63,6 +83,10 @@ const CreateAccount = () => {
     });
   };
 
+
+
+
+
   const handleSubmit = () => {
     setLoading(true);
     setTimeout(() => {
@@ -72,6 +96,12 @@ const CreateAccount = () => {
       }, 400);
     }, 4000);
   };
+
+
+
+
+
+
 
   return (
     <ScreenContainer steps={{ total: 4, current: 1 }}>
