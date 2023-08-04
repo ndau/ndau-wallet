@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { Alert, Linking, StyleSheet, View } from "react-native";
 import { BiometryTypes, ReactNativeBiometricsLegacy } from 'react-native-biometrics'
 import { CommonActions, useNavigation } from "@react-navigation/native";
 
@@ -19,8 +19,6 @@ const ProtectWallet = () => {
   const [loading, setLoading] = useState(false);
   const [pins, setPins] = useState({ pin: "", confirmPin: "" });
   const [biometrics, setBiometrics] = useState({
-    isFaceId: false,
-    isTouchId: false
   });
   const [validate, setValidate] = useState({
     errors: [],
@@ -42,7 +40,20 @@ const ProtectWallet = () => {
         success: [],
       }))
     }
-  }, [pins])
+  }, [pins.pin, pins.confirmPin])
+
+  useEffect(() => {
+    if (biometrics.isFaceId == false || biometrics.isTouchId === false) {
+      Alert.alert(
+        'Additional Security',
+        'Enable Touch ID / Face ID for more secure the account',
+        [
+          { text: "Open Settings", onPress: () => Linking.openSettings() },
+          { text: "Later", onPress: navigateToDashboard },
+        ]
+      )
+    }
+  }, [biometrics])
 
   const checkSensorsAvailability = () => {
     ReactNativeBiometricsLegacy.isSensorAvailable().then(res => {
@@ -54,18 +65,22 @@ const ProtectWallet = () => {
     })
   }
 
+  const navigateToDashboard = () => {
+    navigation.dispatch(
+      CommonActions.reset({
+        index: 0,
+        routes: [{ name: ScreenNames.TabNav }],
+      })
+    );
+  }
+
   const verifyFaceId = () => {
     ReactNativeBiometricsLegacy.simplePrompt({ promptMessage: 'FaceId' }).then(({ success }) => {
       if (success) {
         setLoading(true);
         setTimeout(() => {
           setLoading(false)
-          navigation.dispatch(
-            CommonActions.reset({
-              index: 0,
-              routes: [{ name: ScreenNames.TabNav }],
-            })
-          );
+          navigateToDashboard();
         }, 2000);
       }
     })
