@@ -58,8 +58,8 @@ const DashboardHeader = ({ }) => {
 
 				<Animated.View style={aStyle}>
 					<Animated.View style={[styles.lower, heightStyle]}>
-						<CustomText size={12} color={themeColors.black}>*Updated & Recorded on the ndau Blockchain every 5 minutes</CustomText>
-						<CustomText size={11} color={themeColors.black} style={styles.underLine}>What is Blockchain Market Price and how is it calculated?</CustomText>
+						<CustomText size={10} color={themeColors.black}>*Updated & Recorded on the ndau Blockchain every 5 minutes</CustomText>
+						<CustomText size={9} color={themeColors.black} style={styles.underLine}>What is Blockchain Market Price and how is it calculated?</CustomText>
 					</Animated.View>
 				</Animated.View>
 			</View>
