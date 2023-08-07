@@ -2,17 +2,24 @@ import { useNavigation } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
 import { FlatList, ScrollView, StyleSheet, View } from "react-native";
 
-import DashboardHeader from "../components/DashboardHeader";
-import ScreenContainer from "../components/Screen";
-import { themeColors } from "../config/colors";
-import Button from "../components/Button";
-import Token from "../components/Token";
-import NFT from "../components/NFT";
-import { Search } from "../assets/svgs/components";
 import { images } from "../assets/images";
+import { Search } from "../assets/svgs/components";
+import Button from "../components/Button";
+import DashboardHeader from "../components/DashboardHeader";
+import NFT from "../components/NFT";
+import ScreenContainer from "../components/Screen";
+import Token from "../components/Token";
+import { themeColors } from "../config/colors";
+import AccountAPIHelper from "../helpers/AccountAPIHelper";
+import DataFormatHelper from "../helpers/DataFormatHelper";
+import NdauStore from "../stores/NdauStore";
+import UserStore from "../stores/UserStore";
 
 const Dashboard = () => {
 	const navigation = useNavigation();
+	const [currentPrice, setCurrentPrice] = useState(0);
+	const [totalBalance, setTotalBalance] = useState(0);
+	const [accounts, setAccounts] = useState({});
 	const [selected, setSelected] = useState(0);
 	const [data, setData] = useState([]);
 
@@ -28,6 +35,17 @@ const Dashboard = () => {
 	];
 
 	useEffect(() => {
+
+		const user = UserStore.getUser();
+
+		const accounts = DataFormatHelper.getObjectWithAllAccounts(user)
+		const totalNdauNumber = AccountAPIHelper.accountTotalNdauAmount(accounts, false)
+		const currentPrice = AccountAPIHelper.currentPrice(NdauStore.getMarketPrice(), totalNdauNumber)
+		
+		setAccounts(accounts);
+		setCurrentPrice(NdauStore.getMarketPrice())
+		setTotalBalance(currentPrice);
+		
 		if (selected === 0) setData(tokens);
 		else if (selected === 1) setData(nfts);
 	}, [selected])
@@ -40,7 +58,11 @@ const Dashboard = () => {
 	return (
 		<ScreenContainer tabScreen>
 			<ScrollView showsVerticalScrollIndicator={false}>
-				<DashboardHeader />
+				<DashboardHeader
+					marketPrice={currentPrice}
+					totalBalance={totalBalance}
+					accounts={accounts}
+				/>
 				<View style={styles.line} />
 
 				<View style={styles.row}>

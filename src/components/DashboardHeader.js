@@ -8,7 +8,7 @@ import Button from "./Button";
 import CustomText from "./CustomText";
 import { ArrowForward } from "../assets/svgs/components";
 
-const DashboardHeader = ({ }) => {
+const DashboardHeader = ({ marketPrice = 0, totalBalance = 0, accounts = {} }) => {
 
 	const Avatar = useCallback(() => {
 		return (
@@ -49,7 +49,7 @@ const DashboardHeader = ({ }) => {
 						setIsOpen(!isOpen);
 					}}>
 					<Animated.View style={[styles.upper]}>
-						<CustomText titilium color={themeColors.black}>Current Blockchain Market Price: $7.42</CustomText>
+						<CustomText titilium color={themeColors.black}>{`Current Blockchain Market Price: $${marketPrice}`}</CustomText>
 						<Animated.View style={[styles.arrow, rotateStyle]}>
 							<ArrowForward />
 						</Animated.View>
@@ -64,7 +64,7 @@ const DashboardHeader = ({ }) => {
 				</Animated.View>
 			</View>
 		)
-	}, [])
+	}, [marketPrice, accounts])
 
 	return (
 		<ImageBackground
@@ -96,7 +96,7 @@ const DashboardHeader = ({ }) => {
 
 				<View style={{ marginTop: 30 }}>
 					<CustomText titilium body style={{ marginBottom: 6 }}>Your Balance</CustomText>
-					<CustomText h1 semiBold>$50.46</CustomText>
+					<CustomText h1 semiBold>{totalBalance}</CustomText>
 					<Collapsible />
 				</View>
 			</View>

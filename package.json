@@ -11,6 +11,7 @@
     "test": "jest"
   },
   "dependencies": {
+    "@react-native-async-storage/async-storage": "^1.19.1",
     "@react-native-clipboard/clipboard": "^1.11.2",
     "@react-navigation/bottom-tabs": "^6.5.8",
     "@react-navigation/material-top-tabs": "^6.6.3",
@@ -18,11 +19,15 @@
     "@react-navigation/stack": "^6.3.17",
     "@reduxjs/toolkit": "^1.9.5",
     "axios": "^1.4.0",
+    "base-64": "^1.0.0",
+    "crypto-js": "^4.1.1",
     "moment": "^2.29.4",
     "react": "18.2.0",
     "react-native": "0.72.3",
     "react-native-biometrics": "^3.0.1",
+    "react-native-fs": "^2.20.0",
     "react-native-gesture-handler": "^2.12.0",
+    "react-native-get-random-values": "^1.9.0",
     "react-native-modal": "^13.0.1",
     "react-native-pager-view": "^6.2.0",
     "react-native-reanimated": "^3.3.0",

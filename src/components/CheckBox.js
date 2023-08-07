@@ -6,16 +6,17 @@ import { Tick } from "../assets/svgs/components";
 
 const CheckBox = ({ label, onPress, disabled, checked = false }) => {
 	return (
-		<View style={styles.container}>
-			<TouchableOpacity
-				style={[styles.check]}
-				disabled={disabled}
-				onPress={onPress}
-				activeOpacity={0.8}>
-				{checked && <Tick />}
-			</TouchableOpacity>
-			<CustomText titilium>{label}</CustomText>
-		</View>
+		<TouchableOpacity
+			disabled={disabled}
+			onPress={onPress}
+			activeOpacity={0.8}>
+			<View style={styles.container}>
+				<View style={[styles.check]}>
+					{checked && <Tick />}
+				</View>
+				<CustomText titilium>{label}</CustomText>
+			</View>
+		</TouchableOpacity>
 	)
 }
 

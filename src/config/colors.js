@@ -82,6 +82,7 @@ const themeColors = {
     white: mainPallet.white,
     black: mainPallet.black,
     background: mainPallet.black,
+    dangerFlashBackground: colors.error400,
     lightBackground: colors.white500 + "33",
     tab: mainPallet.primary,
     font: mainPallet.white,

@@ -1,6 +1,8 @@
-import React, { useCallback, useMemo, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { CommonActions, useNavigation } from "@react-navigation/native";
+import { ScrollView } from "react-native-gesture-handler";
+import Clipboard from "@react-native-clipboard/clipboard";
 
 import { Copy } from "../assets/svgs/components";
 import Button from "../components/Button";
@@ -14,9 +16,8 @@ import { SeedPhrase as SeedPhraseGen } from "../utils/SeedPhrase";
 import Loading from "../components/Loading";
 import Modal, { ModalImage } from "../components/Modal";
 import { ScreenNames } from "../screens/ScreenNames";
-import Clipboard from "@react-native-clipboard/clipboard";
 import { useWallet } from "../redux/hooks";
-import { ScrollView } from "react-native-gesture-handler";
+import SetupStore from "../stores/SetupStore";
 
 const SeedPhrase = () => {
 
@@ -25,7 +26,7 @@ const SeedPhrase = () => {
 
   const indeces = useRef([...Array(12)].map((_, i) => i)).current;
   const modalRef = useRef(null);
-  const [seeds, setSeeds] = useState(SeedPhraseGen.generateSeed())
+  const [seeds, setSeeds] = useState([]);
   const [choosed, setChoosed] = useState(indeces.reduce((prev, curr) => ({ ...prev, [curr]: { showIndex: true, selected: false, index: curr } }), []));
 
   const [seedWroteIt, setSeedWroteIt] = useState(false);
@@ -39,6 +40,13 @@ const SeedPhrase = () => {
     })
   }
 
+  useEffect(() => {
+    SeedPhraseGen.generateSeed((data) => {
+      SetupStore.recoveryPhrase = data.map(i => i.seed);
+      setSeeds(data)
+    });
+  }, [])
+
   const resetSeed = () => {
     hideNumbers(true);
     setSeeds([...SeedPhraseGen.sortAsc(seeds)])
@@ -50,7 +58,8 @@ const SeedPhrase = () => {
   const createWallet = () => {
     setLoading(true);
 
-    addWallet({ name: "Main Wallet", privateKey: "", publicKey: "" });
+    // SetupStore.walletId = "Main Wallet 1";
+    // addWallet({ name: "Main Wallet", privateKey: "", publicKey: "" });
 
     setTimeout(() => {
       setLoading(false);

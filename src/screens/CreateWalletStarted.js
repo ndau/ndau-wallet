@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Image, StyleSheet, View } from "react-native";
 
 import { useNavigation } from "@react-navigation/native";
@@ -9,9 +9,17 @@ import Spacer from "../components/Spacer";
 import { themeColors } from "../config/colors";
 import { images } from "../assets/images";
 import { ScreenNames } from "./ScreenNames";
+import UserStore from "../stores/UserStore";
+import MultiSafeHelper from "../helpers/MultiSafeHelper";
+import EntropyHelper from "../helpers/EntropyHelper";
 
 const CreateWalletStarted = () => {
   const navigation = useNavigation();
+
+  useEffect(() => {
+    const password = UserStore.getPassword()
+    MultiSafeHelper.getDefaultUser(password).then(user => {})
+  }, [])
 
   return (
     <ScreenContainer steps={{ total: 4, current: 3 }}>
@@ -35,7 +43,10 @@ const CreateWalletStarted = () => {
       <Spacer height={16} />
       <Button
         label={"Continue"}
-        onPress={() => navigation.navigate(ScreenNames.SeedPhrase)}
+        onPress={() => {
+          EntropyHelper.generateEntropy()
+          navigation.navigate(ScreenNames.SeedPhrase)
+        }}
       />
     </ScreenContainer>
   );
@@ -55,9 +66,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20
   },
   image: {
-		height: "80%",
-		width: "80%"
-	},
+    height: "80%",
+    width: "80%"
+  },
   imageContainer: {
     alignItems: "center",
     justifyContent: "center",

@@ -22,6 +22,8 @@ import Setting from "./screens/Setting";
 import TermsPolicy from './screens/TermsPolicy';
 import store from './redux/store';
 import AuthLoading from './screens/AuthLoading';
+import Login from './screens/Login';
+import { FlashMessage } from './components/common/FlashNotification';
 
 
 const ScreenOptions = { headerShown: false };
@@ -65,6 +67,7 @@ const MainStack = () => {
       <Stack.Screen name={ScreenNames.CreateAccount} component={CreateAccount} /> */}
 
       <Stack.Screen name={ScreenNames.AuthLoading} component={AuthLoading} />
+      <Stack.Screen name={ScreenNames.Login} component={Login} />
       <Stack.Screen name={ScreenNames.IntroCreateWallet} component={IntroCreateWallet} />
       <Stack.Screen name={ScreenNames.CreateWallet} component={CreateWallet} />
       <Stack.Screen name={ScreenNames.CreateWalletStarted} component={CreateWalletStarted} />
@@ -81,11 +84,14 @@ const MainStack = () => {
 
 const Main = () => {
   return (
-    <Provider store={store}>
-      <NavigationContainer>
-        <MainStack />
-      </NavigationContainer>
-    </Provider>
+    <>
+      <Provider store={store}>
+        <NavigationContainer>
+          <MainStack />
+        </NavigationContainer>
+      </Provider>
+      <FlashMessage />
+    </>
   );
 };
 

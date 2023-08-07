@@ -12,6 +12,11 @@ import ScreenContainer from "../components/Screen";
 import Spacer from "../components/Spacer";
 import { themeColors } from "../config/colors";
 import { ScreenNames } from "./ScreenNames";
+import SetupStore from "../stores/SetupStore";
+import UserStore from "../stores/UserStore";
+import AccountHelper from "../helpers/AccountHelper";
+import UserData from "../model/UserData";
+import DataFormatHelper from "../helpers/DataFormatHelper";
 
 const ProtectWallet = () => {
 
@@ -27,6 +32,9 @@ const ProtectWallet = () => {
 
   useEffect(() => {
     if (pins.pin !== "" && pins.confirmPin !== "" && pins.pin === pins.confirmPin) {
+      SetupStore.encryptionPassword = pins.pin;
+      SetupStore.walletId = "Main Wallet";
+      UserStore.setPassword(pins.pin);
       setValidate(_ => ({
         ..._,
         errors: [],
@@ -42,16 +50,34 @@ const ProtectWallet = () => {
     }
   }, [pins.pin, pins.confirmPin])
 
+  const addNewUser = async () => {
+    let user = UserStore.getUser();
+    user = await AccountHelper.setupNewUser(
+      user,
+      DataFormatHelper.convertRecoveryArrayToString(
+        SetupStore.recoveryPhrase,
+      ),
+      SetupStore.walletId ? SetupStore.walletId : SetupStore.userId,
+      SetupStore.numberOfAccounts,
+      SetupStore.entropy,
+      SetupStore.encryptionPassword,
+      SetupStore.addressType,
+    );
+    await UserData.loadUserData(user);
+    UserStore.setPassword(SetupStore.encryptionPassword);
+    Alert.alert(
+      'Additional Security',
+      'Enable Touch ID / Face ID for more secure the account',
+      [
+        { text: "Open Settings", onPress: () => Linking.openSettings() },
+        { text: "Later", onPress: navigateToDashboard },
+      ]
+    )
+  }
+
   useEffect(() => {
     if (biometrics.isFaceId == false || biometrics.isTouchId === false) {
-      Alert.alert(
-        'Additional Security',
-        'Enable Touch ID / Face ID for more secure the account',
-        [
-          { text: "Open Settings", onPress: () => Linking.openSettings() },
-          { text: "Later", onPress: navigateToDashboard },
-        ]
-      )
+      addNewUser();
     }
   }, [biometrics])
 

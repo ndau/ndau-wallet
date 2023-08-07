@@ -1,3 +1,7 @@
+import { NativeModules } from "react-native";
+import AppConstants from "../AppConstants";
+import SetupStore from "../stores/SetupStore";
+
 export const SeedPhrase = {
 
   shuffle: (array) => {
@@ -17,7 +21,14 @@ export const SeedPhrase = {
 
   sortAsc: seed => seed.sort((itemA, itemB) => itemA.index < itemB.index ? -1 : 1),
 
-  generateSeed: () => {
+  generateSeed: (onGenerate) => {
+    const KeyaddrManager = NativeModules.KeyaddrManager;
+    KeyaddrManager.keyaddrWordsFromBytes(AppConstants.APP_LANGUAGE, SetupStore.entropy).then(seeds => {
+      try {
+        onGenerate(seeds.split(" ").map((seed, index) => ({ seed, index })))
+      }catch(e) {onGenerate([])}
+    });
+
     return [
       { seed: 'ridge', index: 0 },
       { seed: 'during', index: 1 },
