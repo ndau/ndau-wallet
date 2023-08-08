@@ -50,12 +50,14 @@ const ImportMultiCoinWallet = () => {
         <CustomTextInput
           label={"Wallet Name"}
           placeholder={"Wallet Name"}
-          onChangeText={(t) => handleInput(t, "fName")}
+          // onChangeText={(t) => handleInput(t, "fName")}
+          onChangeText={(t) => {}}
         />
         <PhraseHandler
           label={"Phrase"}
           placeholder={"Enter or paste phrase here..."}
-          onChangeText={(t) => handleInput(t, "lName")}
+          // onChangeText={(t) => handleInput(t, "lName")}
+          onChangeText={(t) =>{}}
         />
       </View>
       <Button

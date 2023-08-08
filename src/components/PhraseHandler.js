@@ -82,9 +82,10 @@ const PhraseHandler = ({
 				buttonContainerStyle={styles.outlineButton}
 				onPress={() => {
 					Clipboard.getString().then(res => {
-						const words = res.split(' ');
-						if (words.length > 12) return;
-						setPhrases(words.map(word => word.trim().replaceAll('\n', '')))
+						console.log(res)
+						// const words = res.split(' ');
+						// if (words.length > 12) return;
+						// setPhrases(words.map(word => word.trim().replaceAll('\n', '')))
 					})
 				}}
 			/>

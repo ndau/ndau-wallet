@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View ,NativeModules} from "react-native";
 
 import Button from "../components/Button";
 import CheckBox from "../components/CheckBox";
@@ -14,6 +14,7 @@ import { ScreenNames } from "./ScreenNames";
 const CreateWallet = () => {
   const navigation = useNavigation();
   const [termsAccepted, setTermsAccepted] = useState(false);
+
 
   return (
     <ScreenContainer steps={{ total: 4, current: 2 }}>
@@ -43,6 +44,10 @@ const CreateWallet = () => {
         disabled={!termsAccepted}
         label={"Continue"}
         onPress={() => navigation.navigate(ScreenNames.CreateWalletStarted)}
+        // onPress={() => {
+        //   const x=NativeModules.KeyaddrManager
+        //   console.log(x,'x--------')
+        // }}
       />
     </ScreenContainer>
   );

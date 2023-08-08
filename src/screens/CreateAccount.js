@@ -14,19 +14,7 @@ const CreateAccount = () => {
 
 
 
-  useEffect(() => {
-     function fetchData() {
-      // You can await here
-  
-      const x=NativeModules.KeyaddrManager
-   console.log(x,'jjjjjj')
 
-  
-      
-      // ...
-    }
-    fetchData();
-  }, []); 
 
 
   const [data, setData] = useState({
