@@ -1,5 +1,5 @@
 import { useNavigation } from "@react-navigation/native";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { FlatList, ScrollView, StyleSheet, View } from "react-native";
 
 import { images } from "../assets/images";
@@ -14,24 +14,28 @@ import AccountAPIHelper from "../helpers/AccountAPIHelper";
 import DataFormatHelper from "../helpers/DataFormatHelper";
 import NdauStore from "../stores/NdauStore";
 import UserStore from "../stores/UserStore";
+import { useWallet } from "../hooks";
 
 const Dashboard = () => {
-	const navigation = useNavigation();
+
+	const { getNDauAccounts, addAccountsInNdau } = useWallet();
+
 	const [currentPrice, setCurrentPrice] = useState(0);
 	const [totalBalance, setTotalBalance] = useState(0);
 	const [accounts, setAccounts] = useState({});
 	const [selected, setSelected] = useState(0);
 	const [data, setData] = useState([]);
 
-	const tokens = [
-		{ name: "NDAU", network: "nDau", nDauAmount: "64.23", usdAmount: "$100.22", image: images.nDau },
-		{ name: "NPAY (ERC20)", network: "zkSync Era", nDauAmount: "64.23", usdAmount: "$100.22", image: images.nPay },
-		{ name: "USDC (ERC20)", network: "nDau", nDauAmount: "64.23", usdAmount: "$100.22", image: images.USDC },
-		{ name: "ETHEREUM", network: "ethereum", nDauAmount: "64.23", usdAmount: "$100.22", image: images.ethereum },
-	];
+	const tokens = useMemo(() => [
+		{ name: "NDAU", network: "nDau", totalFunds: "0", usdAmount: "$0", image: images.nDau, accounts: getNDauAccounts().length },
+		{ name: "NPAY (ERC20)", network: "zkSync Era", totalFunds: "0", usdAmount: "$0", image: images.nPay },
+		{ name: "USDC (ERC20)", network: "nDau", totalFunds: "0", usdAmount: "$0", image: images.USDC },
+		{ name: "ETHEREUM", network: "ethereum", totalFunds: "0", usdAmount: "$0", image: images.ethereum },
+	], [getNDauAccounts]);
+
 	const nfts = [
-		{ name: "CLONE X - X TAKASHI MURAKAMI", image: images.nDau },
-		{ name: "Valhala", image: images.nPay }
+		// { name: "CLONE X - X TAKASHI MURAKAMI", image: images.nDau },
+		// { name: "Valhala", image: images.nPay }
 	];
 
 	useEffect(() => {
@@ -41,19 +45,19 @@ const Dashboard = () => {
 		const accounts = DataFormatHelper.getObjectWithAllAccounts(user)
 		const totalNdauNumber = AccountAPIHelper.accountTotalNdauAmount(accounts, false)
 		const currentPrice = AccountAPIHelper.currentPrice(NdauStore.getMarketPrice(), totalNdauNumber)
-		
+
 		setAccounts(accounts);
 		setCurrentPrice(NdauStore.getMarketPrice())
 		setTotalBalance(currentPrice);
-		
+
 		if (selected === 0) setData(tokens);
 		else if (selected === 1) setData(nfts);
 	}, [selected])
 
-	const renderItem = ({ item, index }) => {
-		if (selected == 0) return <Token {...item} index={index} />
+	const renderItem = useCallback(({ item, index }) => {
+		if (selected == 0) return <Token {...item} index={index} onPress={() => console.log('getNDauAccounts()', JSON.stringify(getNDauAccounts(), null, 2))} />
 		else if (selected == 1) return <NFT {...item} index={index} />
-	}
+	}, [])
 
 	return (
 		<ScreenContainer tabScreen>

@@ -16,12 +16,10 @@ import { SeedPhrase as SeedPhraseGen } from "../utils/SeedPhrase";
 import Loading from "../components/Loading";
 import Modal, { ModalImage } from "../components/Modal";
 import { ScreenNames } from "../screens/ScreenNames";
-import { useWallet } from "../redux/hooks";
 import SetupStore from "../stores/SetupStore";
 
 const SeedPhrase = () => {
 
-  const { addWallet } = useWallet();
   const navigation = useNavigation();
 
   const indeces = useRef([...Array(12)].map((_, i) => i)).current;

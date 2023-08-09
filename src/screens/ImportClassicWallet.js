@@ -1,7 +1,8 @@
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import Clipboard from '@react-native-clipboard/clipboard';
+import { ethers } from "ethers";
 
 import Button from "../components/Button";
 import CustomText from "../components/CustomText";
@@ -10,7 +11,9 @@ import PhraseHandler from "../components/PhraseHandler";
 import ScreenContainer from "../components/Screen";
 import StateButton from "../components/StateButton";
 import { themeColors } from "../config/colors";
-
+import FlashNotification from '../components/common/FlashNotification';
+import { useWallet } from '../hooks';
+// import { useWallet } from '../hooks';
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -25,12 +28,16 @@ const Tabs = (params) => {
         tabBarIndicatorStyle: { backgroundColor: themeColors.white }
       }}>
       <Tab.Screen name="Phrase" component={Phrase} initialParams={params} />
-      <Tab.Screen name="Address" component={Address} initialParams={params} />
+      <Tab.Screen name="Private Key" component={Address} initialParams={params} />
     </Tab.Navigator>
   );
 }
 
 const Phrase = ({ route: { params } }) => {
+
+  const { addWalletWithAddress } = useWallet();
+  const phrase = useRef([]);
+
   return (
     <View style={styles.screen}>
       <View style={styles.container}>
@@ -41,11 +48,23 @@ const Phrase = ({ route: { params } }) => {
         <PhraseHandler
           label={"Phrase"}
           placeholder={"Enter or paste phrase here..."}
-          onChangeText={(t) => handleInput(t, "lName")}
+          onChangeText={(t) => phrase.current = t}
         />
       </View>
       <Button
         label={"Import"}
+        onPress={() => {
+          try {
+            // "Boat Wink Total Art Double Razor Sustain Sphere Nuclear Then Spot Submit"
+            // "neither rough month disease tennis boat false brush cancel acoustic describe ladder" - ndau
+            const data = ethers.Wallet.fromPhrase("neither rough month disease tennis boat false brush cancel acoustic describe ladder")
+            // const b = new ethers.Wallet("d9197662960d7fbb0f02565c92ed1b50439b8baa47c1607d3eca909193a14670").address
+            console.log('data', JSON.stringify(data, null, 2));
+            // addWalletWithAddress(data)
+          } catch (e) {
+            FlashNotification.show("Invalid secret phrase " + e.message)
+          }
+        }}
       />
     </View>
   )

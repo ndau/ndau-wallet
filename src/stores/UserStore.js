@@ -11,6 +11,8 @@
 class UserStore {
   constructor () {
     if (!UserStore.instance) {
+      this.activeWalletId = [];
+      this.activeWallet = [];
       this._user = []
       this._password = []
       UserStore.instance = this
@@ -20,11 +22,50 @@ class UserStore {
   }
 
   setUser (user) {
-    this._user[0] = user
+    this._user[0] = user;
+    return this.getActiveWallet();
   }
 
   getUser () {
     return this._user[0]
+  }
+
+  setActiveWalletId (wallet) {
+    return this.activeWallet[0] = wallet;
+  }
+  
+  getActiveWalletId () {
+    if (!this.activeWalletId[0]) {
+      const [firstKey] = Object.keys(this._user[0].wallets);
+      this.activeWalletId[0] = firstKey;
+    }
+    return this.activeWalletId[0];
+  }
+
+  setActiveWallet () {
+
+  }
+
+  getActiveWallet () {
+    try {
+      const currentWalletId = this.getActiveWalletId();
+      const currentWallet = this._user[0].wallets[currentWalletId];
+      return currentWallet;
+    } catch (e) {
+      return {};
+    }
+  }
+
+  getNdauAccounts = () => {
+    const currentWalletId = this.getActiveWalletId();
+    const currentWallet = this._user[0].wallets[currentWalletId];
+    const accounts = []
+    if (currentWallet?.accounts) {
+      Object.keys(currentWallet.accounts).forEach(key => {
+        accounts.push(currentWallet.accounts[key]);
+      })
+    }
+    return accounts;
   }
 
   setPassword (password) {

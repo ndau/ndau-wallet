@@ -2,12 +2,12 @@ import { useNavigation } from "@react-navigation/native";
 import React, { useCallback, useEffect, useState } from "react";
 import { FlatList, Image, StyleSheet, TouchableOpacity, View } from "react-native";
 
+import { images } from "../assets/images";
 import Button from "../components/Button";
 import CustomText from "../components/CustomText";
 import ScreenContainer from "../components/Screen";
 import Spacer from "../components/Spacer";
 import { themeColors } from "../config/colors";
-import { images } from "../assets/images";
 import { ScreenNames } from "./ScreenNames";
 
 const ImportWallet = () => {
@@ -17,12 +17,10 @@ const ImportWallet = () => {
 
   useEffect(() => {
     setWalletItems([
-      { type: "NDAU", name: "Multi-Coin Wallet", image: images.walletIcon },
-      { type: "ERC-20", name: "Ethereum Classic", image: images.bitcoinIcon },
-      { type: "ERC-20", name: "Bitcoin", image: images.dogecoinIcon },
-      { type: "ERC-20", name: "Polygon", image: images.ethereumIcon },
-      { type: "ERC-20", name: "Solana", image: images.polygonIcon },
-      { type: "ERC-20", name: "Dogecoin", image: images.solanaIcon },
+      { type: "MULTI-COIN", name: "Multi-Coin Wallet", image: images.walletIcon },
+      { type: "ERC-20", name: "NPAY", image: images.nPay },
+      { type: "ERC-20", name: "Ethereum", image: images.ethereum },
+      { type: "ERC-20", name: "Polygon", image: images.polygonIcon }
     ])
   }, [])
 
@@ -41,7 +39,7 @@ const ImportWallet = () => {
   }, [])
 
   const handlePress = (item) => {
-    if (item.type === "NDAU") navigation.navigate(ScreenNames.ImportMultiCoinWallet)
+    if (item.type === "MULTI-COIN") navigation.navigate(ScreenNames.ImportMultiCoinWallet)
     else if (item.type === "ERC-20") navigation.navigate(ScreenNames.ImportClassicWallet, { name: item.name })
   }
 
@@ -88,7 +86,10 @@ const styles = StyleSheet.create({
     marginVertical: 10
   },
   image: {
-    marginRight: 15
+    marginRight: 15,
+    height: 50,
+    width: 50,
+    borderRadius: 25
   }
 });
 

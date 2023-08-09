@@ -84,14 +84,12 @@ const MainStack = () => {
 
 const Main = () => {
   return (
-    <>
-      <Provider store={store}>
-        <NavigationContainer>
-          <MainStack />
-        </NavigationContainer>
-      </Provider>
+    <Provider store={store}>
+      <NavigationContainer>
+        <MainStack />
+      </NavigationContainer>
       <FlashMessage />
-    </>
+    </Provider>
   );
 };
 

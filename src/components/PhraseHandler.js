@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { StyleSheet, TextInput, View } from "react-native";
 import Clipboard from '@react-native-clipboard/clipboard';
 
@@ -31,6 +31,13 @@ const PhraseHandler = ({
 
 	const handleEnteringPhrase = (t) => {
 		if (t.length === 1 && t == " ") return;
+
+		// handles if user use paste with long press intead of paste secret phrase
+		const words = t.split(" ");
+		if (words.length > 2) {
+			return setPhrases(words)
+		}
+
 		setCurrentValue(t);
 		const isSpace = t.at(-1) === " ";
 		if (isSpace) {
@@ -42,6 +49,10 @@ const PhraseHandler = ({
 			setCurrentValue("")
 		}
 	}
+
+	useEffect(() => {
+		onChangeText(phrases);
+	}, [phrases])
 
 	const renderPhrase = (phrase, index) => {
 		return (
@@ -58,6 +69,7 @@ const PhraseHandler = ({
 				<View style={styles.container}>
 					{phrases.map(renderPhrase)}
 					<TextInput
+						contextMenuHidden={true}
 						value={currentValue}
 						maxLength={maxLength}
 						placeholder={placeholder}
@@ -72,6 +84,16 @@ const PhraseHandler = ({
 							}
 						}}
 						onChangeText={handleEnteringPhrase}
+						onSubmitEditing={(e) => {
+							if (currentValue) {
+								setPhrases(_ => {
+									const phr = [..._];
+									phr.push(currentValue?.trim())
+									return phr;
+								})
+							}
+							setCurrentValue("")
+						}}
 					/>
 				</View>
 				{errors.map(msg => <RenderMsg key={msg} msg={msg} isError />)}
@@ -82,10 +104,13 @@ const PhraseHandler = ({
 				buttonContainerStyle={styles.outlineButton}
 				onPress={() => {
 					Clipboard.getString().then(res => {
-						console.log(res)
-						// const words = res.split(' ');
-						// if (words.length > 12) return;
-						// setPhrases(words.map(word => word.trim().replaceAll('\n', '')))
+						const words = res?.trimStart().trimEnd().split(' ');
+						if (words.length > 24) return;
+						setPhrases(
+							words
+								.map(word => word.trimStart().trimEnd())
+								.filter(word => word)
+						)
 					})
 				}}
 			/>

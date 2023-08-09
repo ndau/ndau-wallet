@@ -1,25 +1,39 @@
 import React from "react";
-import { Image, StyleSheet, View } from "react-native";
+import { Image, StyleSheet, TouchableOpacity, View } from "react-native";
 import Animated, { FadeInDown } from "react-native-reanimated";
 
 import { themeColors } from "../config/colors";
 import CustomText from "./CustomText";
+import Button from "./Button";
 
-const Token = ({ name, network, nDauAmount, usdAmount, image, index }) => {
+const Token = ({ name, network, totalFunds, usdAmount, image, index, accounts, onPress }) => {
 	return (
-		<Animated.View entering={FadeInDown.delay(100 * index)} style={styles.container}>
-			<Image source={image} style={styles.image} />
-			<View style={[styles.row, { justifyContent: "space-between", padding: 14 }]}>
-				<View style={{ justifyContent: "space-around", flex: 1 }}>
-					<CustomText titiliumSemiBold body>{name}</CustomText>
-					<CustomText>{network}</CustomText>
+		<TouchableOpacity activeOpacity={0.8} onPress={onPress}>
+			<Animated.View entering={FadeInDown.delay(100 * index)} style={styles.container}>
+				<View style={styles.image}>
+					<Image source={image} style={[styles.image, { position: "absolute", height: 84, width: 84, top: -2, left: -2 }]} />
 				</View>
-				<View style={{ justifyContent: "space-around", flex: 1, alignItems: "flex-end" }}>
-					<CustomText titiliumSemiBold body>{nDauAmount}</CustomText>
-					<CustomText titiliumSemiBold>{usdAmount}</CustomText>
+				<View style={[styles.row, { justifyContent: "space-between", padding: 14 }]}>
+					<View style={{ justifyContent: "space-around", flex: 1 }}>
+						<View style={[{ flexDirection: "row", alignItems: "center" }]}>
+							<CustomText titiliumSemiBold body>{name}</CustomText>
+							{
+								!!accounts && (
+									<View style={styles.capsule}>
+										<CustomText titiliumSemiBold caption color={themeColors.black}>{`${accounts} accounts`}</CustomText>
+									</View>
+								)
+							}
+						</View>
+						<CustomText>{network}</CustomText>
+					</View>
+					<View style={{ justifyContent: "space-around", flex: 1, alignItems: "flex-end" }}>
+						<CustomText titiliumSemiBold body>{totalFunds}</CustomText>
+						<CustomText titiliumSemiBold>{usdAmount}</CustomText>
+					</View>
 				</View>
-			</View>
-		</Animated.View>
+			</Animated.View>
+		</TouchableOpacity>
 	)
 }
 
@@ -29,7 +43,8 @@ const styles = StyleSheet.create({
 		borderRadius: 24,
 		borderWidth: StyleSheet.hairlineWidth,
 		borderColor: themeColors.white,
-		marginBottom: 16
+		marginVertical: 10,
+		marginLeft: 2,
 	},
 	image: {
 		width: 80,
@@ -38,6 +53,15 @@ const styles = StyleSheet.create({
 	row: {
 		flex: 1,
 		flexDirection: "row"
+	},
+	capsule: {
+		height: 24,
+		borderRadius: 20,
+		paddingHorizontal: 10,
+		justifyContent: "center",
+		alignItems: "center",
+		backgroundColor: themeColors.white,
+		marginLeft: 5
 	}
 })
 

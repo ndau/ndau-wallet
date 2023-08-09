@@ -391,8 +391,6 @@ const getTotalNdauForSend = (
 }
 
 const currentPrice = (marketPrice, totalNdau) => {
-  LogStore.log(`marketPrice is ${marketPrice} totalNdau is ${totalNdau}`)
-
   // why not use .toLocaleString you ask...here is why:
   // https://github.com/facebook/react-native/issues/15717
   const currentPrice = marketPrice
@@ -402,7 +400,6 @@ const currentPrice = (marketPrice, totalNdau) => {
         2
       )
     : '$0.00'
-  LogStore.log(`currentPrice: ${currentPrice}`)
 
   return currentPrice
 }

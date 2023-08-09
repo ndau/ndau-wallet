@@ -3,7 +3,6 @@ import { StyleSheet } from "react-native";
 import Animated, { interpolate, useAnimatedStyle, useSharedValue, withRepeat, withSequence, withTiming } from "react-native-reanimated";
 import CustomText from "../CustomText";
 import { themeColors } from "../../config/colors";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const FlashNotification = {
   show: (message) => {
@@ -16,7 +15,7 @@ const FlashMessage = ({ }) => {
   const animValue = useSharedValue(0);
   const animStyle = useAnimatedStyle(() => {
     return {
-      transform: [{ translateY: interpolate(animValue.value, [0, 1], [0, 10]) }],
+      transform: [{ translateY: interpolate(animValue.value, [0, 1], [0, 70]) }],
       opacity: interpolate(animValue.value, [0, 1], [0, 1]),
     }
   })
@@ -44,7 +43,7 @@ const FlashMessage = ({ }) => {
 const styles = StyleSheet.create({
   container: {
     position: "absolute",
-    top: 60,
+    // top: 60,
     padding: 10,
     left: 10,
     right: 10,
