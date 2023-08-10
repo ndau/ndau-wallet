@@ -1,7 +1,6 @@
 import { useSelector } from "react-redux";
 
 import UserStore from "../stores/UserStore";
-import WalletStore from "../stores/WalletStore";
 import DataFormatHelper from "../helpers/DataFormatHelper";
 import MultiSafeHelper from "../helpers/MultiSafeHelper";
 import AccountHelper from "../helpers/AccountHelper";

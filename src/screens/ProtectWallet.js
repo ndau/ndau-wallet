@@ -64,7 +64,7 @@ const ProtectWallet = () => {
         SetupStore.recoveryPhrase,
       ),
       SetupStore.walletId ? SetupStore.walletId : SetupStore.userId,
-      SetupStore.numberOfAccounts,
+      0,
       SetupStore.entropy,
       SetupStore.encryptionPassword,
       SetupStore.addressType,
