@@ -27,18 +27,14 @@ const AuthLoading = ({ }) => {
 			// 	params: { mode: AppConstants.GENESIS_MODE }
 			// })
 		} else if (multiSafes) { // Wallet is already setup; Let's authenticate user
-			return setTimeout(() => {
-				navigation.dispatch(
-					CommonActions.reset({ index: 0, routes: [{ name: ScreenNames.IntroCreateWallet }] })
-				);
-			}, 1000);
+			// return setTimeout(() => {
+			// 	navigation.dispatch(
+			// 		CommonActions.reset({ index: 0, routes: [{ name: ScreenNames.IntroCreateWallet }] })
+			// 	);
+			// }, 1000);
 			navigation.dispatch(CommonActions.reset({ index: 0, routes: [{ name: ScreenNames.Login }] }));
 		} else {
-			setTimeout(() => {
-				navigation.dispatch(
-					CommonActions.reset({ index: 0, routes: [{ name: ScreenNames.IntroCreateWallet }] })
-				);
-			}, 1000);
+			navigation.dispatch(CommonActions.reset({ index: 0, routes: [{ name: ScreenNames.IntroCreateWallet }] }));
 		}
 	}
 

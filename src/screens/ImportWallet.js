@@ -54,12 +54,6 @@ const ImportWallet = () => {
         data={walletItems}
         keyExtractor={(_, i) => i.toString()}
         renderItem={({ item, index }) => <WalletItem item={item} showSeparator={index === 0} onPress={handlePress}/>}
-        ListFooterComponent={
-          <Button
-            label={'Show More'}
-            buttonContainerStyle={styles.outlineButton}
-          />
-        }
       />
     </ScreenContainer>
   );

@@ -15,7 +15,7 @@ const FlashMessage = ({ }) => {
   const animValue = useSharedValue(0);
   const animStyle = useAnimatedStyle(() => {
     return {
-      transform: [{ translateY: interpolate(animValue.value, [0, 1], [0, 70]) }],
+      transform: [{ translateY: interpolate(animValue.value, [0, 1], [-100, 70]) }],
       opacity: interpolate(animValue.value, [0, 1], [0, 1]),
     }
   })

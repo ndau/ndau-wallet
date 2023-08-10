@@ -11,7 +11,7 @@ const ModalImage = () => {
 	)
 }
 
-const CustomModal = ({ bridge, children }) => {
+const CustomModal = ({ bridge, children, canIgnore = false }) => {
 	const [isModalVisible, setModalVisible] = useState(false);
 
 	const innerBridge = (value) => {
@@ -28,8 +28,8 @@ const CustomModal = ({ bridge, children }) => {
 
 	return (
 		<Modal
-			onBackButtonPress={hideModal}
-			onBackdropPress={hideModal}
+			onBackButtonPress={canIgnore ? hideModal : undefined}
+			onBackdropPress={canIgnore ? hideModal : undefined}
 			backdropOpacity={.9}
 			isVisible={isModalVisible}
 		>

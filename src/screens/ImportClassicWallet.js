@@ -13,7 +13,6 @@ import StateButton from "../components/StateButton";
 import { themeColors } from "../config/colors";
 import FlashNotification from '../components/common/FlashNotification';
 import { useWallet } from '../hooks';
-// import { useWallet } from '../hooks';
 
 const Tab = createMaterialTopTabNavigator();
 

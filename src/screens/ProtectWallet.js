@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Alert, Linking, StyleSheet, View } from "react-native";
 import { BiometryTypes, ReactNativeBiometricsLegacy } from 'react-native-biometrics'
 import { CommonActions, useNavigation } from "@react-navigation/native";
+import * as keychain from "react-native-keychain";
 
 import { FaceId, Thumprint } from "../assets/svgs/components";
 import Button from "../components/Button";
@@ -35,6 +36,10 @@ const ProtectWallet = () => {
       SetupStore.encryptionPassword = pins.pin;
       SetupStore.walletId = "Main Wallet";
       UserStore.setPassword(pins.pin);
+
+      // Store password for future use if user try FaceId for unlock
+      keychain.setGenericPassword("", pins.pin, { storage: keychain.STORAGE_TYPE.AES });
+
       setValidate(_ => ({
         ..._,
         errors: [],
@@ -51,6 +56,7 @@ const ProtectWallet = () => {
   }, [pins.pin, pins.confirmPin])
 
   const addNewUser = async () => {
+    setLoading(true);
     let user = UserStore.getUser();
     user = await AccountHelper.setupNewUser(
       user,
@@ -65,21 +71,9 @@ const ProtectWallet = () => {
     );
     await UserData.loadUserData(user);
     UserStore.setPassword(SetupStore.encryptionPassword);
-    Alert.alert(
-      'Additional Security',
-      'Enable Touch ID / Face ID for more secure the account',
-      [
-        { text: "Open Settings", onPress: () => Linking.openSettings() },
-        { text: "Later", onPress: navigateToDashboard },
-      ]
-    )
+    setLoading(false);
+    verifyBiometric()
   }
-
-  useEffect(() => {
-    if (biometrics.isFaceId == false || biometrics.isTouchId === false) {
-      addNewUser();
-    }
-  }, [biometrics])
 
   const checkSensorsAvailability = () => {
     ReactNativeBiometricsLegacy.isSensorAvailable().then(res => {
@@ -88,6 +82,7 @@ const ProtectWallet = () => {
         isTouchId: res.available && res.biometryType === BiometryTypes.TouchID
       }
       setBiometrics(data);
+      addNewUser();
     })
   }
 
@@ -100,15 +95,20 @@ const ProtectWallet = () => {
     );
   }
 
-  const verifyFaceId = () => {
+  const verifyBiometric = () => {
     ReactNativeBiometricsLegacy.simplePrompt({ promptMessage: 'FaceId' }).then(({ success }) => {
       if (success) {
-        setLoading(true);
-        setTimeout(() => {
-          setLoading(false)
-          navigateToDashboard();
-        }, 2000);
+        navigateToDashboard();
       }
+    }).catch(err => {
+      Alert.alert(
+        'Additional Security',
+        'Enable Touch ID / Face ID for more secure the account',
+        [
+          { text: "Open Settings", onPress: () => Linking.openSettings() },
+          { text: "Later", onPress: navigateToDashboard },
+        ]
+      )
     })
   }
 
@@ -124,7 +124,7 @@ const ProtectWallet = () => {
         <PinHandler errors={validate.errors} success={validate.success} label={'Confirm Passcode'} onPin={(pin) => setPins(_ => ({ ..._, confirmPin: pin }))} />
       </View>
       <Spacer height={20} />
-      <View style={styles.row}>
+      {/* <View style={styles.row}>
         {
           biometrics.isTouchId && (
             <View style={{ flex: 1, marginRight: 10 }}>
@@ -132,7 +132,7 @@ const ProtectWallet = () => {
                 buttonContainerStyle={styles.button}
                 label={'Unlock with Touch ID  '}
                 rightIcon={<Thumprint />}
-                onPress={verifyFaceId}
+                onPress={verifyBiometric}
               />
             </View>
           )
@@ -144,12 +144,12 @@ const ProtectWallet = () => {
                 buttonContainerStyle={styles.button}
                 label={'Unlock with Face ID  '}
                 rightIcon={<FaceId />}
-                onPress={verifyFaceId}
+                onPress={verifyBiometric}
               />
             </View>
           )
         }
-      </View>
+      </View> */}
     </ScreenContainer>
   );
 };

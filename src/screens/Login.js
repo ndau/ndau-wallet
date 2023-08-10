@@ -1,6 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { CommonActions, useNavigation } from "@react-navigation/native";
+import RNBiometrics from "react-native-biometrics";
+import * as keychain from "react-native-keychain";
 
 import PinHandler from "../components/PinHandler";
 import ScreenContainer from "../components/Screen";
@@ -11,13 +13,29 @@ import UserData from "../model/UserData";
 import Loading from "../components/Loading";
 import { ScreenNames } from "./ScreenNames";
 import FlashNotification from "../components/common/FlashNotification";
-import Button from "../components/Button";
 
 const Login = ({ }) => {
 
 	const called = useRef(false);
 	const navigation = useNavigation();
 	const [loading, setLoading] = useState(false);
+
+	useEffect(() => {
+
+		new RNBiometrics().simplePrompt({ promptMessage: "Authenticate" }).then(res => {
+			if (res.success) {
+				keychain.getGenericPassword({ storage: keychain.STORAGE_TYPE.AES }).then(res => {
+					if (res.password) {
+						checkingUser(res.password);
+					} else {
+						FlashNotification.show("Error while authenticating");
+					}
+				})
+			}
+		}).catch(err => {
+			// FlashNotification.show("Error while authenticating " + err.message);
+		})
+	}, [])
 
 	const checkingUser = async (passcode) => {
 		called.current = true;
