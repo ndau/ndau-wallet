@@ -11,6 +11,7 @@ import Setting from "./Setting";
 import Search from "./Search";
 import ErrorIcon from "./ErrorIcon";
 import SuccessIcon from "./SuccessIcon";
+import WalletSuccessSVGComponent from "./walletSuccess";
 import Plus from "./Plus";
 
 export {
@@ -27,5 +28,6 @@ export {
   Search,
   ErrorIcon,
   SuccessIcon,
-  Plus
+  Plus,
+  WalletSuccessSVGComponent,
 };

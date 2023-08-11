@@ -1,6 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Alert, Linking, StyleSheet, View } from "react-native";
-import { BiometryTypes, ReactNativeBiometricsLegacy } from 'react-native-biometrics'
+import {
+  BiometryTypes,
+  ReactNativeBiometricsLegacy,
+} from "react-native-biometrics";
 import { CommonActions, useNavigation } from "@react-navigation/native";
 import * as keychain from "react-native-keychain";
 
@@ -20,72 +23,78 @@ import UserData from "../model/UserData";
 import DataFormatHelper from "../helpers/DataFormatHelper";
 
 const ProtectWallet = () => {
-
   const navigation = useNavigation();
   const [loading, setLoading] = useState(false);
   const pinhandlerRef = useRef(null);
   const [pins, setPins] = useState({ pin: "", confirmPin: "" });
-  const [biometrics, setBiometrics] = useState({
-  });
+  const [biometrics, setBiometrics] = useState({});
   const [validate, setValidate] = useState({
     errors: [],
-    success: []
+    success: [],
   });
 
   useEffect(() => {
-    if (pins.pin !== "" && pins.confirmPin !== "" && pins.pin === pins.confirmPin) {
+    if (
+      pins.pin !== "" &&
+      pins.confirmPin !== "" &&
+      pins.pin === pins.confirmPin
+    ) {
       SetupStore.encryptionPassword = pins.pin;
       SetupStore.walletId = "Main Wallet";
       UserStore.setPassword(pins.pin);
 
       // Store password for future use if user try FaceId for unlock
-      keychain.setGenericPassword("", pins.pin, { storage: keychain.STORAGE_TYPE.AES });
+      keychain.setGenericPassword("", pins.pin, {
+        storage: keychain.STORAGE_TYPE.AES,
+      });
 
-      setValidate(_ => ({
+      setValidate((_) => ({
         ..._,
         errors: [],
-        success: ['Looks Good!'],
-      }))
+        success: ["Looks Good!"],
+      }));
       checkSensorsAvailability();
-    } else if (pins.pin.length && pins.confirmPin.length && pins.pin !== pins.confirmPin) {
-      setValidate(_ => ({
+    } else if (
+      pins.pin.length &&
+      pins.confirmPin.length &&
+      pins.pin !== pins.confirmPin
+    ) {
+      setValidate((_) => ({
         ..._,
-        errors: ['Passcode does not match'],
+        errors: ["Passcode does not match"],
         success: [],
-      }))
+      }));
     }
-  }, [pins.pin, pins.confirmPin])
+  }, [pins.pin, pins.confirmPin]);
 
   const addNewUser = async () => {
     setLoading(true);
     let user = UserStore.getUser();
     user = await AccountHelper.setupNewUser(
       user,
-      DataFormatHelper.convertRecoveryArrayToString(
-        SetupStore.recoveryPhrase,
-      ),
+      DataFormatHelper.convertRecoveryArrayToString(SetupStore.recoveryPhrase),
       SetupStore.walletId ? SetupStore.walletId : SetupStore.userId,
       0,
       SetupStore.entropy,
       SetupStore.encryptionPassword,
-      SetupStore.addressType,
+      SetupStore.addressType
     );
     await UserData.loadUserData(user);
     UserStore.setPassword(SetupStore.encryptionPassword);
     setLoading(false);
-    verifyBiometric()
-  }
+    verifyBiometric();
+  };
 
   const checkSensorsAvailability = () => {
-    ReactNativeBiometricsLegacy.isSensorAvailable().then(res => {
+    ReactNativeBiometricsLegacy.isSensorAvailable().then((res) => {
       const data = {
         isFaceId: res.available && res.biometryType === BiometryTypes.FaceID,
-        isTouchId: res.available && res.biometryType === BiometryTypes.TouchID
-      }
+        isTouchId: res.available && res.biometryType === BiometryTypes.TouchID,
+      };
       setBiometrics(data);
       addNewUser();
-    })
-  }
+    });
+  };
 
   const navigateToDashboard = () => {
     navigation.dispatch(
@@ -94,46 +103,56 @@ const ProtectWallet = () => {
         routes: [{ name: ScreenNames.TabNav }],
       })
     );
-  }
+  };
 
   const verifyBiometric = () => {
-    ReactNativeBiometricsLegacy.simplePrompt({ promptMessage: 'FaceId' }).then(({ success }) => {
-      if (success) {
-        navigateToDashboard();
-      }
-    }).catch(err => {
-      Alert.alert(
-        'Additional Security',
-        'Enable Touch ID / Face ID for more secure the account',
-        [
-          { text: "Open Settings", onPress: () => Linking.openSettings() },
-          { text: "Later", onPress: navigateToDashboard },
-        ]
-      )
-    })
-  }
+    ReactNativeBiometricsLegacy.simplePrompt({ promptMessage: "FaceId" })
+      .then(({ success }) => {
+        if (success) {
+          navigateToDashboard();
+        }
+      })
+      .catch((err) => {
+        Alert.alert(
+          "Additional Security",
+          "Enable Touch ID / Face ID for more secure the account",
+          [
+            { text: "Open Settings", onPress: () => Linking.openSettings() },
+            { text: "Later", onPress: navigateToDashboard },
+          ]
+        );
+      });
+  };
 
   return (
     <ScreenContainer steps={{ total: 4, current: 4 }}>
-      {!!loading && <Loading label={'Creating your wallet'} />}
+      {!!loading && <Loading label={"Creating your wallet"} />}
       <Spacer height={16} />
       <View style={styles.container}>
-        <CustomText h6 semiBold style={styles.margin}>Protect your wallet</CustomText>
-        <CustomText titilium body2 style={styles.margin}>Create a secure 6-digit passcode to unlock your wallet and ensure the safety of your funds. Please note that this passcode cannot be used to recover your wallet.</CustomText>
+        <CustomText h6 semiBold style={styles.margin}>
+          Protect your wallet
+        </CustomText>
+        <CustomText titilium body2 style={styles.margin}>
+          Create a secure 6-digit passcode to unlock your wallet and ensure the
+          safety of your funds. Please note that this passcode cannot be used to
+          recover your wallet.
+        </CustomText>
         <Spacer height={20} />
         <PinHandler
           autoFocus
-          label={'Enter Passcode'}
+          label={"Enter Passcode"}
           onPin={(pin) => {
-            setPins(_ => ({ ..._, pin }));
+            setPins((_) => ({ ..._, pin }));
             pinhandlerRef.current({ focus: true });
-          }} />
+          }}
+        />
         <PinHandler
           bridge={pinhandlerRef}
           errors={validate.errors}
           success={validate.success}
-          label={'Confirm Passcode'}
-          onPin={(pin) => setPins(_ => ({ ..._, confirmPin: pin }))} />
+          label={"Confirm Passcode"}
+          onPin={(pin) => setPins((_) => ({ ..._, confirmPin: pin }))}
+        />
       </View>
       <Spacer height={20} />
       {/* <View style={styles.row}>
@@ -177,14 +196,14 @@ const styles = StyleSheet.create({
     backgroundColor: themeColors.white,
     justifyContent: "space-between",
     flexDirection: "row",
-    paddingHorizontal: 20
+    paddingHorizontal: 20,
   },
   seedContainer: {
     flex: 1,
     borderRadius: 20,
     borderColor: themeColors.fontLight,
     marginBottom: 20,
-    justifyContent: "center"
+    justifyContent: "center",
   },
   row: {
     flexDirection: "row",
@@ -198,7 +217,7 @@ const styles = StyleSheet.create({
     width: 90,
     borderWidth: 1,
     borderRadius: 20,
-    borderColor: themeColors.white
+    borderColor: themeColors.white,
   },
   buttonCopied: {
     justifyContent: "center",
@@ -207,18 +226,18 @@ const styles = StyleSheet.create({
     width: 90,
     borderWidth: 1,
     borderRadius: 20,
-    backgroundColor: themeColors.primary
+    backgroundColor: themeColors.primary,
   },
   flex: {
-    flex: 1
+    flex: 1,
   },
   modal: {
     alignItems: "center",
-    marginVertical: 20
+    marginVertical: 20,
   },
   button: {
-    flexDirection: "row"
-  }
+    flexDirection: "row",
+  },
 });
 
 export default ProtectWallet;

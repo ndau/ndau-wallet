@@ -12,6 +12,7 @@ import { useNavigation } from "@react-navigation/native";
 import { BackSVGComponent } from "../assets/svgs/components";
 import CustomText from "./CustomText";
 import Spacer from "./Spacer";
+import { Text } from "react-native-svg";
 
 const ScreenContainer = ({ children, style, steps, preventBackPress, tabScreen = false }) => {
   const navigation = useNavigation();
