@@ -75,6 +75,8 @@ const ProtectWallet = () => {
     )
   }
 
+
+  console.log( SetupStore.recoveryPhrase,UserStore.getUser())
   useEffect(() => {
     if (biometrics.isFaceId == false || biometrics.isTouchId === false) {
       addNewUser();

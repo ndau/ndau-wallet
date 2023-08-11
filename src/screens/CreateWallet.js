@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { StyleSheet, View ,NativeModules} from "react-native";
+import { StyleSheet, View, NativeModules } from "react-native";
 
 import Button from "../components/Button";
 import CheckBox from "../components/CheckBox";
@@ -11,13 +11,16 @@ import { ArrowForward } from "../assets/svgs/components";
 import { useNavigation } from "@react-navigation/native";
 import { ScreenNames } from "./ScreenNames";
 
-const CreateWallet = () => {
+const CreateWallet = (props) => {
   const navigation = useNavigation();
   const [termsAccepted, setTermsAccepted] = useState(false);
 
+  const { isAlreadyWallet } = props?.route?.params ?? {};
 
   return (
-    <ScreenContainer steps={{ total: 4, current: 2 }}>
+    <ScreenContainer
+      steps={{ total: !isAlreadyWallet && 4, current: !isAlreadyWallet && 2 }}
+    >
       <Spacer height={16} />
       <View style={styles.container}>
         <CustomText titiliumSemiBold style={styles.margin}>
@@ -32,18 +35,23 @@ const CreateWallet = () => {
           onPress={() => navigation.navigate(ScreenNames.TermsPolicy)}
           rightIcon={<ArrowForward />}
         />
-
       </View>
       <CheckBox
         checked={termsAccepted}
-        label={'I’ve read and accept the Terms of Service & Privacy Policy'}
+        label={"I’ve read and accept the Terms of Service & Privacy Policy"}
         onPress={() => setTermsAccepted(!termsAccepted)}
       />
       <Spacer height={16} />
       <Button
         disabled={!termsAccepted}
         label={"Continue"}
-        onPress={() => navigation.navigate(ScreenNames.CreateWalletStarted)}
+        onPress={() => {
+          if (isAlreadyWallet) {
+            navigation.navigate(ScreenNames.ImportMultiCoinWallet);
+          } else {
+            navigation.navigate(ScreenNames.CreateWalletStarted);
+          }
+        }}
         // onPress={() => {
         //   const x=NativeModules.KeyaddrManager
         //   console.log(x,'x--------')
@@ -64,8 +72,8 @@ const styles = StyleSheet.create({
     backgroundColor: themeColors.white,
     justifyContent: "space-between",
     flexDirection: "row",
-    paddingHorizontal: 20
-  }
+    paddingHorizontal: 20,
+  },
 });
 
 export default CreateWallet;

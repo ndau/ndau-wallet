@@ -22,7 +22,7 @@ const CreateWalletStarted = () => {
   }, [])
 
   return (
-    <ScreenContainer steps={{ total: 4, current: 3 }}>
+    <ScreenContainer steps={{ total: 4, current: 3 }} navigation={navigation}>
       <Spacer height={16} />
       <View style={styles.container}>
         <CustomText h6 semiBold style={styles.margin}>Before we start!</CustomText>

@@ -10,52 +10,73 @@ import DeviceStore from "../stores/DeviceStore";
 import SettingsStore from "../stores/SettingsStore";
 import { ScreenNames } from "./ScreenNames";
 
-const AuthLoading = ({ }) => {
+const AuthLoading = ({}) => {
+  const navigation = useNavigation();
 
+  const authenticating = async () => {
+    const userIds = await AsyncStorageHelper.getAllKeys();
+    const multiSafes = await MultiSafe.isAMultiSafePresent();
 
-	const navigation = useNavigation();
+    console.log(userIds, "userIds----");
+    console.log(multiSafes, "multiSafes----");
+    if (userIds.length > 0 && !multiSafes) {
+      // time for recovery as we need to create real account object for you
+      // this is only done for users < 1.8, after 1.8 this should not happen
+      // again as you will have a MultiSafe
+      // this.props.navigation.replace('Setup', {
+      // 	screen: 'SetupWelcome',
+      // 	params: { mode: AppConstants.GENESIS_MODE }
+      // })
+    } else if (multiSafes) {
+      // Wallet is already setup; Let's authenticate user
+      return setTimeout(() => {
+        navigation.dispatch(
+          CommonActions.reset({
+            index: 0,
+            routes: [{ name: ScreenNames.IntroCreateWallet }],
+          })
+        );
+        // navigation.dispatch(
+        //   CommonActions.reset({
+        //     index: 0,
+        //     routes: [{ name: ScreenNames.Login }],
+        //   })
+        // );
+      }, 1000);
+      navigation.dispatch(
+        CommonActions.reset({ index: 0, routes: [{ name: ScreenNames.Login }] })
+      );
+    } else {
+      setTimeout(() => {
+        navigation.dispatch(
+          CommonActions.reset({
+            index: 0,
+            routes: [{ name: ScreenNames.IntroCreateWallet }],
+          })
+        );
+      }, 1000);
+    }
+  };
 
-	const authenticating = async () => {
-		const userIds = await AsyncStorageHelper.getAllKeys()
-		const multiSafes = await MultiSafe.isAMultiSafePresent()
-		if (userIds.length > 0 && !multiSafes) {
-			// time for recovery as we need to create real account object for you
-			// this is only done for users < 1.8, after 1.8 this should not happen
-			// again as you will have a MultiSafe
-			// this.props.navigation.replace('Setup', {
-			// 	screen: 'SetupWelcome',
-			// 	params: { mode: AppConstants.GENESIS_MODE }
-			// })
-		} else if (multiSafes) { // Wallet is already setup; Let's authenticate user
-			navigation.dispatch(CommonActions.reset({ index: 0, routes: [{ name: ScreenNames.Login }] }));
-		} else {
-			setTimeout(() => {
-				navigation.dispatch(
-					CommonActions.reset({ index: 0, routes: [{ name: ScreenNames.IntroCreateWallet }] })
-				);
-			}, 1000);
-		}
-	}
+  useEffect(() => {
+    DeviceStore.setOnline(true);
+    SettingsStore.useMainNet();
+    authenticating();
+  }, []);
 
-	useEffect(() => {
-		DeviceStore.setOnline(true);
-		SettingsStore.useMainNet();
-		authenticating();
-	}, [])
-
-	return (
-		<ScreenContainer>
-			<Loading label={''} />
-		</ScreenContainer>
-	)
-}
+  return (
+    <ScreenContainer>
+      <Loading label={""} />
+    </ScreenContainer>
+  );
+};
 
 const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		justifyContent: "center",
-		alignItems: "center"
-	}
-})
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+});
 
 export default AuthLoading;

@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { StyleSheet, TextInput, View } from "react-native";
 import Clipboard from '@react-native-clipboard/clipboard';
 
@@ -28,6 +28,13 @@ const PhraseHandler = ({
 			</Animated.View>
 		)
 	}, [errors, success])
+
+
+useEffect(()=>{
+
+ onChangeText(phrases)
+
+},[phrases])
 
 	const handleEnteringPhrase = (t) => {
 		if (t.length === 1 && t == " ") return;
@@ -60,6 +67,7 @@ const PhraseHandler = ({
 					<TextInput
 						value={currentValue}
 						maxLength={maxLength}
+						autoCapitalize='none'
 						placeholder={placeholder}
 						style={{ color: themeColors.font }}
 						placeholderTextColor={themeColors.fontLight}
@@ -81,13 +89,15 @@ const PhraseHandler = ({
 				label={"Paste Secret Phrase"}
 				buttonContainerStyle={styles.outlineButton}
 				onPress={() => {
+				
 					Clipboard.getString().then(res => {
-						console.log(res)
-						// const words = res.split(' ');
-						// if (words.length > 12) return;
-						// setPhrases(words.map(word => word.trim().replaceAll('\n', '')))
+					
+						const words = res.split(' ');
+						if (words.length > 12) return;
+						setPhrases(words.map(word => word.trim().replaceAll('\n', '')))
 					})
 				}}
+			
 			/>
 		</>
 	)
