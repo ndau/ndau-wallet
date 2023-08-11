@@ -46,7 +46,7 @@ const AuthLoading = ({ }) => {
 
 	return (
 		<ScreenContainer>
-			<Loading label={''} />
+			{/* <Loading label={''} /> */}
 		</ScreenContainer>
 	)
 }

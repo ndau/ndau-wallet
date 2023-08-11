@@ -30,7 +30,7 @@ const PhraseHandler = ({
 	}, [errors, success])
 
 	const handleEnteringPhrase = (t) => {
-		if (t.length === 1 && t == " ") return;
+		if (t.length == 1 && t == " ") return;
 
 		// handles if user use paste with long press intead of paste secret phrase
 		const words = t.split(" ");
@@ -46,7 +46,7 @@ const PhraseHandler = ({
 				phr.push(t.split(" ")[0])
 				return phr;
 			})
-			setCurrentValue("")
+			setTimeout(() => setCurrentValue(""), 10);
 		}
 	}
 
@@ -92,7 +92,7 @@ const PhraseHandler = ({
 									return phr;
 								})
 							}
-							setCurrentValue("")
+							setTimeout(() => setCurrentValue(""), 10);
 						}}
 					/>
 				</View>

@@ -4,7 +4,6 @@ import Animated, { FadeInDown } from "react-native-reanimated";
 
 import { themeColors } from "../config/colors";
 import CustomText from "./CustomText";
-import Button from "./Button";
 
 const Token = ({ name, network, totalFunds, usdAmount, image, index, accounts, onPress }) => {
 	return (
@@ -28,8 +27,8 @@ const Token = ({ name, network, totalFunds, usdAmount, image, index, accounts, o
 						<CustomText>{network}</CustomText>
 					</View>
 					<View style={{ justifyContent: "space-around", flex: 1, alignItems: "flex-end" }}>
-						<CustomText titiliumSemiBold body>{totalFunds}</CustomText>
-						<CustomText titiliumSemiBold>{usdAmount}</CustomText>
+						<CustomText titiliumSemiBold body>{totalFunds == 0 ? 0 : parseFloat(totalFunds).toFixed(4)}</CustomText>
+						<CustomText titiliumSemiBold>${usdAmount}</CustomText>
 					</View>
 				</View>
 			</Animated.View>

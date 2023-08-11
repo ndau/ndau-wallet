@@ -1,12 +1,13 @@
 import React, { useCallback, useState } from "react";
-import { ImageBackground, StyleSheet, TouchableOpacity, View } from "react-native";
+import { ImageBackground, Linking, StyleSheet, TouchableOpacity, View } from "react-native";
 import Animated, { interpolate, interpolateColor, useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
 
 import { images } from "../assets/images";
 import { themeColors } from "../config/colors";
 import Button from "./Button";
 import CustomText from "./CustomText";
-import { ArrowForward } from "../assets/svgs/components";
+import { ArrowForward, Plus } from "../assets/svgs/components";
+import AppConstants from "../AppConstants";
 
 const DashboardHeader = ({ marketPrice = 0, totalBalance = 0, accounts = {} }) => {
 
@@ -59,7 +60,9 @@ const DashboardHeader = ({ marketPrice = 0, totalBalance = 0, accounts = {} }) =
 				<Animated.View style={aStyle}>
 					<Animated.View style={[styles.lower, heightStyle]}>
 						<CustomText size={10} color={themeColors.black}>*Updated & Recorded on the ndau Blockchain every 5 minutes</CustomText>
-						<CustomText size={9} color={themeColors.black} style={styles.underLine}>What is Blockchain Market Price and how is it calculated?</CustomText>
+						<TouchableOpacity onPress={() => Linking.openURL(AppConstants.NDAU_WEBSITE)}>
+							<CustomText size={9} color={themeColors.black} style={styles.underLine}>What is Blockchain Market Price and how is it calculated?</CustomText>
+						</TouchableOpacity>
 					</Animated.View>
 				</Animated.View>
 			</View>
@@ -74,24 +77,21 @@ const DashboardHeader = ({ marketPrice = 0, totalBalance = 0, accounts = {} }) =
 			<View style={styles.spaceBetween}>
 
 				<View style={styles.row}>
-					<Avatar />
+					{/* <Avatar /> */}
 					<View style={{ flex: 1 }}>
 						<TouchableOpacity>
 							<View style={styles.row}>
-								<CustomText h6 medium style={styles.walletName}>Main Wallet</CustomText>
+								<CustomText h6 medium>Main Wallet</CustomText>
 								<View style={styles.rotate}>
 									<ArrowForward white />
 								</View>
 							</View>
 						</TouchableOpacity>
-						<CustomText titilium body2 style={styles.walletName}>Account 1</CustomText>
+						{/* <CustomText titilium body2 style={styles.walletName}>Account 1</CustomText> */}
 					</View>
 					<Button
-						body2
-						titilium
-						buttonTextColor={themeColors.black}
-						buttonContainerStyle={styles.addAccountButton}
-						label={'Add Account'} />
+						rightIcon={<Plus />}
+						buttonContainerStyle={styles.addAccountButton} />
 				</View>
 
 				<View style={{ marginTop: 30 }}>
@@ -122,14 +122,13 @@ const styles = StyleSheet.create({
 		alignItems: "center",
 		backgroundColor: themeColors.lightBackground
 	},
-	walletName: {
-		marginLeft: 14
-	},
 	addAccountButton: {
-		backgroundColor: themeColors.white,
-		height: undefined,
-		paddingHorizontal: 14,
-		paddingVertical: 4
+		backgroundColor: themeColors.lightBackground,
+		height: 40,
+		width: 40,
+		borderRadius: 10,
+		justifyContent: "center",
+		alignItems: "center",
 	},
 	spaceBetween: {
 		flex: 1,

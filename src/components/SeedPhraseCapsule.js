@@ -6,7 +6,7 @@ import { themeColors } from "../config/colors";
 import CustomText from "./CustomText";
 import { isSmallerDivce } from "../utils";
 
-const SeedPhraseCapsule = ({ disabled, style, selected, item, index, onSelect, cachedSelected }) => {
+const SeedPhraseCapsule = ({ disabled, style, selected, item, index, onSelect, cachedSelected, onIvalideSelect }) => {
 	const [fullSelection, setFullSelection] = useState(selected);
 
 	const indexInWord = useMemo(() => item.index === 0 ? `${item.index + 1}st` : item.index === 1 ? `${item.index + 1}nd` : `${item.index + 1}th`, [])
@@ -22,6 +22,8 @@ const SeedPhraseCapsule = ({ disabled, style, selected, item, index, onSelect, c
 				}
 			}))
 			onSelect?.(fullSelection?.[item.index])
+		} else {
+			onIvalideSelect?.();
 		}
 	}
 

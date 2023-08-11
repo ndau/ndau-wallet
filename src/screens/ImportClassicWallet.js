@@ -56,12 +56,12 @@ const Phrase = ({ route: { params } }) => {
           try {
             // "Boat Wink Total Art Double Razor Sustain Sphere Nuclear Then Spot Submit"
             // "neither rough month disease tennis boat false brush cancel acoustic describe ladder" - ndau
-            const data = ethers.Wallet.fromPhrase("neither rough month disease tennis boat false brush cancel acoustic describe ladder")
             // const b = new ethers.Wallet("d9197662960d7fbb0f02565c92ed1b50439b8baa47c1607d3eca909193a14670").address
+            const data = ethers.Wallet.fromPhrase(phrase.current.join(' '))
             console.log('data', JSON.stringify(data, null, 2));
             // addWalletWithAddress(data)
           } catch (e) {
-            FlashNotification.show("Invalid secret phrase " + e.message)
+            FlashNotification.show("Invalid secret phrase")
           }
         }}
       />

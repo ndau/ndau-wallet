@@ -16,14 +16,16 @@ const Button = ({ label, onPress, disabled, textOnly = false, caption = false, b
 			]}
 			activeOpacity={0.8}>
 			<>
-				<CustomText
-					button
-					semiBold
-					caption={caption}
-					body2={body2}
-					titiliumSemiBold
-					titilium={titilium}
-					color={disabled ? themeColors.buttonDisabledText : buttonTextColor}>{label}</CustomText>
+				{label && (
+					<CustomText
+						button
+						semiBold
+						caption={caption}
+						body2={body2}
+						titiliumSemiBold
+						titilium={titilium}
+						color={disabled ? themeColors.buttonDisabledText : buttonTextColor}>{label}</CustomText>
+				)}
 				{rightIcon}
 			</>
 		</TouchableOpacity>

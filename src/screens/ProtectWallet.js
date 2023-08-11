@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Alert, Linking, StyleSheet, View } from "react-native";
 import { BiometryTypes, ReactNativeBiometricsLegacy } from 'react-native-biometrics'
 import { CommonActions, useNavigation } from "@react-navigation/native";
@@ -23,6 +23,7 @@ const ProtectWallet = () => {
 
   const navigation = useNavigation();
   const [loading, setLoading] = useState(false);
+  const pinhandlerRef = useRef(null);
   const [pins, setPins] = useState({ pin: "", confirmPin: "" });
   const [biometrics, setBiometrics] = useState({
   });
@@ -120,8 +121,19 @@ const ProtectWallet = () => {
         <CustomText h6 semiBold style={styles.margin}>Protect your wallet</CustomText>
         <CustomText titilium body2 style={styles.margin}>Create a secure 6-digit passcode to unlock your wallet and ensure the safety of your funds. Please note that this passcode cannot be used to recover your wallet.</CustomText>
         <Spacer height={20} />
-        <PinHandler label={'Enter Passcode'} onPin={(pin) => setPins(_ => ({ ..._, pin }))} />
-        <PinHandler errors={validate.errors} success={validate.success} label={'Confirm Passcode'} onPin={(pin) => setPins(_ => ({ ..._, confirmPin: pin }))} />
+        <PinHandler
+          autoFocus
+          label={'Enter Passcode'}
+          onPin={(pin) => {
+            setPins(_ => ({ ..._, pin }));
+            pinhandlerRef.current({ focus: true });
+          }} />
+        <PinHandler
+          bridge={pinhandlerRef}
+          errors={validate.errors}
+          success={validate.success}
+          label={'Confirm Passcode'}
+          onPin={(pin) => setPins(_ => ({ ..._, confirmPin: pin }))} />
       </View>
       <Spacer height={20} />
       {/* <View style={styles.row}>

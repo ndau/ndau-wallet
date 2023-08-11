@@ -1,4 +1,6 @@
 import { NativeModules } from "react-native";
+
+import { ethers } from "ethers";
 import AppConstants from "../AppConstants";
 import SetupStore from "../stores/SetupStore";
 
@@ -22,11 +24,17 @@ export const SeedPhrase = {
   sortAsc: seed => seed.sort((itemA, itemB) => itemA.index < itemB.index ? -1 : 1),
 
   generateSeed: (onGenerate) => {
+    // if (usingEtherLibrary) {
+    //   const mnemonic = ethers.Wallet.createRandom().mnemonic;
+    //   SetupStore.entropy = mnemonic.entropy;
+    //   return onGenerate(mnemonic.phrase.split(" ").map((seed, index) => ({ seed, index })))
+    // }
+
     const KeyaddrManager = NativeModules.KeyaddrManager;
     KeyaddrManager.keyaddrWordsFromBytes(AppConstants.APP_LANGUAGE, SetupStore.entropy).then(seeds => {
       try {
         onGenerate(seeds.split(" ").map((seed, index) => ({ seed, index })))
-      }catch(e) {onGenerate([])}
+      } catch (e) { onGenerate([]) }
     });
 
     return [

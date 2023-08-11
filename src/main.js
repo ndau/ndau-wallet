@@ -38,9 +38,9 @@ const MainTabs = () => {
       <Tab.Screen
         name={ScreenNames.Dashboard}
         component={Dashboard} />
-      <Tab.Screen
+      {/* <Tab.Screen
         name={ScreenNames.DApps}
-        component={DApps} />
+        component={DApps} /> */}
       <Tab.Screen
         name={ScreenNames.Notifications}
         component={Notifications} />
@@ -62,7 +62,6 @@ const MainStack = () => {
 
   return (
     <Stack.Navigator screenOptions={ScreenOptions}>
-
       {/* <Stack.Screen name={ScreenNames.IntroCreateAccount} component={IntroCreateAccount} />
       <Stack.Screen name={ScreenNames.CreateAccount} component={CreateAccount} /> */}
 

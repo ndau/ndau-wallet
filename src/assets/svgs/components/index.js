@@ -11,6 +11,7 @@ import Setting from "./Setting";
 import Search from "./Search";
 import ErrorIcon from "./ErrorIcon";
 import SuccessIcon from "./SuccessIcon";
+import Plus from "./Plus";
 
 export {
   BackSVGComponent,
@@ -25,5 +26,6 @@ export {
   Setting,
   Search,
   ErrorIcon,
-  SuccessIcon
+  SuccessIcon,
+  Plus
 };

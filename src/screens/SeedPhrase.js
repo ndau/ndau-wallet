@@ -4,7 +4,7 @@ import { CommonActions, useNavigation } from "@react-navigation/native";
 import { ScrollView } from "react-native-gesture-handler";
 import Clipboard from "@react-native-clipboard/clipboard";
 
-import { Copy } from "../assets/svgs/components";
+import { Copy, ErrorIcon } from "../assets/svgs/components";
 import Button from "../components/Button";
 import CustomText from "../components/CustomText";
 import ScreenContainer from "../components/Screen";
@@ -24,6 +24,7 @@ const SeedPhrase = () => {
 
   const indeces = useRef([...Array(12)].map((_, i) => i)).current;
   const modalRef = useRef(null);
+  const [invalid, setInvalid] = useState(false);
   const [seeds, setSeeds] = useState([]);
   const [choosed, setChoosed] = useState(indeces.reduce((prev, curr) => ({ ...prev, [curr]: { showIndex: true, selected: false, index: curr } }), []));
 
@@ -84,7 +85,7 @@ const SeedPhrase = () => {
     );
   };
 
-  const Phrase = useCallback(({ success }) => {
+  const Phrase = useCallback(({ success, onIvalideSelect }) => {
 
     const cachedSelected = useRef([]).current;
     const seedPhrase = seeds;
@@ -103,6 +104,7 @@ const SeedPhrase = () => {
                 key={index}
                 disabled={!seedWroteIt}
                 onSelect={selectingSeed}
+                onIvalideSelect={onIvalideSelect}
                 cachedSelected={cachedSelected}
                 index={index}
                 selected={choosed}
@@ -118,6 +120,7 @@ const SeedPhrase = () => {
                 key={index}
                 disabled={!seedWroteIt}
                 onSelect={selectingSeed}
+                onIvalideSelect={onIvalideSelect}
                 cachedSelected={cachedSelected}
                 index={index}
                 selected={choosed}
@@ -133,6 +136,7 @@ const SeedPhrase = () => {
                 key={index}
                 disabled={!seedWroteIt}
                 onSelect={selectingSeed}
+                onIvalideSelect={onIvalideSelect}
                 cachedSelected={cachedSelected}
                 index={index}
                 selected={choosed}
@@ -148,6 +152,7 @@ const SeedPhrase = () => {
                 key={index}
                 disabled={!seedWroteIt}
                 onSelect={selectingSeed}
+                onIvalideSelect={onIvalideSelect}
                 cachedSelected={cachedSelected}
                 index={index}
                 selected={choosed}
@@ -163,6 +168,7 @@ const SeedPhrase = () => {
                 key={index}
                 disabled={!seedWroteIt}
                 onSelect={selectingSeed}
+                onIvalideSelect={onIvalideSelect}
                 cachedSelected={cachedSelected}
                 index={index}
                 selected={choosed}
@@ -183,6 +189,15 @@ const SeedPhrase = () => {
     return seedWroteIt ? headings.after : headings.before
   }, [seedWroteIt])
 
+  const renderError = () => {
+    return invalid && !!seedWroteIt && (
+      <View style={styles.msgBox}>
+        <ErrorIcon />
+        <CustomText titilium color={themeColors.dangerFlashBackground} style={{ marginLeft: 4 }}>{"Invalid order. Try again!"}</CustomText>
+      </View>
+    )
+  }
+
   return (
     <ScreenContainer
       preventBackPress={seedWroteIt ? resetSeed : undefined}
@@ -196,7 +211,13 @@ const SeedPhrase = () => {
         </View>
         <Spacer height={16} />
         <ScrollView style={{ paddingTop: 10, paddingLeft: 10 }} bounces={false}>
-          <Phrase success={() => setButtonDisabled(false)} />
+          <Phrase
+            success={() => setButtonDisabled(false)}
+            onIvalideSelect={() => {
+              setInvalid(true); 
+              setTimeout(() => setInvalid(false), 2000)
+            }} />
+          {renderError()}
         </ScrollView>
       </View>
       {
@@ -229,7 +250,7 @@ const SeedPhrase = () => {
       }
       <Spacer height={10} />
       <Button
-        // disabled={buttonDisabled}
+        disabled={buttonDisabled}
         label={buttonText}
         onPress={handleContinue}
       />
@@ -291,6 +312,10 @@ const styles = StyleSheet.create({
   modal: {
     alignItems: "center",
     marginVertical: 20
+  },
+  msgBox: {
+    flexDirection: "row",
+    alignItems: "center"
   }
 });
 

@@ -12,6 +12,7 @@ const PinHandler = ({
 	digits = 6, //by default 6 digits
 	errors = [],
 	success = [],
+	bridge
 }) => {
 
 	const inputRefs = useRef({});
@@ -38,7 +39,14 @@ const PinHandler = ({
 
 	useEffect(() => {
 		autoFocus && inputRefs.current?.[0].focus();
+		if (bridge) bridge.current = innerBirdge
 	}, [])
+
+	const innerBirdge = ({ focus }) => {
+		if (typeof focus === "boolean" && focus) {
+			inputRefs.current?.[0].focus();
+		}
+	}
 
 	const RenderMsg = useCallback(({ msg, isError }) => {
 		return (
@@ -80,7 +88,9 @@ const PinHandler = ({
 
 const styles = StyleSheet.create({
 	main: {
-		flexDirection: "row"
+		flexDirection: "row",
+		alignItems: "center",
+		justifyContent: "center"
 	},
 	mainBox: {
 		marginBottom: 20
@@ -100,7 +110,7 @@ const styles = StyleSheet.create({
 	box: {
 		width: 30,
 		height: 54,
-		marginRight: 24
+		marginHorizontal: 8,
 	},
 	icon: {
 		height: 10,
@@ -109,7 +119,8 @@ const styles = StyleSheet.create({
 		marginRight: 5
 	},
 	textAlign: {
-		marginBottom: 10
+		marginBottom: 10,
+		textAlign: "center"
 	},
 	msgBox: {
 		marginTop: 12,

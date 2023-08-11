@@ -15,6 +15,7 @@ import DataFormatHelper from "../helpers/DataFormatHelper";
 import NdauStore from "../stores/NdauStore";
 import UserStore from "../stores/UserStore";
 import { useWallet } from "../hooks";
+import { Converters, EthersScanAPI } from "../helpers/EthersScanAPI";
 
 const Dashboard = () => {
 
@@ -26,17 +27,35 @@ const Dashboard = () => {
 	const [selected, setSelected] = useState(0);
 	const [data, setData] = useState([]);
 
-	const tokens = useMemo(() => [
-		{ name: "NDAU", network: "nDau", totalFunds: "0", usdAmount: "$0", image: images.nDau, accounts: getNDauAccounts().length },
-		{ name: "NPAY (ERC20)", network: "zkSync Era", totalFunds: "0", usdAmount: "$0", image: images.nPay },
-		{ name: "USDC (ERC20)", network: "nDau", totalFunds: "0", usdAmount: "$0", image: images.USDC },
-		{ name: "ETHEREUM", network: "ethereum", totalFunds: "0", usdAmount: "$0", image: images.ethereum },
-	], [getNDauAccounts]);
+	const [tokens, setTokens] = useState([
+		{ name: "NDAU", network: "nDau", totalFunds: "0", usdAmount: "0", image: images.nDau, accounts: getNDauAccounts().length },
+		{ name: "NPAY (ERC20)", network: "zkSync Era", totalFunds: "0", usdAmount: "0", image: images.nPay },
+		{ name: "ETHEREUM", network: "ethereum", totalFunds: "0", usdAmount: "0", image: images.ethereum },
+		{ name: "USDC (ERC20)", network: "ethereum", totalFunds: "0", usdAmount: "0", image: images.USDC },
+	]);
 
 	const nfts = [
 		// { name: "CLONE X - X TAKASHI MURAKAMI", image: images.nDau },
 		// { name: "Valhala", image: images.nPay }
 	];
+
+	const loadBalances = async () => {
+		const { result: { ethusd } } = await EthersScanAPI.getEthPriceInUSD();
+		const { result } = await EthersScanAPI.getAddressBalance("0xa6E9515688ff6801AEc13ad73f4aCd722829a5a4");
+		setTokens((_) => {
+			const prev = [..._];
+			const findIndex = prev.findIndex(token => token.name == "ETHEREUM")
+			if (findIndex !== -1) {
+				prev[findIndex].totalFunds = Converters.WEI_ETH(result)
+				prev[findIndex].usdAmount = Converters.ETH_USD(Converters.WEI_ETH(result), ethusd)
+			}
+			return prev;
+		})
+	}
+
+	useEffect(() => {
+		// loadBalances();
+	}, [])
 
 	useEffect(() => {
 
@@ -76,9 +95,9 @@ const Dashboard = () => {
 					<View style={[styles.buttonContainer, { marginHorizontal: 10 }]}>
 						<Button label={'NFTs'} onPress={() => setSelected(1)} buttonContainerStyle={[selected === 0 && styles.unSelect]} buttonTextColor={selected === 0 ? themeColors.black : themeColors.white} />
 					</View>
-					<View style={[styles.buttonContainer]}>
+					{/* <View style={[styles.buttonContainer]}>
 						<Button label={'Search'} rightIcon={<Search />} buttonContainerStyle={styles.searchButton} />
-					</View>
+					</View> */}
 				</View>
 
 				<FlatList
@@ -123,14 +142,14 @@ const styles = StyleSheet.create({
 	},
 	height: { height: 100 },
 	line: {
-		marginVertical: 24,
+		marginVertical: 14,
 		borderWidth: 1,
 		borderColor: themeColors.lightBackground
 	},
 	row: {
 		flexDirection: "row",
 		alignItems: "center",
-		marginBottom: 24
+		marginBottom: 10
 	},
 	buttonContainer: {
 		flex: 1

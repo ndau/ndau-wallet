@@ -8,12 +8,12 @@ import { isSmallerDivce } from "../utils";
 
 const CustomTabBar = ({ state, descriptors, navigation }) => {
 
-	const getIcon = (index) => {
-		switch (index) {
-			case 0: return <NDauLogo />;
-			case 1: return <DApps />;
-			case 2: return <NotificationBell />;
-			case 3: return <Setting />;
+	const getIcon = (name) => {
+		switch (name) {
+			case "Dashboard": return <NDauLogo />;
+			case "DApps": return <DApps />;
+			case "Notifications": return <NotificationBell />;
+			case "Setting": return <Setting />;
 		}
 	}
 
@@ -57,7 +57,7 @@ const CustomTabBar = ({ state, descriptors, navigation }) => {
 					expandStyle
 				]}>
 				<Pressable style={{ flex: 1, width: "100%", justifyContent: "center", alignItems: "center" }} onPress={onPress}>
-					{getIcon(index)}
+					{getIcon(route.name)}
 				</Pressable>
 			</Animated.View>
 		);
