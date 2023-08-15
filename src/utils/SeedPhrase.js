@@ -1,8 +1,8 @@
-import { NativeModules } from "react-native";
-
 import { ethers } from "ethers";
+
 import AppConstants from "../AppConstants";
 import SetupStore from "../stores/SetupStore";
+import { KeyAddr } from "../helpers/KeyAddrManager";
 
 export const SeedPhrase = {
 
@@ -30,8 +30,7 @@ export const SeedPhrase = {
     //   return onGenerate(mnemonic.phrase.split(" ").map((seed, index) => ({ seed, index })))
     // }
 
-    const KeyaddrManager = NativeModules.KeyaddrManager;
-    KeyaddrManager.keyaddrWordsFromBytes(AppConstants.APP_LANGUAGE, SetupStore.entropy).then(seeds => {
+    KeyAddr.wordsFromBytes(AppConstants.APP_LANGUAGE, SetupStore.entropy).then(seeds => {
       try {
         onGenerate(seeds.split(" ").map((seed, index) => ({ seed, index })))
       } catch (e) { onGenerate([]) }
