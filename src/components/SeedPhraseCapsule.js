@@ -40,7 +40,7 @@ const SeedPhraseCapsule = ({ disabled, style, selected, item, index, onSelect, c
 				<View style={styles.inner}>
 					{fullSelection[item.index]?.showIndex && (
 						<View style={styles.selectedIndex}>
-							<CustomText titilium color={themeColors.black} caption>{indexInWord}</CustomText>
+							<CustomText titilium color={themeColors.black} size={9}>{indexInWord}</CustomText>
 						</View>
 					)}
 					<CustomText titilium body>{item.seed}</CustomText>
@@ -53,15 +53,13 @@ const SeedPhraseCapsule = ({ disabled, style, selected, item, index, onSelect, c
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		height: isSmallerDivce() ? 60 : 80,
 		borderWidth: 2,
 		borderColor: themeColors.primary,
 		borderRadius: 100,
-		paddingHorizontal: 10,
 		justifyContent: "center",
 		alignItems: "center",
 		marginRight: 10,
-		marginBottom: 16
+		marginBottom: 10
 	},
 	selected: {
 		backgroundColor: themeColors.primary
@@ -69,10 +67,10 @@ const styles = StyleSheet.create({
 	selectedIndex: {
 		position: "absolute",
 		top: 0,
-		left: -12,
-		height: 28,
-		width: 28,
-		borderRadius: 14,
+		right: -8,
+		height: 26,
+		width: 26,
+		borderRadius: 13,
 		backgroundColor: themeColors.white,
 		justifyContent: "center",
 		alignItems: "center"

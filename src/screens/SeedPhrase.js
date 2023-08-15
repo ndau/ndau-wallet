@@ -24,6 +24,7 @@ const SeedPhrase = () => {
 
   const indeces = useRef([...Array(12)].map((_, i) => i)).current;
   const modalRef = useRef(null);
+  const timeoutRef = useRef(null);
   const [invalid, setInvalid] = useState(false);
   const [seeds, setSeeds] = useState([]);
   const [choosed, setChoosed] = useState(indeces.reduce((prev, curr) => ({ ...prev, [curr]: { showIndex: true, selected: false, index: curr } }), []));
@@ -97,7 +98,7 @@ const SeedPhrase = () => {
 
     return (
       <View style={styles.seedContainer}>
-        <View style={styles.row}>
+        <View style={[styles.row, { flex: 1 }]}>
           {
             seedPhrase.map((item, index) => {
               return index < 2 && <SeedPhraseCapsule
@@ -113,7 +114,7 @@ const SeedPhrase = () => {
             })
           }
         </View>
-        <View style={styles.row}>
+        <View style={[styles.row, { flex: 1 }]}>
           {
             seedPhrase.map((item, index) => {
               return (index >= 2 && index < 5) && <SeedPhraseCapsule
@@ -129,7 +130,7 @@ const SeedPhrase = () => {
             })
           }
         </View>
-        <View style={styles.row}>
+        <View style={[styles.row, { flex: 1 }]}>
           {
             seedPhrase.map((item, index) => {
               return (index >= 5 && index < 7) && <SeedPhraseCapsule
@@ -145,7 +146,7 @@ const SeedPhrase = () => {
             })
           }
         </View>
-        <View style={styles.row}>
+        <View style={[styles.row, { flex: 1 }]}>
           {
             seedPhrase.map((item, index) => {
               return (index >= 7 && index < 9) && <SeedPhraseCapsule
@@ -161,7 +162,7 @@ const SeedPhrase = () => {
             })
           }
         </View>
-        <View style={styles.row}>
+        <View style={[styles.row, { flex: 1 }]}>
           {
             seedPhrase.map((item, index) => {
               return index >= 9 && index < 12 && <SeedPhraseCapsule
@@ -205,50 +206,48 @@ const SeedPhrase = () => {
       {!!loading && <Loading label={'Creating Wallet'} />}
       <Spacer height={10} />
       <View style={styles.container}>
-        <View style={{ height: 70 }}>
+        <View style={{ marginBottom: 10 }}>
           <CustomText h6 semiBold style={styles.margin}>{headings[0]}</CustomText>
           <CustomText titilium body2 style={styles.margin}>{headings[1]}</CustomText>
         </View>
-        <Spacer height={16} />
-        <ScrollView style={{ paddingTop: 10, paddingLeft: 10 }} bounces={false}>
-          <Phrase
-            success={() => setButtonDisabled(false)}
-            onIvalideSelect={() => {
-              setInvalid(true); 
-              setTimeout(() => setInvalid(false), 2000)
-            }} />
-          {renderError()}
-        </ScrollView>
+        <Phrase
+          success={() => setButtonDisabled(false)}
+          onIvalideSelect={() => {
+            setInvalid(true);
+            if (timeoutRef.current) clearTimeout(timeoutRef.current);
+            timeoutRef.current = setTimeout(() => setInvalid(false), 2000);
+          }} />
       </View>
-      {
-        !seedWroteIt && (
-          <View style={styles.row}>
-            <CustomText titilium style={{ flex: 1 }}>
-              Save these 12 words in a secure location, and never share them with anyone.
-            </CustomText>
-            <StateButton
-              resetToPrevious
-              onButtonPress={() => {
-                Clipboard.setString(seeds.map(({ seed }) => seed).join(' '))
-              }}
-              states={[
-                (
-                  <View style={styles.buttonCopy}>
-                    <CustomText titiliumSemiBolds>Copy</CustomText>
-                    <Copy />
-                  </View>
-                ),
-                (
-                  <View style={styles.buttonCopied}>
-                    <CustomText titiliumSemiBolds>Copied</CustomText>
-                  </View>
-                )
-              ]}
-            />
-          </View>
-        )
-      }
-      <Spacer height={10} />
+      <View style={styles.lowerBar}>
+        {
+          !seedWroteIt ? (
+            <View style={styles.row}>
+              <CustomText titilium body2 style={{ flex: 1, paddingRight: 20 }}>
+                Save these 12 words in a secure location, and never share them with anyone.
+              </CustomText>
+              <StateButton
+                resetToPrevious
+                onButtonPress={() => {
+                  Clipboard.setString(seeds.map(({ seed }) => seed).join(' '))
+                }}
+                states={[
+                  (
+                    <View style={styles.buttonCopy}>
+                      <CustomText titiliumSemiBolds body2 style={{ marginRight: 6 }}>Copy</CustomText>
+                      <Copy />
+                    </View>
+                  ),
+                  (
+                    <View style={styles.buttonCopied}>
+                      <CustomText titiliumSemiBolds body2>Copied</CustomText>
+                    </View>
+                  )
+                ]}
+              />
+            </View>
+          ) : renderError()
+        }
+      </View>
       <Button
         disabled={buttonDisabled}
         label={buttonText}
@@ -279,13 +278,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20
   },
   seedContainer: {
-    borderRadius: 20,
-    marginBottom: 20,
+    flex: 1,
     justifyContent: "center"
   },
   row: {
     flexDirection: "row",
-    alignItems: "center",
+    alignItems: "center"
   },
   buttonCopy: {
     flexDirection: "row",
@@ -316,6 +314,10 @@ const styles = StyleSheet.create({
   msgBox: {
     flexDirection: "row",
     alignItems: "center"
+  },
+  lowerBar: {
+    marginTop: 10,
+    height: 70
   }
 });
 
