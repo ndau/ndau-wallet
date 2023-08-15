@@ -9,7 +9,7 @@ import CustomText from "./CustomText";
 import { ArrowForward, Plus } from "../assets/svgs/components";
 import AppConstants from "../AppConstants";
 
-const DashboardHeader = ({ marketPrice = 0, totalBalance = 0, accounts = {} }) => {
+const DashboardHeader = ({ currentWalletName = "", marketPrice = 0, totalBalance = 0, accounts = {} }) => {
 
 	const Avatar = useCallback(() => {
 		return (
@@ -81,7 +81,7 @@ const DashboardHeader = ({ marketPrice = 0, totalBalance = 0, accounts = {} }) =
 					<View style={{ flex: 1 }}>
 						<TouchableOpacity>
 							<View style={styles.row}>
-								<CustomText h6 medium>Main Wallet</CustomText>
+								<CustomText h6 medium>{currentWalletName}</CustomText>
 								<View style={styles.rotate}>
 									<ArrowForward white />
 								</View>

@@ -21,6 +21,10 @@ export default useWallet = () => {
     }
   }
 
+  const getActiveWallet = () => {
+    return UserStore.getActiveWallet();
+  }
+
   // this function only works for ERC tokens
   const addWalletWithAddress = (data) => {
     const password = UserStore.getPassword();
@@ -52,6 +56,7 @@ export default useWallet = () => {
 
     addWalletWithAddress,
     getNDauAccounts,
-    addAccountsInNdau
+    addAccountsInNdau,
+    getActiveWallet
   }
 }

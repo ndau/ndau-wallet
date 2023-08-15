@@ -19,7 +19,7 @@ import { Converters, EthersScanAPI } from "../helpers/EthersScanAPI";
 
 const Dashboard = () => {
 
-	const { getNDauAccounts, addAccountsInNdau } = useWallet();
+	const { getNDauAccounts, addAccountsInNdau, getActiveWallet } = useWallet();
 
 	const [currentPrice, setCurrentPrice] = useState(0);
 	const [totalBalance, setTotalBalance] = useState(0);
@@ -82,6 +82,7 @@ const Dashboard = () => {
 		<ScreenContainer tabScreen>
 			<ScrollView showsVerticalScrollIndicator={false}>
 				<DashboardHeader
+					currentWalletName={getActiveWallet()?.walletName}
 					marketPrice={currentPrice}
 					totalBalance={totalBalance}
 					accounts={accounts}

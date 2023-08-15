@@ -68,33 +68,6 @@ const Login = (props) => {
     } catch (error) {
       FlashNotification.show("Invalid passcode");
     }
-
-    try {
-      let user = await MultiSafeHelper.getDefaultUser(passcode);
-
-      console.log(user, "hhhhhh");
-      if (user) {
-        setLoading(true);
-        UserStore.setUser(user);
-        UserStore.setPassword(passcode);
-        try {
-          await UserData.loadUserData(user);
-          setLoading(false);
-          navigation.dispatch(
-            CommonActions.reset({
-              index: 0,
-              routes: [{ name: ScreenNames.TabNav }],
-            })
-          );
-        } catch (error) {
-          LogStore.log(error);
-        }
-      } else {
-        setLoading(false);
-      }
-    } catch (error) {
-      FlashNotification.show("Invalid passcode");
-    }
   };
 
   const authenticating = (passcode) => {
