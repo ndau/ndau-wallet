@@ -24,12 +24,12 @@ import OfflineError from "../errors/OfflineError";
 import MultiSafeHelper from "../helpers/MultiSafeHelper";
 import { WalletSuccessSVGComponent } from "../assets/svgs/components";
 import { ScreenNames } from "./ScreenNames";
-import { useWallet } from "../redux/hooks";
+// import { useWallet } from "../redux/hooks";
 
 const ImportMultiCoinWallet = () => {
   const modalRef = useRef(null);
   const navigation = useNavigation();
-  const { addWallet } = useWallet();
+  // const { addWallet } = useWallet();
   const [recoverdPhrase, setRecoverdPhrase] = useState([]);
   const [loading, setLoading] = useState(false);
   const [walletCount, setWalletCount] = useState(1);
