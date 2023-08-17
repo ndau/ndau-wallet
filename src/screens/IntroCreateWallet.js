@@ -49,16 +49,15 @@ const IntroCreateWallet = ({}) => {
       </View>
       <Button
         label={"Create Wallet"}
-        onPress={() => navigation.navigate(ScreenNames.CreateWallet)}
+        onPress={() => {
+          navigation.navigate(ScreenNames.ImportWallet, { forCreation: true })
+          // navigation.navigate(ScreenNames.CreateWallet, {  })
+        }}
       />
       <Button
         label={"I already have a wallet"}
         textOnly
-        onPress={() =>
-          navigation.navigate(ScreenNames.CreateWallet, {
-            isAlreadyWallet: true,
-          })
-        }
+        onPress={() => navigation.navigate(ScreenNames.CreateWallet, { isAlreadyWallet: true })}
       />
     </ScreenContainer>
   );

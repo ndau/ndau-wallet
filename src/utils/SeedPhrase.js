@@ -3,6 +3,7 @@ import { ethers } from "ethers";
 import AppConstants from "../AppConstants";
 import SetupStore from "../stores/SetupStore";
 import { KeyAddr } from "../helpers/KeyAddrManager";
+import EntropyHelper from "../helpers/EntropyHelper";
 
 export const SeedPhrase = {
 
@@ -23,13 +24,13 @@ export const SeedPhrase = {
 
   sortAsc: seed => seed.sort((itemA, itemB) => itemA.index < itemB.index ? -1 : 1),
 
-  generateSeed: (onGenerate) => {
-    // if (usingEtherLibrary) {
-    //   const mnemonic = ethers.Wallet.createRandom().mnemonic;
-    //   SetupStore.entropy = mnemonic.entropy;
-    //   return onGenerate(mnemonic.phrase.split(" ").map((seed, index) => ({ seed, index })))
-    // }
+  generateSeed: (onGenerate, usingEtherLibrary = false) => {
+    if (usingEtherLibrary) {
+      const mnemonic = ethers.Wallet.createRandom().mnemonic;
+      return onGenerate(mnemonic.phrase.split(" ").map((seed, index) => ({ seed, index })))
+    }
 
+    EntropyHelper.generateEntropy()
     KeyAddr.wordsFromBytes(AppConstants.APP_LANGUAGE, SetupStore.entropy).then(seeds => {
       try {
         onGenerate(seeds.split(" ").map((seed, index) => ({ seed, index })))

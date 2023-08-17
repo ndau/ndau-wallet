@@ -30,6 +30,10 @@ class UserStore {
     return this._user[0]
   }
 
+  isUserSetup () {
+    return this._user[0]?.wallets
+  }
+
   setActiveWalletId (wallet) {
     return this.activeWallet[0] = wallet;
   }

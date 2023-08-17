@@ -83,7 +83,7 @@ const createFirstTimeUser = async (
   chainId = AppConstants.MAINNET_ADDRESS,
   numberOfAccounts = 0,
 ) => {
-  console.log('inside first user');
+
   if (!recoveryBytes) {
     throw new Error('you MUST pass recoveryPhrase to this method');
   }

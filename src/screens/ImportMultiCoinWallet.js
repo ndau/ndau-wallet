@@ -193,12 +193,11 @@ const ImportMultiCoinWallet = () => {
       }
       const user = await recoverUser();
       if (user) {
-        if (
-          await MultiSafeHelper.recoveryPhraseAlreadyExists(
-            user.userId,
-            recoverdPhrase
-          )
-        ) {
+        const isExist = await MultiSafeHelper.recoveryPhraseAlreadyExists(
+          user.userId,
+          recoverdPhrase
+        )
+        if (isExist) {
           FlashNotification.showError(
             "This recovery phrase already exists in the wallet."
           );

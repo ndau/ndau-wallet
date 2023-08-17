@@ -9,7 +9,7 @@ import CustomText from "./CustomText";
 import { ArrowForward, Plus } from "../assets/svgs/components";
 import AppConstants from "../AppConstants";
 
-const DashboardHeader = ({ currentWalletName = "", marketPrice = 0, totalBalance = 0, accounts = {} }) => {
+const DashboardHeader = ({ currentWalletName = "", marketPrice = 0, totalBalance = 0, accounts = {}, onAddWallet = () => null }) => {
 
 	const Avatar = useCallback(() => {
 		return (
@@ -90,6 +90,7 @@ const DashboardHeader = ({ currentWalletName = "", marketPrice = 0, totalBalance
 						{/* <CustomText titilium body2 style={styles.walletName}>Account 1</CustomText> */}
 					</View>
 					<Button
+						onPress={onAddWallet}
 						rightIcon={<Plus />}
 						buttonContainerStyle={styles.addAccountButton} />
 				</View>

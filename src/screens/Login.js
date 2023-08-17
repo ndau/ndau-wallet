@@ -7,6 +7,7 @@ import * as keychain from "react-native-keychain";
 import PinHandler from "../components/PinHandler";
 import ScreenContainer from "../components/Screen";
 import MultiSafeHelper from "../helpers/MultiSafeHelper";
+import SetupStore from "../stores/SetupStore";
 import UserStore from "../stores/UserStore";
 import LogStore from "../stores/LogStore";
 import UserData from "../model/UserData";
@@ -49,6 +50,7 @@ const Login = (props) => {
       if (user) {
         setLoading(true);
         UserStore.setUser(user);
+        SetupStore.encryptionPassword = passcode;
         UserStore.setPassword(passcode);
         try {
           await UserData.loadUserData(user);

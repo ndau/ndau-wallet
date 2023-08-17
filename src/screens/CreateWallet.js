@@ -15,7 +15,7 @@ const CreateWallet = (props) => {
   const navigation = useNavigation();
   const [termsAccepted, setTermsAccepted] = useState(false);
 
-  const { isAlreadyWallet } = props?.route?.params ?? {};
+  const { isAlreadyWallet, forCreation, item } = props?.route?.params ?? {};
 
   return (
     <ScreenContainer
@@ -47,15 +47,11 @@ const CreateWallet = (props) => {
         label={"Continue"}
         onPress={() => {
           if (isAlreadyWallet) {
-            navigation.navigate(ScreenNames.ImportMultiCoinWallet);
+            navigation.navigate(ScreenNames.ImportWallet);
           } else {
-            navigation.navigate(ScreenNames.CreateWalletStarted);
+            navigation.navigate(ScreenNames.CreateWalletStarted, { forCreation, item });
           }
         }}
-        // onPress={() => {
-        //   const x=NativeModules.KeyaddrManager
-        //   console.log(x,'x--------')
-        // }}
       />
     </ScreenContainer>
   );

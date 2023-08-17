@@ -13,12 +13,13 @@ import UserStore from "../stores/UserStore";
 import MultiSafeHelper from "../helpers/MultiSafeHelper";
 import EntropyHelper from "../helpers/EntropyHelper";
 
-const CreateWalletStarted = () => {
+const CreateWalletStarted = (props) => {
+  const { forCreation, item } = props?.route?.params ?? {};
   const navigation = useNavigation();
 
   useEffect(() => {
     const password = UserStore.getPassword()
-    MultiSafeHelper.getDefaultUser(password).then(user => {})
+    MultiSafeHelper.getDefaultUser(password).then(user => { })
   }, [])
 
   return (
@@ -44,8 +45,7 @@ const CreateWalletStarted = () => {
       <Button
         label={"Continue"}
         onPress={() => {
-          EntropyHelper.generateEntropy()
-          navigation.navigate(ScreenNames.SeedPhrase)
+          navigation.navigate(ScreenNames.SeedPhrase, { forCreation, item })
         }}
       />
     </ScreenContainer>

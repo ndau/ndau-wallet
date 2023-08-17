@@ -1,8 +1,8 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { ActivityIndicator, StyleSheet, View } from "react-native";
 import { CommonActions, useNavigation } from "@react-navigation/native";
-import { ScrollView } from "react-native-gesture-handler";
 import Clipboard from "@react-native-clipboard/clipboard";
+import { ethers } from "ethers";
 
 import { Copy, ErrorIcon } from "../assets/svgs/components";
 import Button from "../components/Button";
@@ -17,10 +17,15 @@ import Loading from "../components/Loading";
 import Modal, { ModalImage } from "../components/Modal";
 import { ScreenNames } from "../screens/ScreenNames";
 import SetupStore from "../stores/SetupStore";
+import UserStore from "../stores/UserStore";
+import { useWallet } from "../hooks";
+import UserData from "../model/UserData";
 
-const SeedPhrase = () => {
+const SeedPhrase = (props) => {
 
+  const { forCreation, item } = props?.route?.params ?? {};
   const navigation = useNavigation();
+  const { addLegacyWallet, addWalletWithAddress } = useWallet();
 
   const indeces = useRef([...Array(12)].map((_, i) => i)).current;
   const modalRef = useRef(null);
@@ -41,10 +46,12 @@ const SeedPhrase = () => {
   }
 
   useEffect(() => {
-    SeedPhraseGen.generateSeed((data) => {
-      SetupStore.recoveryPhrase = data.map(i => i.seed);
-      setSeeds(data)
-    });
+    setTimeout(() => {
+      SeedPhraseGen.generateSeed((data) => {
+        SetupStore.recoveryPhrase = data.map(i => i.seed);
+        setSeeds(data)
+      }, item.type !== "LEGACY");
+    }, 0);
   }, [])
 
   const resetSeed = () => {
@@ -56,15 +63,7 @@ const SeedPhrase = () => {
   }
 
   const createWallet = () => {
-    setLoading(true);
-
-    // SetupStore.walletId = "Main Wallet 1";
-    // addWallet({ name: "Main Wallet", privateKey: "", publicKey: "" });
-
-    setTimeout(() => {
-      setLoading(false);
-      modalRef.current(true);
-    }, 2000);
+    modalRef.current(true);
   }
 
   const handleContinue = () => {
@@ -76,15 +75,54 @@ const SeedPhrase = () => {
     setButtonText("Create Wallet");
   };
 
-  const handleDone = () => {
+  const handleDone = async () => {
     modalRef.current(false);
-    navigation.dispatch(
-      CommonActions.reset({
-        index: 0,
-        routes: [{ name: ScreenNames.ProtectWallet }],
-      })
-    );
+
+    const isUserSetup = UserStore.isUserSetup();
+    if (isUserSetup) {
+      // user is already setup, no need send the user to the protect wallet
+      // Let's save this wallet in the current user
+
+      if (item.type === "LEGACY") {
+        setLoading(true);
+        let user = UserStore.getUser();
+        user = await addLegacyWallet(user);
+        await UserData.loadUserData(user);
+        setLoading(false);
+        navigateToDashboard();
+        
+      } else {
+        await addEVMWallet();
+      }
+
+    } else {
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 0,
+          routes: [{ name: ScreenNames.ProtectWallet, params: { item } }],
+        })
+      );
+    }
   };
+
+  const addEVMWallet = async () => {
+    setLoading(true);
+    const data = ethers.Wallet.fromPhrase(SetupStore.recoveryPhrase.join(' '))
+    await addWalletWithAddress(data);
+    setLoading(false);
+    navigateToDashboard();
+  }
+
+  const navigateToDashboard = () => {
+    setTimeout(() => {
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 0,
+          routes: [{ name: ScreenNames.TabNav }],
+        })
+      );
+    }, 200);
+  }
 
   const Phrase = useCallback(({ success, onIvalideSelect }) => {
 
@@ -96,6 +134,7 @@ const SeedPhrase = () => {
       cachedSelected.length === Object.keys(choosed).length && success();
     }
 
+    if (seeds.length == 0) return <ActivityIndicator />
     return (
       <View style={styles.seedContainer}>
         <View style={[styles.row, { flex: 1 }]}>
@@ -203,7 +242,7 @@ const SeedPhrase = () => {
     <ScreenContainer
       preventBackPress={seedWroteIt ? resetSeed : undefined}
       steps={{ total: 4, current: 3 }}>
-      {!!loading && <Loading label={'Creating Wallet'} />}
+      {!!loading && <Loading label={'Connecting with blockchain...'} />}
       <Spacer height={10} />
       <View style={styles.container}>
         <View style={{ marginBottom: 10 }}>
@@ -249,7 +288,7 @@ const SeedPhrase = () => {
         }
       </View>
       <Button
-        disabled={buttonDisabled}
+        disabled={seeds.length == 0 || buttonDisabled}
         label={buttonText}
         onPress={handleContinue}
       />

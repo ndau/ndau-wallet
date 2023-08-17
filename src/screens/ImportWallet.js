@@ -10,13 +10,16 @@ import Spacer from "../components/Spacer";
 import { themeColors } from "../config/colors";
 import { ScreenNames } from "./ScreenNames";
 
-const ImportWallet = () => {
+const ImportWallet = (props) => {
+
+  const { forCreation } = props?.route?.params ?? {};
 
   const navigation = useNavigation();
   const [walletItems, setWalletItems] = useState([]);
 
   useEffect(() => {
     setWalletItems([
+      { type: "LEGACY", name: "Ndau Legacy Wallet", image: images.nDau },
       { type: "MULTI-COIN", name: "Multi-Coin Wallet", image: images.walletIcon },
       { type: "ERC-20", name: "NPAY", image: images.nPay },
       { type: "ERC-20", name: "Ethereum", image: images.ethereum },
@@ -39,21 +42,25 @@ const ImportWallet = () => {
   }, [])
 
   const handlePress = (item) => {
-    if (item.type === "MULTI-COIN") navigation.navigate(ScreenNames.ImportMultiCoinWallet)
-    else if (item.type === "ERC-20") navigation.navigate(ScreenNames.ImportClassicWallet, { name: item.name })
+    if (forCreation) {
+      navigation.navigate(ScreenNames.CreateWallet, { item, forCreation })
+    } else {
+      if (item.type === "ERC-20") navigation.navigate(ScreenNames.ImportClassicWallet, { ...item, name: item.name, forCreation })
+      else navigation.navigate(ScreenNames.ImportMultiCoinWallet, { ...item, name: item.name, forCreation })
+    }
   }
 
   return (
     <ScreenContainer>
       <Spacer height={16} />
       <CustomText h6 semiBold style={styles.margin}>
-        Import Wallet
+        {`${forCreation ? "Create" : "Import"} Wallet`}
       </CustomText>
       <Spacer height={16} />
       <FlatList
         data={walletItems}
         keyExtractor={(_, i) => i.toString()}
-        renderItem={({ item, index }) => <WalletItem item={item} showSeparator={index === 0} onPress={handlePress}/>}
+        renderItem={({ item, index }) => <WalletItem item={item} showSeparator={index <= 1} onPress={handlePress} />}
       />
     </ScreenContainer>
   );

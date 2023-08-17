@@ -1,10 +1,13 @@
 import { useSelector } from "react-redux";
 
+import SetupStore from "../stores/SetupStore";
 import UserStore from "../stores/UserStore";
 import DataFormatHelper from "../helpers/DataFormatHelper";
 import MultiSafeHelper from "../helpers/MultiSafeHelper";
 import AccountHelper from "../helpers/AccountHelper";
 import FlashNotification from "../components/common/FlashNotification";
+import User from "../model/User";
+import AppConstants from "../AppConstants";
 
 export default useWallet = () => {
   const { wallets } = useSelector(state => state.WalletReducer);
@@ -25,15 +28,42 @@ export default useWallet = () => {
     return UserStore.getActiveWallet();
   }
 
-  // this function only works for ERC tokens
-  const addWalletWithAddress = (data) => {
-    const password = UserStore.getPassword();
-    MultiSafeHelper.getDefaultUser(password).then(user => {
+  const addLegacyWallet = async (user) => {
+    if (!user) {
+      user = await AccountHelper.setupNewUser(
+        user,
+        DataFormatHelper.convertRecoveryArrayToString(SetupStore.recoveryPhrase),
+        SetupStore.walletId ? SetupStore.walletId : SetupStore.userId,
+        0,
+        SetupStore.entropy,
+        SetupStore.encryptionPassword,
+        SetupStore.addressType
+      );
 
-      const walletAddresHash = DataFormatHelper.create8CharHash(data.address);
+    } else { // Already user is created
+      user = await AccountHelper.addNewWallet(
+        user,
+        DataFormatHelper.convertRecoveryArrayToString(SetupStore.recoveryPhrase),
+        AppConstants.WALLET_NAME + " " + Object.keys(user.wallets).length,
+        user.userId,
+        0,
+        SetupStore.encryptionPassword
+      )
+    }
+    return user;
+  }
+
+  // this function only works for ERC tokens
+  const addWalletWithAddress = async (data) => {
+    const password = UserStore.getPassword();
+
+    let user = await MultiSafeHelper.getDefaultUser(password)
+    const walletAddresHash = DataFormatHelper.create8CharHash(data.address);
+    if (user) { // Already account setup. found user
       user.wallets[walletAddresHash] = {
         type: "ERC",
-        walletId: "Wallet " + Object.keys(user.wallets).length,
+        walletId: `${AppConstants.WALLET_NAME} ` + Object.keys(user.wallets).length,
+        walletName: `${AppConstants.WALLET_NAME} ` + Object.keys(user.wallets).length,
         address: data.address,
         accounts: {},
         keys: {
@@ -42,12 +72,29 @@ export default useWallet = () => {
           path: data.path,
         }
       }
-      MultiSafeHelper.saveUser(
-        user,
-        password
-      );
+    } else { // need to setup new account
+      user = new User();
+      user.userId = `${AppConstants.WALLET_NAME}`
+      const wallet = {
+        type: "ERC",
+        walletId: `${AppConstants.WALLET_NAME}`,
+        walletName: `${AppConstants.WALLET_NAME}`,
+        address: data.address,
+        accounts: {},
+        keys: {
+          publicKey: data.publicKey,
+          privateKey: data.privateKey,
+          path: data.path,
+        }
+      }
+      user.wallets[walletAddresHash] = wallet;
+    }
 
-    })
+    UserStore.setUser(user);
+    await MultiSafeHelper.saveUser(
+      user,
+      password
+    );
   }
 
   return {
@@ -57,6 +104,7 @@ export default useWallet = () => {
     addWalletWithAddress,
     getNDauAccounts,
     addAccountsInNdau,
-    getActiveWallet
+    getActiveWallet,
+    addLegacyWallet
   }
 }

@@ -16,8 +16,9 @@ import NdauStore from "../stores/NdauStore";
 import UserStore from "../stores/UserStore";
 import { useWallet } from "../hooks";
 import { Converters, EthersScanAPI } from "../helpers/EthersScanAPI";
+import { ScreenNames } from "./ScreenNames";
 
-const Dashboard = () => {
+const Dashboard = ({ navigation }) => {
 
 	const { getNDauAccounts, addAccountsInNdau, getActiveWallet } = useWallet();
 
@@ -86,6 +87,7 @@ const Dashboard = () => {
 					marketPrice={currentPrice}
 					totalBalance={totalBalance}
 					accounts={accounts}
+					onAddWallet={() => navigation.navigate(ScreenNames.IntroCreateWallet)}
 				/>
 				<View style={styles.line} />
 

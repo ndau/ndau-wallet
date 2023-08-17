@@ -6,9 +6,9 @@ import {
 } from "react-native-biometrics";
 import { CommonActions, useNavigation } from "@react-navigation/native";
 import * as keychain from "react-native-keychain";
+import { ethers } from "ethers";
 
-import { FaceId, Thumprint } from "../assets/svgs/components";
-import Button from "../components/Button";
+// import { FaceId, Thumprint } from "../assets/svgs/components";
 import CustomText from "../components/CustomText";
 import Loading from "../components/Loading";
 import PinHandler from "../components/PinHandler";
@@ -21,8 +21,14 @@ import UserStore from "../stores/UserStore";
 import AccountHelper from "../helpers/AccountHelper";
 import UserData from "../model/UserData";
 import DataFormatHelper from "../helpers/DataFormatHelper";
+import { useWallet } from "../hooks";
+import AppConstants from "../AppConstants";
 
-const ProtectWallet = () => {
+const ProtectWallet = (props) => {
+
+  const { item } = props?.route?.params ?? {};
+
+  const { addWalletWithAddress, addLegacyWallet } = useWallet()
   const navigation = useNavigation();
   const [loading, setLoading] = useState(false);
   const pinhandlerRef = useRef(null);
@@ -39,14 +45,14 @@ const ProtectWallet = () => {
       pins.confirmPin !== "" &&
       pins.pin === pins.confirmPin
     ) {
-      SetupStore.encryptionPassword = pins.pin;
-      SetupStore.walletId = "Main Wallet";
+
       UserStore.setPassword(pins.pin);
+      const user = UserStore.getUser();
+      SetupStore.encryptionPassword = pins.pin;
+      SetupStore.walletId = user?.userId || "Main Wallet";
 
       // Store password for future use if user try FaceId for unlock
-      keychain.setGenericPassword("", pins.pin, {
-        storage: keychain.STORAGE_TYPE.AES,
-      });
+      keychain.setGenericPassword("", pins.pin, { storage: keychain.STORAGE_TYPE.AES });
 
       setValidate((_) => ({
         ..._,
@@ -67,23 +73,32 @@ const ProtectWallet = () => {
     }
   }, [pins.pin, pins.confirmPin]);
 
-  const addNewUser = async () => {
+  const addUser = async () => {
     setLoading(true);
     let user = UserStore.getUser();
-    user = await AccountHelper.setupNewUser(
-      user,
-      DataFormatHelper.convertRecoveryArrayToString(SetupStore.recoveryPhrase),
-      SetupStore.walletId ? SetupStore.walletId : SetupStore.userId,
-      0,
-      SetupStore.entropy,
-      SetupStore.encryptionPassword,
-      SetupStore.addressType
-    );
-    await UserData.loadUserData(user);
-    UserStore.setPassword(SetupStore.encryptionPassword);
+    const isFirstTime = !user;
+    if (item.type === "LEGACY") {
+
+      user = await addLegacyWallet(user);
+      await UserData.loadUserData(user);
+      UserStore.setPassword(SetupStore.encryptionPassword);
+
+    } else {
+      await addEVMWallet();
+    }
     setLoading(false);
-    verifyBiometric();
+
+    if (isFirstTime) {
+      verifyBiometric();
+    } else {
+      navigateToDashboard();
+    }
   };
+
+  const addEVMWallet = async () => {
+    const data = ethers.Wallet.fromPhrase(SetupStore.recoveryPhrase.join(' '))
+    await addWalletWithAddress(data);
+  }
 
   const checkSensorsAvailability = () => {
     ReactNativeBiometricsLegacy.isSensorAvailable().then((res) => {
@@ -92,7 +107,7 @@ const ProtectWallet = () => {
         isTouchId: res.available && res.biometryType === BiometryTypes.TouchID,
       };
       setBiometrics(data);
-      addNewUser();
+      addUser();
     });
   };
 
