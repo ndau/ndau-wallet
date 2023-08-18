@@ -55,15 +55,20 @@ export default useWallet = () => {
 
   // this function only works for ERC tokens
   const addWalletWithAddress = async (data) => {
-    const password = UserStore.getPassword();
 
+    const password = UserStore.getPassword();
     let user = await MultiSafeHelper.getDefaultUser(password)
+    const createNewWalletName = (data) => {
+      if (data.walletName) return data.walletName
+      else return`${AppConstants.WALLET_NAME} ` + Object.keys(user.wallets).length
+    }
+
     const walletAddresHash = DataFormatHelper.create8CharHash(data.address);
     if (user) { // Already account setup. found user
       user.wallets[walletAddresHash] = {
         type: "ERC",
-        walletId: `${AppConstants.WALLET_NAME} ` + Object.keys(user.wallets).length,
-        walletName: `${AppConstants.WALLET_NAME} ` + Object.keys(user.wallets).length,
+        walletId: createNewWalletName(data),
+        walletName: createNewWalletName(data), 
         address: data.address,
         accounts: {},
         keys: {
@@ -77,8 +82,8 @@ export default useWallet = () => {
       user.userId = `${AppConstants.WALLET_NAME}`
       const wallet = {
         type: "ERC",
-        walletId: `${AppConstants.WALLET_NAME}`,
-        walletName: `${AppConstants.WALLET_NAME}`,
+        walletId: createNewWalletName(data),
+        walletName: createNewWalletName(data),
         address: data.address,
         accounts: {},
         keys: {

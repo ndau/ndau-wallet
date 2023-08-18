@@ -49,7 +49,7 @@ const ProtectWallet = (props) => {
       UserStore.setPassword(pins.pin);
       const user = UserStore.getUser();
       SetupStore.encryptionPassword = pins.pin;
-      SetupStore.walletId = user?.userId || "Main Wallet";
+      if (!SetupStore.walletId) SetupStore.walletId = user?.userId || "Main Wallet";
 
       // Store password for future use if user try FaceId for unlock
       keychain.setGenericPassword("", pins.pin, { storage: keychain.STORAGE_TYPE.AES });
