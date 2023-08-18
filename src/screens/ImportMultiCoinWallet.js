@@ -67,7 +67,6 @@ const ImportMultiCoinWallet = (props) => {
       //Todo
       // const isExist = await MultiSafeHelper.recoveryPhraseAlreadyExists(UserStore.getUser().userId, UserStore.getPassword())
       // if (isExist) return FlashNotification.show("This recovery phrase already exists in the wallet.");
-  
       if (checkIfWalletAlreadyExists()) return;
       
       if (item.type === "LEGACY") {
