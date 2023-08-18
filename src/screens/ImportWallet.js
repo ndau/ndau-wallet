@@ -45,8 +45,8 @@ const ImportWallet = (props) => {
     if (forCreation) {
       navigation.navigate(ScreenNames.CreateWallet, { item, forCreation })
     } else {
-      if (item.type === "ERC-20") navigation.navigate(ScreenNames.ImportClassicWallet, { ...item, name: item.name, forCreation })
-      else navigation.navigate(ScreenNames.ImportMultiCoinWallet, { ...item, name: item.name, forCreation })
+      if (item.type === "ERC-20") navigation.navigate(ScreenNames.ImportClassicWallet, { ...item, name: item.name })
+      else navigation.navigate(ScreenNames.ImportMultiCoinWallet, { item })
     }
   }
 
