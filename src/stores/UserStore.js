@@ -9,7 +9,7 @@
  */
 
 class UserStore {
-  constructor () {
+  constructor() {
     if (!UserStore.instance) {
       this.activeWalletId = [];
       this.activeWallet = [];
@@ -21,24 +21,24 @@ class UserStore {
     return UserStore.instance
   }
 
-  setUser (user) {
+  setUser(user) {
     this._user[0] = user;
     return this.getActiveWallet();
   }
 
-  getUser () {
+  getUser() {
     return this._user[0]
   }
 
-  isUserSetup () {
+  isUserSetup() {
     return this._user[0]?.wallets
   }
 
-  setActiveWalletId (wallet) {
-    return this.activeWallet[0] = wallet;
+  setActiveWalletId(walletId) {
+    this.activeWalletId[0] = walletId;
   }
-  
-  getActiveWalletId () {
+
+  getActiveWalletId() {
     if (!this.activeWalletId[0]) {
       const [firstKey] = Object.keys(this._user[0].wallets);
       this.activeWalletId[0] = firstKey;
@@ -46,11 +46,11 @@ class UserStore {
     return this.activeWalletId[0];
   }
 
-  setActiveWallet () {
-
+  setActiveWallet(walletId) {
+    this.setActiveWalletId(walletId);
   }
 
-  getActiveWallet () {
+  getActiveWallet() {
     try {
       const currentWalletId = this.getActiveWalletId();
       const currentWallet = this._user[0].wallets[currentWalletId];
@@ -60,7 +60,7 @@ class UserStore {
     }
   }
 
-  getNdauAccounts = () => {
+  getNdauAccounts() {
     const currentWalletId = this.getActiveWalletId();
     const currentWallet = this._user[0].wallets[currentWalletId];
     const accounts = []
@@ -72,12 +72,22 @@ class UserStore {
     return accounts;
   }
 
-  setPassword (password) {
+  setPassword(password) {
     this._password[0] = password
   }
 
-  getPassword () {
+  getPassword() {
     return this._password[0]
+  }
+
+  getWallets() {
+    if (this._user[0]) {
+      const wallets = [];
+      Object.keys(this._user[0].wallets).forEach(key => {
+        wallets.push({ key, ...this._user[0].wallets[key] });
+      })
+      return wallets;
+    } else return []
   }
 }
 

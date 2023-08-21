@@ -1,9 +1,7 @@
-import { useNavigation } from "@react-navigation/native";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { FlatList, ScrollView, StyleSheet, View } from "react-native";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { Dimensions, FlatList, ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
 
 import { images } from "../assets/images";
-import { Search } from "../assets/svgs/components";
 import Button from "../components/Button";
 import DashboardHeader from "../components/DashboardHeader";
 import NFT from "../components/NFT";
@@ -12,21 +10,37 @@ import Token from "../components/Token";
 import { themeColors } from "../config/colors";
 import AccountAPIHelper from "../helpers/AccountAPIHelper";
 import DataFormatHelper from "../helpers/DataFormatHelper";
+import { Converters, EthersScanAPI } from "../helpers/EthersScanAPI";
+import { useWallet } from "../hooks";
 import NdauStore from "../stores/NdauStore";
 import UserStore from "../stores/UserStore";
-import { useWallet } from "../hooks";
-import { Converters, EthersScanAPI } from "../helpers/EthersScanAPI";
 import { ScreenNames } from "./ScreenNames";
+import BottomSheetModal from "../components/BottomSheetModal";
+import CustomText from "../components/CustomText";
+import { ArrowDownSVGComponent, BlockChainWalletLogoSVGComponent } from "../assets/svgs/components";
+import Spacer from "../components/Spacer";
+import { addWalletsData } from "../utils";
+import DashBoardBottomSheetCard from "./components/DashBoardBottomSheetCard";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Dashboard = ({ navigation }) => {
 
-	const { getNDauAccounts, addAccountsInNdau, getActiveWallet } = useWallet();
 
+	// useEffect(() => {
+
+	// 	AsyncStorage.clear()
+
+	// }, [])
+
+	const { getNDauAccounts, addAccountsInNdau, getActiveWallet, addLegacyWallet } = useWallet();
+
+	const [walletData, setWalletData] = useState({ walletName: "" });
 	const [currentPrice, setCurrentPrice] = useState(0);
 	const [totalBalance, setTotalBalance] = useState(0);
 	const [accounts, setAccounts] = useState({});
 	const [selected, setSelected] = useState(0);
 	const [data, setData] = useState([]);
+	const refAddWalletSheet = useRef(null)
 
 	const [tokens, setTokens] = useState([
 		{ name: "NDAU", network: "nDau", totalFunds: "0", usdAmount: "0", image: images.nDau, accounts: getNDauAccounts().length },
@@ -56,12 +70,14 @@ const Dashboard = ({ navigation }) => {
 
 	useEffect(() => {
 		// loadBalances();
+		setWalletData({
+			walletName: UserStore.getActiveWallet().walletId
+		})
 	}, [])
 
 	useEffect(() => {
 
 		const user = UserStore.getUser();
-
 		const accounts = DataFormatHelper.getObjectWithAllAccounts(user)
 		const totalNdauNumber = AccountAPIHelper.accountTotalNdauAmount(accounts, false)
 		const currentPrice = AccountAPIHelper.currentPrice(NdauStore.getMarketPrice(), totalNdauNumber)
@@ -79,15 +95,19 @@ const Dashboard = ({ navigation }) => {
 		else if (selected == 1) return <NFT {...item} index={index} />
 	}, [])
 
+
 	return (
 		<ScreenContainer tabScreen>
 			<ScrollView showsVerticalScrollIndicator={false}>
 				<DashboardHeader
-					currentWalletName={getActiveWallet()?.walletName}
+					currentWalletName={walletData?.walletName}
 					marketPrice={currentPrice}
 					totalBalance={totalBalance}
 					accounts={accounts}
 					onAddWallet={() => navigation.navigate(ScreenNames.IntroCreateWallet)}
+					// onAddWallet={() => {
+					// 	refAddWalletSheet.current.open()
+					// }}
 				/>
 				<View style={styles.line} />
 
@@ -114,6 +134,56 @@ const Dashboard = ({ navigation }) => {
 
 				<View style={styles.height} />
 			</ScrollView>
+
+			<BottomSheetModal
+				refRBSheet={refAddWalletSheet}
+				setIsVisible={() => {
+					refAddWalletSheet.current.close();
+				}}
+				height={Dimensions.get('window').height * 0.55}
+			>
+				<View>
+					<View style={styles.modal}>
+						<CustomText bold body>Wallet</CustomText>
+						<TouchableOpacity onPress={() => {
+							refAddWalletSheet.current.close();
+						}}>
+							<ArrowDownSVGComponent />
+						</TouchableOpacity>
+					</View>
+					<Spacer height={12} />
+					<View style={styles.divider} />
+					<Spacer height={30} />
+
+					<View style={styles.svgContainer}>
+						<BlockChainWalletLogoSVGComponent />
+					</View>
+					<Spacer height={25} />
+					<View style={styles.modalCardContainer}>
+						{
+							addWalletsData.map((item, index) => {
+								return (
+									<DashBoardBottomSheetCard
+										key={index}
+										rightSvg={item.svg}
+										label={item.label}
+										title={item.title}
+										onPress={() => { }}
+										onClose={() => {
+											refAddWalletSheet.current.close();
+										}}
+
+									/>
+								)
+							})
+						}
+					</View>
+
+				</View>
+
+			</BottomSheetModal>
+
+
 		</ScreenContainer>
 	)
 }
@@ -166,7 +236,25 @@ const styles = StyleSheet.create({
 	},
 	unSelect: {
 		backgroundColor: themeColors.white
+	},
+	divider: {
+		width: '100%',
+		height: 1,
+		backgroundColor: "#484848"
+	},
+	modal: {
+		flexDirection: 'row',
+		paddingHorizontal: 20,
+		width: Dimensions.get('window').width,
+		justifyContent: 'space-between'
+	},
+	svgContainer: {
+		alignSelf: 'center'
+	},
+	modalCardContainer: {
+		paddingHorizontal: 16
 	}
+
 })
 
 export default Dashboard;

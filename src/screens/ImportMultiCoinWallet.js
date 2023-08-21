@@ -29,14 +29,14 @@ const ImportMultiCoinWallet = (props) => {
   const modalRef = useRef(null);
   const navigation = useNavigation();
   const [recoverdPhrase, setRecoverdPhrase] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState("");
   const [walletCount, setWalletCount] = useState(1);
   const [errors, setErrors] = useState([]);
   const [walletNameValue, setWalletNameValue] = useState("");
   const [defaultWalletId, setDefaultWalletId] = useState("Wallet 1");
-  const { addWalletWithAddress } = useWallet()
-  
-  const checkIfWalletAlreadyExists =  () => {
+  const { addWalletWithAddress, addLegacyWallet } = useWallet()
+
+  const checkIfWalletAlreadyExists = () => {
 
     try {
       const user = UserStore.getUser();
@@ -63,38 +63,39 @@ const ImportMultiCoinWallet = (props) => {
   };
 
   const recoverWallet = async () => {
-    if(UserStore.isUserSetup()) {
+    if (item.type === "LEGACY") {
+      const bytes = await KeyAddr.wordsToBytes(AppConstants.APP_LANGUAGE, SetupStore.recoveryPhrase.join(" "))
+      if (!bytes) {
+        return FlashNotification.show("Phrase does not belongs to Ndau Legacy wallet");
+      }
+    } else {
+      try {
+        ethers.Wallet.fromPhrase(SetupStore.recoveryPhrase.join(" "))
+      } catch (e) {
+        return FlashNotification.show("Phrase does not support for ERC");
+      }
+    }
+
+    if (UserStore.isUserSetup()) {
       //Todo
       // const isExist = await MultiSafeHelper.recoveryPhraseAlreadyExists(UserStore.getUser().userId, UserStore.getPassword())
       // if (isExist) return FlashNotification.show("This recovery phrase already exists in the wallet.");
       if (checkIfWalletAlreadyExists()) return;
-      
-      if (item.type === "LEGACY") {
-        let user = await recoverUser();
-        if (user) DataFormatHelper.moveTempUserToWalletName(user, SetupStore.walletId);
-        UserStore.setUser(user);
 
+      if (item.type === "LEGACY") {
+        setLoading("Creating a Wallet");
+        let user = UserStore.getUser();
+        UserStore.setUser(user);
+        user.walletName = walletNameValue;
         user = await addLegacyWallet(user);
         await UserData.loadUserData(user);
+        setLoading("");
         navigateToDashboard();
       } else {
         await addEVMWallet();
       }
 
     } else {
-      if (item.type === "LEGACY") {
-        const bytes = await KeyAddr.wordsToBytes(AppConstants.APP_LANGUAGE, SetupStore.recoveryPhrase.join(" "))
-        if (!bytes) {
-          return FlashNotification.show("Phrase does not belongs to Ndau Legacy wallet");
-        }
-      } else {
-        try {
-          ethers.Wallet.fromPhrase(SetupStore.recoveryPhrase.join(" "))
-        } catch (e) {
-          return FlashNotification.show("Phrase does not support for ERC");
-        }
-      }
-
       /**
        * Set the recovery phrase in setup store, 
        * and navigate to ProtectWallet, 
@@ -133,19 +134,25 @@ const ImportMultiCoinWallet = (props) => {
   };
 
   const addEVMWallet = async () => {
-    const data = ethers.Wallet.fromPhrase(recoverdPhrase.join(' '))
-    data.walletName = walletNameValue
-    await addWalletWithAddress(data);
-    navigateToDashboard();
+    setLoading("Creating a Wallet");
+    setTimeout(async () => {
+      const data = ethers.Wallet.fromPhrase(recoverdPhrase.join(' '))
+      data.walletName = walletNameValue
+      await addWalletWithAddress(data);
+      setTimeout(() => {
+        setLoading("Creating a Wallet");
+        navigateToDashboard();
+      }, 500);
+    }, 0);
   }
 
   return (
     <ScreenContainer>
       <Spacer height={16} />
-      {loading && <Loading label={"Connect to BlockChain"} />}
+      {loading && <Loading label={loading} />}
       <View style={styles.container}>
         <CustomText h6 semiBold style={styles.margin}>
-         {`Import ${item?.name}`}
+          {`Import ${item?.name}`}
         </CustomText>
 
         <CustomTextInput

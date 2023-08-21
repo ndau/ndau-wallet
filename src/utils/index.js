@@ -1,5 +1,6 @@
 import { Dimensions } from "react-native"
 import AppConstants from "../AppConstants";
+import { AlreadyHaveWalletSVGComponent, Plus } from "../assets/svgs/components";
 
 export const isSmallerDivce = () => {
   const height = Dimensions.get('window').height;
@@ -154,3 +155,17 @@ export const ndauUtils = {
     return napu
   }
 }
+
+
+export const addWalletsData = [
+  {
+    label: "I don’t have a wallet",
+    title: "Create a new multi-chain wallet",
+    svg: <Plus />
+  },
+  {
+    label: "I already have a wallet",
+    title: "Import a wallet",
+    svg: <AlreadyHaveWalletSVGComponent />
+  },
+]

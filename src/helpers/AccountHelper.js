@@ -147,7 +147,7 @@ const addNewWallet = async (
   );
 
   user.wallets[DataFormatHelper.create8CharHash(walletId)] = wallet;
-
+  UserStore.setActiveWallet(DataFormatHelper.create8CharHash(walletId));
   return MultiSafeHelper.saveUser(
     user,
     encryptionPassword,

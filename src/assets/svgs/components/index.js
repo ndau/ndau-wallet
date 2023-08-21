@@ -13,6 +13,11 @@ import ErrorIcon from "./ErrorIcon";
 import SuccessIcon from "./SuccessIcon";
 import WalletSuccessSVGComponent from "./walletSuccess";
 import Plus from "./Plus";
+import AlreadyHaveWalletSVGComponent from "./AlreadyhaveWalletSvg";
+import ArrowRightSVGComponent from "./ArrowRightSvg";
+import ArrowDownSVGComponent from "./ArrowDownSvg";
+import BlockChainWalletLogoSVGComponent from "./BlockChainWalletLogoSvg";
+
 
 export {
   BackSVGComponent,
@@ -30,4 +35,8 @@ export {
   SuccessIcon,
   Plus,
   WalletSuccessSVGComponent,
+  AlreadyHaveWalletSVGComponent,
+  ArrowRightSVGComponent,
+  ArrowDownSVGComponent,
+  BlockChainWalletLogoSVGComponent,
 };

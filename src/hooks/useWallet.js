@@ -33,7 +33,7 @@ export default useWallet = () => {
       user = await AccountHelper.setupNewUser(
         user,
         DataFormatHelper.convertRecoveryArrayToString(SetupStore.recoveryPhrase),
-        SetupStore.walletId ? SetupStore.walletId : SetupStore.userId,
+        user?.walletName ? user.walletName : SetupStore.walletId ? SetupStore.walletId : SetupStore.userId,
         0,
         SetupStore.entropy,
         SetupStore.encryptionPassword,
@@ -44,7 +44,7 @@ export default useWallet = () => {
       user = await AccountHelper.addNewWallet(
         user,
         DataFormatHelper.convertRecoveryArrayToString(SetupStore.recoveryPhrase),
-        AppConstants.WALLET_NAME + " " + Object.keys(user.wallets).length,
+        user.walletName ? user.walletName : AppConstants.WALLET_NAME + " " + Object.keys(user.wallets).length,
         user.userId,
         0,
         SetupStore.encryptionPassword
@@ -60,15 +60,15 @@ export default useWallet = () => {
     let user = await MultiSafeHelper.getDefaultUser(password)
     const createNewWalletName = (data) => {
       if (data.walletName) return data.walletName
-      else return`${AppConstants.WALLET_NAME} ` + Object.keys(user.wallets).length
+      else return `${AppConstants.WALLET_NAME} ` + (Object.keys(user.wallets).length || "")
     }
 
     const walletAddresHash = DataFormatHelper.create8CharHash(data.address);
     if (user) { // Already account setup. found user
-      user.wallets[walletAddresHash] = {
+      const wallet = {
         type: "ERC",
         walletId: createNewWalletName(data),
-        walletName: createNewWalletName(data), 
+        walletName: createNewWalletName(data),
         address: data.address,
         accounts: {},
         keys: {
@@ -77,6 +77,7 @@ export default useWallet = () => {
           path: data.path,
         }
       }
+      user.wallets[walletAddresHash] = wallet;
     } else { // need to setup new account
       user = new User();
       user.userId = `${AppConstants.WALLET_NAME}`
@@ -96,6 +97,7 @@ export default useWallet = () => {
     }
 
     UserStore.setUser(user);
+    UserStore.setActiveWallet(walletAddresHash);
     await MultiSafeHelper.saveUser(
       user,
       password
