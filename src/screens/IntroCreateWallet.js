@@ -1,6 +1,6 @@
 import { useNavigation } from "@react-navigation/native";
 import React, { useEffect, useRef } from "react";
-import { Image, StyleSheet, View } from "react-native";
+import { Image, NativeModules, StyleSheet, View } from "react-native";
 import { connect } from "react-redux";
 
 import { images } from "../assets/images";
@@ -11,7 +11,7 @@ import { themeColors } from "../config/colors";
 import LottieView from "lottie-react-native";
 import { ScreenNames } from "./ScreenNames";
 
-const IntroCreateWallet = ({}) => {
+const IntroCreateWallet = ({ }) => {
   const navigation = useNavigation();
 
   const animationRef = useRef(null);
@@ -21,6 +21,13 @@ const IntroCreateWallet = ({}) => {
 
     // Or set a specific startFrame and endFrame with:
     animationRef.current?.play(1, 1000);
+    // NativeModules.KeyaddrManager.keyaddrWordsFromPrefix("en", "bo", 4)
+    //   .then(res => {
+    //     console.log('check', JSON.stringify(res, null, 2));
+    //   })
+    //   .catch(err => {
+    //     console.log('check err', JSON.stringify(err.message, null, 2));
+    //   })
   }, []);
 
   return (
