@@ -18,16 +18,17 @@ const ImportWallet = (props) => {
   const [walletItems, setWalletItems] = useState([]);
 
   useEffect(() => {
-    setWalletItems([
-      { type: "LEGACY", name: "Ndau Legacy Wallet", image: images.nDau },
-      { type: "MULTI-COIN", name: "Multi-Coin Wallet", image: images.walletIcon },
-      { type: "ERC-20", name: "NPAY", image: images.nPay },
-      { type: "ERC-20", name: "Ethereum", image: images.ethereum },
-      { type: "ERC-20", name: "Polygon", image: images.polygonIcon }
-    ])
+      setWalletItems([
+        { type: "LEGACY", name: "Ndau Legacy Wallet", image: images.nDau },
+        { type: "MULTI-COIN", name: "Multi-Coin Wallet", image: images.walletIcon },
+        { type: "ERC-20", name: "NPAY", image: images.nPay },
+        { type: "ERC-20", name: "Ethereum", image: images.ethereum },
+        { type: "ERC-20", name: "Polygon", image: images.polygonIcon }
+      ])
   }, [])
 
   const WalletItem = useCallback(({ item, showSeparator, onPress }) => {
+    if (forCreation && item.type === "LEGACY") return null;
     return (
       <>
         <TouchableOpacity activeOpacity={0.8} onPress={() => onPress(item)}>

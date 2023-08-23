@@ -79,6 +79,7 @@ const styles = StyleSheet.create({
   },
   fixedStyle: {
     paddingHorizontal: 14,
+    paddingBottom: 16
   },
   headerCenter: {
     flex: 1,
