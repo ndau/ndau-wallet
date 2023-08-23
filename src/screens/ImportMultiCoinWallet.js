@@ -182,7 +182,6 @@ const ImportMultiCoinWallet = (props) => {
         label={"Import"}
         onPress={handleSubmit}
       />
-
       <CustomModal bridge={modalRef}>
         <View style={styles.modal}>
           <WalletSuccessSVGComponent />
