@@ -1,6 +1,6 @@
 import { CommonActions, useNavigation } from "@react-navigation/native";
 import React, { useRef, useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { Modal, StyleSheet, View } from "react-native";
 import { ethers } from "ethers";
 
 import AppConstants from "../AppConstants";
@@ -51,7 +51,7 @@ const ImportMultiCoinWallet = (props) => {
 
 
   const handleDone = () => {
-    //   finishSetup();
+    navigateToDashboard()
     modalRef.current(false);
   };
 
@@ -90,7 +90,8 @@ const ImportMultiCoinWallet = (props) => {
         user = await addLegacyWallet(user);
         await UserData.loadUserData(user);
         setLoading("");
-        navigateToDashboard();
+        // navigateToDashboard();
+        modalRef.current(true)
       } else {
         await addEVMWallet();
       }
@@ -141,7 +142,8 @@ const ImportMultiCoinWallet = (props) => {
       await addWalletWithAddress(data);
       setTimeout(() => {
         setLoading("Creating a Wallet");
-        navigateToDashboard();
+        // navigateToDashboard();
+        modalRef.current(true)
       }, 500);
     }, 0);
   }
@@ -182,6 +184,7 @@ const ImportMultiCoinWallet = (props) => {
         label={"Import"}
         onPress={handleSubmit}
       />
+
       <CustomModal bridge={modalRef}>
         <View style={styles.modal}>
           <WalletSuccessSVGComponent />
@@ -191,6 +194,7 @@ const ImportMultiCoinWallet = (props) => {
         </View>
         <Button label={"Done"} onPress={handleDone} />
       </CustomModal>
+
     </ScreenContainer>
   );
 };

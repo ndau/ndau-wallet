@@ -24,7 +24,9 @@ import store from './redux/store';
 import AuthLoading from './screens/AuthLoading';
 import Login from './screens/Login';
 import { FlashMessage } from './components/common/FlashNotification';
+import { LogBox } from 'react-native';
 
+LogBox.ignoreAllLogs()
 
 const ScreenOptions = { headerShown: false };
 
@@ -57,7 +59,7 @@ const MainStack = () => {
   useEffect(() => {
     setTimeout(() => {
       SplashScreen.hide();
-    }, 3000);
+    }, 500);
   }, []);
 
   return (
@@ -77,6 +79,7 @@ const MainStack = () => {
       <Stack.Screen name={ScreenNames.ImportClassicWallet} component={ImportClassicWallet} />
       <Stack.Screen name={ScreenNames.ProtectWallet} component={ProtectWallet} />
       <Stack.Screen name={ScreenNames.TabNav} component={MainTabs} />
+      
     </Stack.Navigator>
   )
 }
