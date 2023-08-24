@@ -21,16 +21,8 @@ import { ArrowDownSVGComponent, BlockChainWalletLogoSVGComponent } from "../asse
 import Spacer from "../components/Spacer";
 import { addWalletsData } from "../utils";
 import DashBoardBottomSheetCard from "./components/DashBoardBottomSheetCard";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Dashboard = ({ navigation }) => {
-
-
-	// useEffect(() => {
-
-	// 	AsyncStorage.clear()
-
-	// }, [])
 
 	const { getNDauAccounts, addAccountsInNdau, getActiveWallet, addLegacyWallet } = useWallet();
 
@@ -56,7 +48,9 @@ const Dashboard = ({ navigation }) => {
 
 	const loadBalances = async () => {
 		const { result: { ethusd } } = await EthersScanAPI.getEthPriceInUSD();
-		const { result } = await EthersScanAPI.getAddressBalance("0xa6E9515688ff6801AEc13ad73f4aCd722829a5a4");
+		const response = await EthersScanAPI.getAddressBalance("0xa6E9515688ff6801AEc13ad73f4aCd722829a5a4", EthersScanAPI.contractaddress.USDC);
+		const { result } = response;
+		console.log('result', JSON.stringify(response, null, 2));
 		setTokens((_) => {
 			const prev = [..._];
 			const findIndex = prev.findIndex(token => token.name == "ETHEREUM")

@@ -57,9 +57,9 @@ const Phrase = ({ route: { params } }) => {
             // "Boat Wink Total Art Double Razor Sustain Sphere Nuclear Then Spot Submit"
             // "neither rough month disease tennis boat false brush cancel acoustic describe ladder" - ndau
             // const b = new ethers.Wallet("d9197662960d7fbb0f02565c92ed1b50439b8baa47c1607d3eca909193a14670").address
-            const data = ethers.Wallet.fromPhrase(phrase.current.join(' '))
+            const data = ethers.utils.HDNode.fromMnemonic(phrase.current.join(' '))
             console.log('data', JSON.stringify(data, null, 2));
-            // addWalletWithAddress(data)
+            // addWalletWithAddress(phrase)
           } catch (e) {
             FlashNotification.show("Invalid secret phrase")
           }

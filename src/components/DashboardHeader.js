@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from "react";
 import { ImageBackground, Linking, StyleSheet, TouchableOpacity, View } from "react-native";
-import Animated, { interpolate, interpolateColor, useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
+import Animated, { interpolate, useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
 
 import { images } from "../assets/images";
 import { themeColors } from "../config/colors";
@@ -8,6 +8,7 @@ import Button from "./Button";
 import CustomText from "./CustomText";
 import { ArrowForward, Plus } from "../assets/svgs/components";
 import AppConstants from "../AppConstants";
+import UserStore from "../stores/UserStore";
 
 const DashboardHeader = ({ currentWalletName = "", marketPrice = 0, totalBalance = 0, accounts = {}, onAddWallet = () => null }) => {
 
@@ -69,6 +70,12 @@ const DashboardHeader = ({ currentWalletName = "", marketPrice = 0, totalBalance
 		)
 	}, [marketPrice, accounts])
 
+	const switchWallet = useCallback(() => {
+		setTimeout(() => {
+			console.log('get', JSON.stringify(UserStore.getWallets(), null, 2));
+		}, 0);
+	}, [])
+
 	return (
 		<ImageBackground
 			resizeMode="stretch"
@@ -79,7 +86,7 @@ const DashboardHeader = ({ currentWalletName = "", marketPrice = 0, totalBalance
 				<View style={styles.row}>
 					{/* <Avatar /> */}
 					<View style={{ flex: 1 }}>
-						<TouchableOpacity>
+						<TouchableOpacity onPress={switchWallet}>
 							<View style={styles.row}>
 								<CustomText h6 medium>{currentWalletName}</CustomText>
 								<View style={styles.rotate}>

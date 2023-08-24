@@ -96,8 +96,7 @@ const ProtectWallet = (props) => {
   };
 
   const addEVMWallet = async () => {
-    const data = ethers.Wallet.fromPhrase(SetupStore.recoveryPhrase.join(' '))
-    await addWalletWithAddress(data);
+    await addWalletWithAddress(SetupStore.recoveryPhrase.join(' '));
   }
 
   const checkSensorsAvailability = () => {

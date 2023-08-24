@@ -50,7 +50,7 @@ const SeedPhrase = (props) => {
       SeedPhraseGen.generateSeed((data) => {
         SetupStore.recoveryPhrase = data.map(i => i.seed);
         setSeeds(data)
-      }, item.type !== "LEGACY");
+      });
     }, 0);
   }, [])
 
@@ -107,8 +107,8 @@ const SeedPhrase = (props) => {
 
   const addEVMWallet = async () => {
     setLoading(true);
-    const data = ethers.Wallet.fromPhrase(SetupStore.recoveryPhrase.join(' '))
-    await addWalletWithAddress(data);
+    
+    await addWalletWithAddress(SetupStore.recoveryPhrase.join(' '));
     setLoading(false);
     navigateToDashboard();
   }
@@ -288,7 +288,7 @@ const SeedPhrase = (props) => {
         }
       </View>
       <Button
-        disabled={seeds.length == 0 || buttonDisabled}
+        // disabled={seeds.length == 0 || buttonDisabled}
         label={buttonText}
         onPress={handleContinue}
       />
