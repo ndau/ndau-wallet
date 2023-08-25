@@ -21,12 +21,25 @@ export default useWallet = () => {
     return UserStore.getNdauAccounts()
   }
 
+  const getWallets = () => {
+    return UserStore.getWallets()
+  }
+
   const addAccountsInNdau = (numbersOfAccount = 1) => {
     try {
       AccountHelper.createAccounts(UserStore.getActiveWallet(), numbersOfAccount).then(res => null);
     } catch (error) {
       FlashNotification.show(`Problem adding new account: ${error.message}`);
     }
+  }
+
+  const setActiveWallet = (wallet, onSuccess) => {
+    const key = wallet?.key;
+    if (key) {
+      UserStore.setActiveWalletId(key);
+      onSuccess?.();
+    }
+    else FlashNotification.show("Unable to switch wallet");
   }
 
   const getActiveWallet = () => {
@@ -158,6 +171,8 @@ export default useWallet = () => {
     getNDauAccounts,
     addAccountsInNdau,
     getActiveWallet,
-    addLegacyWallet
+    addLegacyWallet,
+    getWallets,
+    setActiveWallet
   }
 }

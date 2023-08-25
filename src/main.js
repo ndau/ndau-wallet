@@ -24,6 +24,7 @@ import store from './redux/store';
 import AuthLoading from './screens/AuthLoading';
 import Login from './screens/Login';
 import { FlashMessage } from './components/common/FlashNotification';
+import SwitchWallet from './screens/SwitchWallet';
 
 
 const ScreenOptions = { headerShown: false };
@@ -77,6 +78,7 @@ const MainStack = () => {
       <Stack.Screen name={ScreenNames.ImportClassicWallet} component={ImportClassicWallet} />
       <Stack.Screen name={ScreenNames.ProtectWallet} component={ProtectWallet} />
       <Stack.Screen name={ScreenNames.TabNav} component={MainTabs} />
+      <Stack.Screen name={ScreenNames.SwitchWallet} component={SwitchWallet} />
     </Stack.Navigator>
   )
 }

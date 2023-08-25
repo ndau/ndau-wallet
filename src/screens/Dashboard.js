@@ -21,10 +21,12 @@ import { ArrowDownSVGComponent, BlockChainWalletLogoSVGComponent } from "../asse
 import Spacer from "../components/Spacer";
 import { addWalletsData } from "../utils";
 import DashBoardBottomSheetCard from "./components/DashBoardBottomSheetCard";
+import { useIsFocused } from "@react-navigation/native";
 
 const Dashboard = ({ navigation }) => {
 
 	const { getNDauAccounts, addAccountsInNdau, getActiveWallet, addLegacyWallet } = useWallet();
+	const isFocused = useIsFocused();
 
 	const [walletData, setWalletData] = useState({ walletName: "" });
 	const [currentPrice, setCurrentPrice] = useState(0);
@@ -79,7 +81,7 @@ const Dashboard = ({ navigation }) => {
 	useEffect(() => {
 		// loadBalances();
 		setWalletData({ walletName: UserStore.getActiveWallet().walletId })
-	}, [])
+	}, [isFocused])
 
 	useEffect(() => {
 

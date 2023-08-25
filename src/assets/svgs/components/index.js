@@ -17,6 +17,8 @@ import AlreadyHaveWalletSVGComponent from "./AlreadyhaveWalletSvg";
 import ArrowRightSVGComponent from "./ArrowRightSvg";
 import ArrowDownSVGComponent from "./ArrowDownSvg";
 import BlockChainWalletLogoSVGComponent from "./BlockChainWalletLogoSvg";
+import WalletIcon from "./WalletIcon";
+import InfoIcon from "./InfoIcon";
 
 
 export {
@@ -39,4 +41,6 @@ export {
   ArrowRightSVGComponent,
   ArrowDownSVGComponent,
   BlockChainWalletLogoSVGComponent,
+  WalletIcon,
+  InfoIcon
 };
