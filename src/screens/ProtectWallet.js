@@ -133,10 +133,10 @@ const ProtectWallet = (props) => {
       .catch((err) => {
         Alert.alert(
           "Additional Security",
-          "Enable Touch ID / Face ID for more secure the account",
+          "Enable Touch ID / Face ID for more secure the account or you may can do it through setting option",
           [
-            { text: "Open Settings", onPress: () => Linking.openSettings() },
-            { text: "Later", onPress: navigateToDashboard },
+            // { text: "Open Settings", onPress: () => Linking.openSettings() },
+            { text: "OK", onPress: navigateToDashboard },
           ]
         );
       });

@@ -4,7 +4,7 @@ import { CommonActions, useNavigation } from "@react-navigation/native";
 import Clipboard from "@react-native-clipboard/clipboard";
 import { ethers } from "ethers";
 
-import { Copy, ErrorIcon } from "../assets/svgs/components";
+import { Copy, ErrorIcon, WalletSuccessSVGComponent } from "../assets/svgs/components";
 import Button from "../components/Button";
 import CustomText from "../components/CustomText";
 import ScreenContainer from "../components/Screen";
@@ -224,7 +224,7 @@ const SeedPhrase = (props) => {
   const headings = useMemo(() => {
     const headings = {
       before: ['Back up your wallet', 'Your secret recovery phrase is used to recover your crypto if you lose your phone or switch to a different wallet.'],
-      after: ['Did you save it?', 'Please confirm you saved your recovery phrase by selecting the 1st and 12th words. This ensures secure account access in the future.'],
+      after: ['Did you save it?', 'Please confirm by selecting all 12 words in sequence as mentioned on previous screen. This ensures secure account access in the future.'],
     }
     return seedWroteIt ? headings.after : headings.before
   }, [seedWroteIt])
@@ -288,13 +288,13 @@ const SeedPhrase = (props) => {
         }
       </View>
       <Button
-        // disabled={seeds.length == 0 || buttonDisabled}
+        disabled={seeds.length == 0 || buttonDisabled}
         label={buttonText}
         onPress={handleContinue}
       />
       <Modal bridge={modalRef}>
         <View style={styles.modal}>
-          <ModalImage />
+          <WalletSuccessSVGComponent/>
           <CustomText titiliumSemiBold body>Your wallet was successfully created</CustomText>
         </View>
         <Button label={'Done'} onPress={handleDone} />

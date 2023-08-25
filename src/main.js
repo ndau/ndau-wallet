@@ -26,6 +26,7 @@ import Login from './screens/Login';
 import { FlashMessage } from './components/common/FlashNotification';
 import SwitchWallet from './screens/SwitchWallet';
 
+LogBox.ignoreAllLogs()
 
 const ScreenOptions = { headerShown: false };
 
@@ -58,7 +59,7 @@ const MainStack = () => {
   useEffect(() => {
     setTimeout(() => {
       SplashScreen.hide();
-    }, 3000);
+    }, 500);
   }, []);
 
   return (
