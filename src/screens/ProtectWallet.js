@@ -96,7 +96,11 @@ const ProtectWallet = (props) => {
   };
 
   const addEVMWallet = async () => {
-    await addWalletWithAddress(SetupStore.recoveryPhrase.join(' '));
+    setLoading(true);
+    setTimeout(() => {
+      addWalletWithAddress(SetupStore.recoveryPhrase.join(' '));
+      setLoading(false);
+    }, 0);
   }
 
   const checkSensorsAvailability = () => {

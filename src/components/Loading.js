@@ -51,7 +51,7 @@ const Loading = ({ label }) => {
 			av3.value = withDelay(speed * 4, withRepeat(withTiming(threshold, { duration: speed }), 2, true));
 		}
 		animationConfig();
-		const intervalId = setInterval(animationConfig, speed * 6);
+		const intervalId = setInterval(animationConfig, speed * 7);
 		return () => {
 			clearInterval(intervalId);
 		}
