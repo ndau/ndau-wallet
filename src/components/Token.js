@@ -28,7 +28,7 @@ const Token = ({ name, network, totalFunds, usdAmount, image, index, accounts, o
 					</View>
 					<View style={{ justifyContent: "space-around", flex: 1, alignItems: "flex-end" }}>
 						<CustomText titiliumSemiBold body>{totalFunds == 0 ? 0 : parseFloat(totalFunds).toFixed(4)}</CustomText>
-						<CustomText titiliumSemiBold>${usdAmount}</CustomText>
+						<CustomText titiliumSemiBold>${usdAmount == 0 ? 0 : parseFloat(usdAmount).toFixed(4)}</CustomText>
 					</View>
 				</View>
 			</Animated.View>

@@ -70,7 +70,7 @@ const ImportMultiCoinWallet = (props) => {
       }
     } else {
       try {
-        ethers.utils.HDNode.fromMnemonic(SetupStore.recoveryPhrase.join(" "))
+        ethers.utils.mnemonicToEntropy(SetupStore.recoveryPhrase.join(" "))
       } catch (e) {
         return FlashNotification.show("Phrase does not support for ERC");
       }
@@ -137,10 +137,8 @@ const ImportMultiCoinWallet = (props) => {
     setLoading("Creating a Wallet");
     setTimeout(async () => {
       await addWalletWithAddress(recoverdPhrase.join(' '), walletNameValue);
-      setTimeout(() => {
-        setLoading("Creating a Wallet");
-        navigateToDashboard();
-      }, 500);
+      setLoading("");
+      navigateToDashboard();
     }, 0);
   }
 

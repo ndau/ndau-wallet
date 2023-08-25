@@ -47,26 +47,38 @@ const Dashboard = ({ navigation }) => {
 	];
 
 	const loadBalances = async () => {
+		const activeWallet = UserStore.getActiveWallet();
+		console.log('wallet', JSON.stringify(activeWallet, null, 2));
 		const { result: { ethusd } } = await EthersScanAPI.getEthPriceInUSD();
-		const response = await EthersScanAPI.getAddressBalance("0xa6E9515688ff6801AEc13ad73f4aCd722829a5a4", EthersScanAPI.contractaddress.USDC);
+		const response = await EthersScanAPI.getAddressBalance(
+			"0xa6E9515688ff6801AEc13ad73f4aCd722829a5a4",
+			// EthersScanAPI.contractaddress.USDC
+		);
 		const { result } = response;
 		console.log('result', JSON.stringify(response, null, 2));
+
 		setTokens((_) => {
 			const prev = [..._];
-			const findIndex = prev.findIndex(token => token.name == "ETHEREUM")
-			if (findIndex !== -1) {
-				prev[findIndex].totalFunds = Converters.WEI_ETH(result)
-				prev[findIndex].usdAmount = Converters.ETH_USD(Converters.WEI_ETH(result), ethusd)
-			}
+			prev.forEach(token => {
+				if (token.name === "ETHEREUM") {
+					token.totalFunds = Converters.WEI_ETH(result)
+					token.usdAmount = Converters.ETH_USD(Converters.WEI_ETH(result), ethusd)
+				}
+
+				if (token.name === "NDAU") {
+					const ndau = AccountAPIHelper.accountTotalNdauAmount(accounts, false);
+					token.totalFunds = ndau;
+					token.usdAmount = ndau * NdauStore.getMarketPrice();
+				}
+				return token;
+			})
 			return prev;
 		})
 	}
 
 	useEffect(() => {
 		// loadBalances();
-		setWalletData({
-			walletName: UserStore.getActiveWallet().walletId
-		})
+		setWalletData({ walletName: UserStore.getActiveWallet().walletId })
 	}, [])
 
 	useEffect(() => {
@@ -99,9 +111,9 @@ const Dashboard = ({ navigation }) => {
 					totalBalance={totalBalance}
 					accounts={accounts}
 					onAddWallet={() => navigation.navigate(ScreenNames.IntroCreateWallet)}
-					// onAddWallet={() => {
-					// 	refAddWalletSheet.current.open()
-					// }}
+				// onAddWallet={() => {
+				// 	refAddWalletSheet.current.open()
+				// }}
 				/>
 				<View style={styles.line} />
 
