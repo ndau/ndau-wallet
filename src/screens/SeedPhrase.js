@@ -90,7 +90,7 @@ const SeedPhrase = (props) => {
         await UserData.loadUserData(user);
         setLoading(false);
         navigateToDashboard();
-        
+
       } else {
         await addEVMWallet();
       }
@@ -106,11 +106,16 @@ const SeedPhrase = (props) => {
   };
 
   const addEVMWallet = async () => {
-    setLoading(true);
-    
-    await addWalletWithAddress(SetupStore.recoveryPhrase.join(' '));
-    setLoading(false);
-    navigateToDashboard();
+    modalRef.current(false);
+    setTimeout(() => {
+      setLoading(true);
+      setTimeout(() => {
+        addWalletWithAddress(SetupStore.recoveryPhrase.join(' ')).then(() => {
+          setLoading(false);
+          navigateToDashboard();
+        })
+      }, 0);
+    }, 500);
   }
 
   const navigateToDashboard = () => {
@@ -242,7 +247,6 @@ const SeedPhrase = (props) => {
     <ScreenContainer
       preventBackPress={seedWroteIt ? resetSeed : undefined}
       steps={{ total: 4, current: 3 }}>
-      {!!loading && <Loading label={'Connecting with blockchain...'} />}
       <Spacer height={10} />
       <View style={styles.container}>
         <View style={{ marginBottom: 10 }}>
@@ -288,13 +292,14 @@ const SeedPhrase = (props) => {
         }
       </View>
       <Button
-        disabled={seeds.length == 0 || buttonDisabled}
+        // disabled={seeds.length == 0 || buttonDisabled}
         label={buttonText}
         onPress={handleContinue}
       />
+      {!!loading && <Loading label={'Connecting with blockchain...'} />}
       <Modal bridge={modalRef}>
         <View style={styles.modal}>
-          <WalletSuccessSVGComponent/>
+          <WalletSuccessSVGComponent />
           <CustomText titiliumSemiBold body>Your wallet was successfully created</CustomText>
         </View>
         <Button label={'Done'} onPress={handleDone} />
