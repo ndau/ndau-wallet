@@ -18,6 +18,13 @@ import ArrowRightSVGComponent from "./ArrowRightSvg";
 import ArrowDownSVGComponent from "./ArrowDownSvg";
 import BlockChainWalletLogoSVGComponent from "./BlockChainWalletLogoSvg";
 
+import Buy from "./Buy";
+import Send from "./Send";
+import Receive from "./Receive";
+import Convert from "./Convert";
+import Lock from "./Lock";
+import Swap from "./Swap";
+
 
 export {
   BackSVGComponent,
@@ -39,4 +46,10 @@ export {
   ArrowRightSVGComponent,
   ArrowDownSVGComponent,
   BlockChainWalletLogoSVGComponent,
+  Buy,
+  Send,
+  Receive,
+  Convert,
+  Lock,
+  Swap
 };

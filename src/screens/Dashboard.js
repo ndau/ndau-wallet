@@ -91,8 +91,13 @@ const Dashboard = ({ navigation }) => {
 	}, [selected])
 
 	const renderItem = useCallback(({ item, index }) => {
-		if (selected == 0) return <Token {...item} index={index} onPress={() => console.log('getNDauAccounts()', JSON.stringify(getNDauAccounts(), null, 2))} />
+		if (selected == 0) return <Token {...item} index={index} onPress={() => handleNavigation(item)} />
 		else if (selected == 1) return <NFT {...item} index={index} />
+	}, [])
+
+	const handleNavigation = useCallback((item) => {
+		if (item.name === "NDAU") navigation.navigate(ScreenNames.NDAUDetail, { item });
+		else navigation.navigate(ScreenNames.ERCDetail, { item });
 	}, [])
 
 
@@ -105,9 +110,9 @@ const Dashboard = ({ navigation }) => {
 					totalBalance={totalBalance}
 					accounts={accounts}
 					onAddWallet={() => navigation.navigate(ScreenNames.IntroCreateWallet)}
-					// onAddWallet={() => {
-					// 	refAddWalletSheet.current.open()
-					// }}
+				// onAddWallet={() => {
+				// 	refAddWalletSheet.current.open()
+				// }}
 				/>
 				<View style={styles.line} />
 

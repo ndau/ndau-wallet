@@ -23,6 +23,8 @@ import TermsPolicy from './screens/TermsPolicy';
 import store from './redux/store';
 import AuthLoading from './screens/AuthLoading';
 import Login from './screens/Login';
+import NDAUDetail from './screens/NDAUDetail';
+import ERCDetail from './screens/ERCDetail';
 import { FlashMessage } from './components/common/FlashNotification';
 
 
@@ -77,6 +79,8 @@ const MainStack = () => {
       <Stack.Screen name={ScreenNames.ImportClassicWallet} component={ImportClassicWallet} />
       <Stack.Screen name={ScreenNames.ProtectWallet} component={ProtectWallet} />
       <Stack.Screen name={ScreenNames.TabNav} component={MainTabs} />
+      <Stack.Screen name={ScreenNames.NDAUDetail} component={NDAUDetail} />
+      <Stack.Screen name={ScreenNames.ERCDetail} component={ERCDetail} />
     </Stack.Navigator>
   )
 }

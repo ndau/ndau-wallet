@@ -16,7 +16,9 @@ const ScreenNames = {
   Dashboard: "Dashboard",
   DApps: "DApps",
   Notifications: "Notifications",
-  Setting: "Setting"
+  Setting: "Setting",
+  NDAUDetail: "NDAUDetail",
+  ERCDetail: "ERCDetail",
 }
 
 export { ScreenNames }

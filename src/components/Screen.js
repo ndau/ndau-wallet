@@ -14,7 +14,7 @@ import CustomText from "./CustomText";
 import Spacer from "./Spacer";
 import { Text } from "react-native-svg";
 
-const ScreenContainer = ({ children, style, steps, preventBackPress, tabScreen = false }) => {
+const ScreenContainer = ({ children, style, steps, preventBackPress, tabScreen = false, headerRight, headerTitle = "" }) => {
   const navigation = useNavigation();
 
   const Header = useCallback(() => {
@@ -31,6 +31,7 @@ const ScreenContainer = ({ children, style, steps, preventBackPress, tabScreen =
           </TouchableOpacity>
         )}
         <View style={styles.headerCenter}>
+          {!!headerTitle && <CustomText titiliumSemiBold style={styles.headerTitle}>{headerTitle}</CustomText>}
           {steps?.total && (
             <View style={styles.row}>
               {Array(steps.total)
@@ -53,6 +54,9 @@ const ScreenContainer = ({ children, style, steps, preventBackPress, tabScreen =
                 })}
             </View>
           )}
+          <View style={[styles.absolute, { right: 0 }]}>
+            {headerRight}
+          </View>
         </View>
       </View>
     );
@@ -61,8 +65,8 @@ const ScreenContainer = ({ children, style, steps, preventBackPress, tabScreen =
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle={"light-content"} />
-        {tabScreen ? <View style={{ height: 20 }}/> : <Header />}
-        <View style={[{ flex: 1 }, style, styles.fixedStyle]}>{children}</View>
+      {tabScreen ? <View style={{ height: 20 }} /> : <Header />}
+      <View style={[{ flex: 1 }, style, styles.fixedStyle]}>{children}</View>
     </SafeAreaView>
   );
 };
@@ -85,6 +89,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    flexDirection: "row"
   },
   absolute: {
     position: "absolute",
@@ -106,6 +111,9 @@ const styles = StyleSheet.create({
     marginRight: 4,
     borderRadius: 10,
   },
+  headerTitle: {
+    
+  }
 });
 
 export default ScreenContainer;
