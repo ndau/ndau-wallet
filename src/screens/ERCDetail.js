@@ -16,7 +16,7 @@ const ERCDetail = (props) => {
 		<ScreenContainer headerTitle={item.name} headerRight={<CopyAddressButton />}>
 			<View style={styles.headerContainer}>
 				<Image style={styles.icon} source={item.image} />
-				<CustomText semiBold h4 style={styles.balance}>{item?.totalFunds?.toFixed(4) || "0.00"}</CustomText>
+				<CustomText semiBold h4 style={styles.balance}>{item?.totalFunds?.toFixed?.(4) || "0.00"}</CustomText>
 
 				<View style={styles.buttonContainer}>
 					<View style={styles.row}>
