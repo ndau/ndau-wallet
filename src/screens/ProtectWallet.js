@@ -96,11 +96,13 @@ const ProtectWallet = (props) => {
   };
 
   const addEVMWallet = async () => {
-    setLoading(true);
-    setTimeout(() => {
-      addWalletWithAddress(SetupStore.recoveryPhrase.join(' '));
+    return new Promise(async (resolve, reject) => {
+      setLoading(true);
+      await addWalletWithAddress(SetupStore.recoveryPhrase.join(' '), SetupStore.walletId);
+      await UserData.loadUserData(UserStore.getUser())
       setLoading(false);
-    }, 0);
+      resolve();
+    })
   }
 
   const checkSensorsAvailability = () => {

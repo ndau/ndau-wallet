@@ -28,7 +28,7 @@ const Dashboard = ({ navigation }) => {
 	const { getNDauAccounts, addAccountsInNdau, getActiveWallet, addLegacyWallet } = useWallet();
 	const isFocused = useIsFocused();
 
-	const [walletData, setWalletData] = useState({ walletName: "" });
+	const [walletData, setWalletData] = useState({ walletName: "", type: "" });
 	const [currentPrice, setCurrentPrice] = useState(0);
 	const [totalBalance, setTotalBalance] = useState(0);
 	const [accounts, setAccounts] = useState({});
@@ -48,39 +48,75 @@ const Dashboard = ({ navigation }) => {
 		// { name: "Valhala", image: images.nPay }
 	];
 
+	const makeToken = (type, { totalFunds, usdAmount, accounts, address }) => {
+		const tokens = {
+			0: { name: "NDAU", network: "nDau", totalFunds: "0", usdAmount: "0", image: images.nDau, accounts: getNDauAccounts().length },
+			1: { name: "NPAY (ERC20)", network: "zkSync Era", totalFunds: "0", usdAmount: "0", image: images.nPay },
+			2: { name: "ETHEREUM", network: "ethereum", totalFunds: "0", usdAmount: "0", image: images.ethereum },
+			3: { name: "USDC (ERC20)", network: "ethereum", totalFunds: "0", usdAmount: "0", image: images.USDC },
+		}
+		return {
+			...tokens[type],
+			address,
+			totalFunds,
+			usdAmount,
+			accounts
+		}
+	}
+
 	const loadBalances = async () => {
-		const activeWallet = UserStore.getActiveWallet();
-		console.log('wallet', JSON.stringify(activeWallet, null, 2));
+
 		const { result: { ethusd } } = await EthersScanAPI.getEthPriceInUSD();
-		const response = await EthersScanAPI.getAddressBalance(
-			"0xa6E9515688ff6801AEc13ad73f4aCd722829a5a4",
-			// EthersScanAPI.contractaddress.USDC
-		);
-		const { result } = response;
-		console.log('result', JSON.stringify(response, null, 2));
 
-		setTokens((_) => {
-			const prev = [..._];
-			prev.forEach(token => {
-				if (token.name === "ETHEREUM") {
-					token.totalFunds = Converters.WEI_ETH(result)
-					token.usdAmount = Converters.ETH_USD(Converters.WEI_ETH(result), ethusd)
-				}
+		Promise.allSettled([
+			EthersScanAPI.getAddressBalance(getActiveWallet().ercAddress),
+			EthersScanAPI.getAddressBalance(getActiveWallet().ercAddress, EthersScanAPI.contractaddress.USDC)
+		]).then(results => {
 
-				if (token.name === "NDAU") {
-					const ndau = AccountAPIHelper.accountTotalNdauAmount(accounts, false);
-					token.totalFunds = ndau;
-					token.usdAmount = ndau * NdauStore.getMarketPrice();
-				}
-				return token;
-			})
-			return prev;
-		})
+			// getting all results
+			const availableEthInWEI = results[0].status === "fulfilled" ? results[0].value.result : 0;
+			const availableUSDC = results[1].status === "fulfilled" ? results[1].value.result : 0;
+
+			const npay = { totalFunds: 0, usdAmount: 0 };
+
+			// handle eth
+			const eth = { totalFunds: Converters.WEI_ETH(availableEthInWEI), usdAmount: Converters.ETH_USD(Converters.WEI_ETH(availableEthInWEI), ethusd) };
+
+			// handle usdc
+			const usdc = { totalFunds: availableUSDC, usdAmount: availableUSDC };
+
+			setTokens([
+				makeToken(0, { totalFunds: 0, accounts: getNDauAccounts().length, usdAmount: 0 }),
+				makeToken(1, { totalFunds: npay.totalFunds, address: getActiveWallet().ercAddress, usdAmount: npay.usdAmount }),
+				makeToken(2, { totalFunds: eth.totalFunds, address: getActiveWallet().ercAddress, usdAmount: eth.usdAmount }),
+				makeToken(3, { totalFunds: usdc.totalFunds, address: getActiveWallet().ercAddress, usdAmount: usdc.usdAmount }),
+			])
+
+		}).catch(err => { })
+
 	}
 
 	useEffect(() => {
-		// loadBalances();
-		setWalletData({ walletName: UserStore.getActiveWallet().walletId })
+		if (isFocused) {
+			if (getActiveWallet().type) {
+				setTokens([
+					makeToken(0, { totalFunds: "l", accounts: getNDauAccounts().length, usdAmount: "l" }),
+					makeToken(1, { totalFunds: "l", address: getActiveWallet().ercAddress, usdAmount: "l" }),
+					makeToken(2, { totalFunds: "l", address: getActiveWallet().ercAddress, usdAmount: "l" }),
+					makeToken(3, { totalFunds: "l", address: getActiveWallet().ercAddress, usdAmount: "l" }),
+				])
+				loadBalances();
+			} else {
+				setTokens([
+					makeToken(0, { totalFunds: 0, accounts: getNDauAccounts().length, address: "", usdAmount: 0 })
+				])
+			}
+
+			setWalletData({
+				walletName: UserStore.getActiveWallet().walletId,
+				type: UserStore.getActiveWallet().type
+			})
+		}
 	}, [isFocused])
 
 	useEffect(() => {
@@ -88,11 +124,17 @@ const Dashboard = ({ navigation }) => {
 		const user = UserStore.getUser();
 		const accounts = DataFormatHelper.getObjectWithAllAccounts(user)
 		const totalNdauNumber = AccountAPIHelper.accountTotalNdauAmount(accounts, false)
-		const currentPrice = AccountAPIHelper.currentPrice(NdauStore.getMarketPrice(), totalNdauNumber)
+		const currentPrice = DataFormatHelper.formatUSDollarValue(parseFloat(totalNdauNumber * NdauStore.getMarketPrice()), 2)
 
 		setAccounts(accounts);
 		setCurrentPrice(NdauStore.getMarketPrice())
-		setTotalBalance(currentPrice);
+		const availableAllUSDAmount = tokens.reduce((prevValue, initial) => prevValue += parseFloat(initial.usdAmount), 0) || 0;
+		setTotalBalance(
+			parseFloat(parseFloat(!isNaN(currentPrice) ? currentPrice : 0) + parseFloat(availableAllUSDAmount)).toFixed(2)
+		);
+	}, [tokens])
+
+	useEffect(() => {
 
 		if (selected === 0) setData(tokens);
 		else if (selected === 1) setData(nfts);
@@ -119,26 +161,43 @@ const Dashboard = ({ navigation }) => {
 				/>
 				<View style={styles.line} />
 
-				<View style={styles.row}>
-					<View style={[styles.buttonContainer]}>
-						<Button label={'Tokens'} onPress={() => setSelected(0)} buttonContainerStyle={[selected === 1 && styles.unSelect]} buttonTextColor={selected === 1 ? themeColors.black : themeColors.font} />
-					</View>
-					<View style={[styles.buttonContainer, { marginHorizontal: 10 }]}>
-						<Button label={'NFTs'} onPress={() => setSelected(1)} buttonContainerStyle={[selected === 0 && styles.unSelect]} buttonTextColor={selected === 0 ? themeColors.black : themeColors.white} />
-					</View>
-					{/* <View style={[styles.buttonContainer]}>
-						<Button label={'Search'} rightIcon={<Search />} buttonContainerStyle={styles.searchButton} />
-					</View> */}
-				</View>
+				{
+					walletData.type == "ERC" ? (
+						<View style={styles.row}>
+							<View style={[styles.buttonContainer]}>
+								<Button label={'Tokens'} onPress={() => setSelected(0)} buttonContainerStyle={[selected === 1 && styles.unSelect]} buttonTextColor={selected === 1 ? themeColors.black : themeColors.font} />
+							</View>
+							<View style={[styles.buttonContainer, { marginHorizontal: 10 }]}>
+								<Button label={'NFTs'} onPress={() => setSelected(1)} buttonContainerStyle={[selected === 0 && styles.unSelect]} buttonTextColor={selected === 0 ? themeColors.black : themeColors.white} />
+							</View>
+							{/* <View style={[styles.buttonContainer]}>
+								<Button label={'Search'} rightIcon={<Search />} buttonContainerStyle={styles.searchButton} />
+							</View> */}
+						</View>
+					) : null
+				}
+				{
+					selected === 0 ? (
+						<FlatList
+							style={{ paddingTop: 2 }}
+							scrollEnabled={false}
+							data={tokens}
+							renderItem={renderItem}
+							keyExtractor={(item, index) => index.toString()}
+						/>
+					) : (
+						<FlatList
+							key={selected}
+							style={{ paddingTop: 2 }}
+							scrollEnabled={false}
+							data={nfts}
+							numColumns={2}
+							renderItem={renderItem}
+							keyExtractor={(item, index) => index.toString()}
+						/>
+					)
+				}
 
-				<FlatList
-					key={selected}
-					scrollEnabled={false}
-					data={data}
-					numColumns={selected == 1 ? 2 : 1}
-					renderItem={renderItem}
-					keyExtractor={(item, index) => index.toString()}
-				/>
 
 				<View style={styles.height} />
 			</ScrollView>

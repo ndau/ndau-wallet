@@ -104,7 +104,7 @@ const DashboardHeader = ({ currentWalletName = "", marketPrice = 0, totalBalance
 
 				<View style={{ marginTop: 30 }}>
 					<CustomText titilium body style={{ marginBottom: 6 }}>Your Balance</CustomText>
-					<CustomText h1 semiBold>{totalBalance}</CustomText>
+					<CustomText h1 semiBold>${totalBalance}</CustomText>
 					<Collapsible />
 				</View>
 			</View>

@@ -6,8 +6,8 @@ export const Converters = {
 }
 
 export const EthersScanAPI = {
-  endpoint: "https://api.etherscan.io/api?",
-  // endpoint: "https://api-goerli.etherscan.io/api?",
+  // endpoint: "https://api.etherscan.io/api?",
+  endpoint: "https://api-goerli.etherscan.io/api?",
   // apiKey: "JT1CHNSEQUDB3XMHZ9BNQPB6Y3QKRAWSWB", // 
   apiKey: "4MKRXSSHHXW9DCBG63F28JDZJA7U8ETBZR",
 
