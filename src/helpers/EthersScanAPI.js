@@ -6,8 +6,10 @@ export const Converters = {
 }
 
 export const EthersScanAPI = {
+  // endpoint: "https://api.etherscan.io/api?",
   endpoint: "https://api-goerli.etherscan.io/api?",
-  apiKey: "JT1CHNSEQUDB3XMHZ9BNQPB6Y3QKRAWSWB",
+  // apiKey: "JT1CHNSEQUDB3XMHZ9BNQPB6Y3QKRAWSWB", // 
+  apiKey: "4MKRXSSHHXW9DCBG63F28JDZJA7U8ETBZR",
 
   modules: {
     ACOUNT: "account",
@@ -17,6 +19,12 @@ export const EthersScanAPI = {
   actions: {
     BALANCE: "balance",
     ETH_PRICE: "ethprice",
+    TOKEN_BALANCE: "tokenbalance",
+    TOKEN_BALANCE_HISTORY: "tokenbalancehistory"
+  },
+
+  contractaddress: {
+    USDC: "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
   },
 
   __getFormattedEndpoint: ({ module, action, params }) => {
@@ -26,7 +34,9 @@ export const EthersScanAPI = {
     if (!params) return "";
     let paramsStr = "";
     Object.keys(params).forEach((key, index, arr) => {
-      paramsStr += `${key}=${params[key]}`
+      if (params[key]) {
+        paramsStr += `${key}=${params[key]}`
+      }
       if (index < arr.length - 1) paramsStr += "&"
     });
     return paramsStr;
@@ -45,12 +55,12 @@ export const EthersScanAPI = {
       }).catch(err => reject(err))
     })
   },
-  getAddressBalance: (address) => {
+  getAddressBalance: (address, contractaddress = undefined) => {
     return new Promise((resolve, reject) => {
       const apiToCall = EthersScanAPI.__getFormattedEndpoint({
         module: EthersScanAPI.modules.ACOUNT,
-        action: EthersScanAPI.actions.BALANCE,
-        params: { address: address }
+        action: contractaddress ? EthersScanAPI.actions.TOKEN_BALANCE : EthersScanAPI.actions.BALANCE,
+        params: { address, contractaddress }
       })
       APICommunicationHelper.get(apiToCall).then(res => {
         if (res.message === "OK") resolve(res);

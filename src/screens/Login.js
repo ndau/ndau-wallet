@@ -19,6 +19,7 @@ const Login = (props) => {
   const { user, mode, recoveryPhraseString } = props.route.params ?? {};
 
   const called = useRef(false);
+  const pinRef = useRef();
   const navigation = useNavigation();
   const [loading, setLoading] = useState(false);
 
@@ -39,6 +40,7 @@ const Login = (props) => {
         }
       })
       .catch((err) => {
+        pinRef.current({ focus: true });
         // FlashNotification.show("Error while authenticating " + err.message);
       });
   }, []);
@@ -62,6 +64,8 @@ const Login = (props) => {
             })
           );
         } catch (error) {
+          setLoading(false)
+          FlashNotification.show(error.message);
           LogStore.log(error);
         }
       } else {
@@ -84,6 +88,7 @@ const Login = (props) => {
       {loading && <Loading label={"Connecting with blockchain..."} />}
       <View style={styles.center}>
         <PinHandler
+          bridge={pinRef}
           label={"Enter Passcode"}
           onPin={(pin) => authenticating(pin)}
         />
@@ -95,6 +100,7 @@ const Login = (props) => {
 const styles = StyleSheet.create({
   center: {
     flex: 1,
+    marginTop: '20%',
     // justifyContent: "center",
     alignItems: "center",
   },

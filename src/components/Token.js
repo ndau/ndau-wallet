@@ -1,5 +1,5 @@
 import React from "react";
-import { Image, StyleSheet, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, Image, StyleSheet, TouchableOpacity, View } from "react-native";
 import Animated, { FadeInDown } from "react-native-reanimated";
 
 import { themeColors } from "../config/colors";
@@ -27,8 +27,8 @@ const Token = ({ name, network, totalFunds, usdAmount, image, index, accounts, o
 						<CustomText>{network}</CustomText>
 					</View>
 					<View style={{ justifyContent: "space-around", flex: 1, alignItems: "flex-end" }}>
-						<CustomText titiliumSemiBold body>{totalFunds == 0 ? 0 : parseFloat(totalFunds).toFixed(4)}</CustomText>
-						<CustomText titiliumSemiBold>${usdAmount}</CustomText>
+						{totalFunds === "l" ? <ActivityIndicator /> : <CustomText titiliumSemiBold body>{totalFunds == 0 ? 0 : parseFloat(totalFunds).toFixed(4)}</CustomText>}
+						{usdAmount === "l" ? <ActivityIndicator /> : <CustomText titiliumSemiBold>${usdAmount == 0 ? 0 : parseFloat(usdAmount).toFixed(4)}</CustomText>}
 					</View>
 				</View>
 			</Animated.View>
@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
 		borderRadius: 24,
 		borderWidth: StyleSheet.hairlineWidth,
 		borderColor: themeColors.white,
-		marginVertical: 10,
+		marginBottom: 17,
 		marginLeft: 2,
 	},
 	image: {

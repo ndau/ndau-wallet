@@ -19,6 +19,7 @@ const ScreenNames = {
   Setting: "Setting",
   NDAUDetail: "NDAUDetail",
   ERCDetail: "ERCDetail",
+  SwitchWallet: "SwitchWallet"
 }
 
 export { ScreenNames }

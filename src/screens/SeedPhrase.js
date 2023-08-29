@@ -4,7 +4,7 @@ import { CommonActions, useNavigation } from "@react-navigation/native";
 import Clipboard from "@react-native-clipboard/clipboard";
 import { ethers } from "ethers";
 
-import { Copy, ErrorIcon } from "../assets/svgs/components";
+import { Copy, ErrorIcon, WalletSuccessSVGComponent } from "../assets/svgs/components";
 import Button from "../components/Button";
 import CustomText from "../components/CustomText";
 import ScreenContainer from "../components/Screen";
@@ -50,7 +50,7 @@ const SeedPhrase = (props) => {
       SeedPhraseGen.generateSeed((data) => {
         SetupStore.recoveryPhrase = data.map(i => i.seed);
         setSeeds(data)
-      }, item.type !== "LEGACY");
+      });
     }, 0);
   }, [])
 
@@ -90,7 +90,7 @@ const SeedPhrase = (props) => {
         await UserData.loadUserData(user);
         setLoading(false);
         navigateToDashboard();
-        
+
       } else {
         await addEVMWallet();
       }
@@ -106,11 +106,16 @@ const SeedPhrase = (props) => {
   };
 
   const addEVMWallet = async () => {
-    setLoading(true);
-    const data = ethers.Wallet.fromPhrase(SetupStore.recoveryPhrase.join(' '))
-    await addWalletWithAddress(data);
-    setLoading(false);
-    navigateToDashboard();
+    modalRef.current(false);
+    setTimeout(() => {
+      setLoading(true);
+      setTimeout(() => {
+        addWalletWithAddress(SetupStore.recoveryPhrase.join(' ')).then(() => {
+          setLoading(false);
+          navigateToDashboard();
+        })
+      }, 0);
+    }, 500);
   }
 
   const navigateToDashboard = () => {
@@ -224,7 +229,7 @@ const SeedPhrase = (props) => {
   const headings = useMemo(() => {
     const headings = {
       before: ['Back up your wallet', 'Your secret recovery phrase is used to recover your crypto if you lose your phone or switch to a different wallet.'],
-      after: ['Did you save it?', 'Please confirm you saved your recovery phrase by selecting the 1st and 12th words. This ensures secure account access in the future.'],
+      after: ['Did you save it?', 'Please confirm by selecting all 12 words in sequence as mentioned on previous screen. This ensures secure account access in the future.'],
     }
     return seedWroteIt ? headings.after : headings.before
   }, [seedWroteIt])
@@ -242,7 +247,6 @@ const SeedPhrase = (props) => {
     <ScreenContainer
       preventBackPress={seedWroteIt ? resetSeed : undefined}
       steps={{ total: 4, current: 3 }}>
-      {!!loading && <Loading label={'Connecting with blockchain...'} />}
       <Spacer height={10} />
       <View style={styles.container}>
         <View style={{ marginBottom: 10 }}>
@@ -292,9 +296,10 @@ const SeedPhrase = (props) => {
         label={buttonText}
         onPress={handleContinue}
       />
+      {!!loading && <Loading label={'Connecting with blockchain...'} />}
       <Modal bridge={modalRef}>
         <View style={styles.modal}>
-          <ModalImage />
+          <WalletSuccessSVGComponent />
           <CustomText titiliumSemiBold body>Your wallet was successfully created</CustomText>
         </View>
         <Button label={'Done'} onPress={handleDone} />

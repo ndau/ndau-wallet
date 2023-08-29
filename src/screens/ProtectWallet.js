@@ -96,8 +96,13 @@ const ProtectWallet = (props) => {
   };
 
   const addEVMWallet = async () => {
-    const data = ethers.Wallet.fromPhrase(SetupStore.recoveryPhrase.join(' '))
-    await addWalletWithAddress(data);
+    return new Promise(async (resolve, reject) => {
+      setLoading(true);
+      await addWalletWithAddress(SetupStore.recoveryPhrase.join(' '), SetupStore.walletId);
+      await UserData.loadUserData(UserStore.getUser())
+      setLoading(false);
+      resolve();
+    })
   }
 
   const checkSensorsAvailability = () => {
@@ -130,10 +135,10 @@ const ProtectWallet = (props) => {
       .catch((err) => {
         Alert.alert(
           "Additional Security",
-          "Enable Touch ID / Face ID for more secure the account",
+          "Enable Touch ID / Face ID for more secure the account or you may can do it through setting option",
           [
-            { text: "Open Settings", onPress: () => Linking.openSettings() },
-            { text: "Later", onPress: navigateToDashboard },
+            // { text: "Open Settings", onPress: () => Linking.openSettings() },
+            { text: "OK", onPress: navigateToDashboard },
           ]
         );
       });

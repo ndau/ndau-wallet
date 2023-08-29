@@ -1,6 +1,6 @@
 import { CommonActions, useNavigation } from "@react-navigation/native";
 import React, { useRef, useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { Modal, StyleSheet, View } from "react-native";
 import { ethers } from "ethers";
 
 import AppConstants from "../AppConstants";
@@ -51,8 +51,8 @@ const ImportMultiCoinWallet = (props) => {
 
 
   const handleDone = () => {
-    //   finishSetup();
     modalRef.current(false);
+    navigateToDashboard()
   };
 
   const recoverUser = async () => {
@@ -70,7 +70,7 @@ const ImportMultiCoinWallet = (props) => {
       }
     } else {
       try {
-        ethers.Wallet.fromPhrase(SetupStore.recoveryPhrase.join(" "))
+        ethers.utils.mnemonicToEntropy(SetupStore.recoveryPhrase.join(" "))
       } catch (e) {
         return FlashNotification.show("Phrase does not support for ERC");
       }
@@ -83,14 +83,15 @@ const ImportMultiCoinWallet = (props) => {
       if (checkIfWalletAlreadyExists()) return;
 
       if (item.type === "LEGACY") {
-        setLoading("Creating a Wallet");
+        setLoading("Importing a Wallet");
         let user = UserStore.getUser();
         UserStore.setUser(user);
         user.walletName = walletNameValue;
         user = await addLegacyWallet(user);
         await UserData.loadUserData(user);
         setLoading("");
-        navigateToDashboard();
+        // navigateToDashboard();
+        modalRef.current(true)
       } else {
         await addEVMWallet();
       }
@@ -134,14 +135,12 @@ const ImportMultiCoinWallet = (props) => {
   };
 
   const addEVMWallet = async () => {
-    setLoading("Creating a Wallet");
+    setLoading("Importing a Wallet");
     setTimeout(async () => {
-      const data = ethers.Wallet.fromPhrase(recoverdPhrase.join(' '))
-      data.walletName = walletNameValue
-      await addWalletWithAddress(data);
+      await addWalletWithAddress(recoverdPhrase.join(' '), walletNameValue);
       setTimeout(() => {
-        setLoading("Creating a Wallet");
-        navigateToDashboard();
+        setLoading("");
+        modalRef.current(true)
       }, 500);
     }, 0);
   }
@@ -182,6 +181,7 @@ const ImportMultiCoinWallet = (props) => {
         label={"Import"}
         onPress={handleSubmit}
       />
+
       <CustomModal bridge={modalRef}>
         <View style={styles.modal}>
           <WalletSuccessSVGComponent />
@@ -191,6 +191,7 @@ const ImportMultiCoinWallet = (props) => {
         </View>
         <Button label={"Done"} onPress={handleDone} />
       </CustomModal>
+
     </ScreenContainer>
   );
 };

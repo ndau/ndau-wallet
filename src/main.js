@@ -1,3 +1,4 @@
+import { LogBox } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer } from "@react-navigation/native";
 import { CardStyleInterpolators, createStackNavigator } from "@react-navigation/stack";
@@ -26,7 +27,9 @@ import Login from './screens/Login';
 import NDAUDetail from './screens/NDAUDetail';
 import ERCDetail from './screens/ERCDetail';
 import { FlashMessage } from './components/common/FlashNotification';
+import SwitchWallet from './screens/SwitchWallet';
 
+LogBox.ignoreAllLogs()
 
 const ScreenOptions = { headerShown: false };
 
@@ -59,7 +62,7 @@ const MainStack = () => {
   useEffect(() => {
     setTimeout(() => {
       SplashScreen.hide();
-    }, 3000);
+    }, 500);
   }, []);
 
   return (
@@ -81,6 +84,7 @@ const MainStack = () => {
       <Stack.Screen name={ScreenNames.TabNav} component={MainTabs} />
       <Stack.Screen name={ScreenNames.NDAUDetail} component={NDAUDetail} />
       <Stack.Screen name={ScreenNames.ERCDetail} component={ERCDetail} />
+      <Stack.Screen name={ScreenNames.SwitchWallet} component={SwitchWallet} />
     </Stack.Navigator>
   )
 }

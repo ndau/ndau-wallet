@@ -13,6 +13,10 @@ import StateButton from "../components/StateButton";
 import { themeColors } from "../config/colors";
 import FlashNotification from '../components/common/FlashNotification';
 import { useWallet } from '../hooks';
+import SetupStore from "../stores/SetupStore";
+import Loading from '../components/Loading';
+import { CommonActions } from '@react-navigation/native';
+import { ScreenNames } from './ScreenNames';
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -32,17 +36,20 @@ const Tabs = (params) => {
   );
 }
 
-const Phrase = ({ route: { params } }) => {
+const Phrase = ({ navigation, route: { params } }) => {
 
   const { addWalletWithAddress } = useWallet();
+  const [loading, setLoading] = useState("");
   const phrase = useRef([]);
 
   return (
     <View style={styles.screen}>
+      {!!loading && <Loading label={loading}/>}
       <View style={styles.container}>
         <CustomTextInput
           label={"Wallet Name"}
           placeholder={"Wallet Name"}
+          onChangeText={(t) => SetupStore.walletId = t}
         />
         <PhraseHandler
           label={"Phrase"}
@@ -54,12 +61,20 @@ const Phrase = ({ route: { params } }) => {
         label={"Import"}
         onPress={() => {
           try {
-            // "Boat Wink Total Art Double Razor Sustain Sphere Nuclear Then Spot Submit"
-            // "neither rough month disease tennis boat false brush cancel acoustic describe ladder" - ndau
-            // const b = new ethers.Wallet("d9197662960d7fbb0f02565c92ed1b50439b8baa47c1607d3eca909193a14670").address
-            const data = ethers.Wallet.fromPhrase(phrase.current.join(' '))
-            console.log('data', JSON.stringify(data, null, 2));
-            // addWalletWithAddress(data)
+            setLoading("Creating a Wallet");
+            setTimeout(async () => {
+              addWalletWithAddress(phrase.current.join(' '), SetupStore.walletId).then(res => {
+                setLoading("")
+                navigation.dispatch(
+                  CommonActions.reset({
+                    index: 0,
+                    routes: [{ name: ScreenNames.TabNav }],
+                  })
+                );
+              }).catch(err => {
+                setLoading("")
+              })
+            }, 0);
           } catch (e) {
             FlashNotification.show("Invalid secret phrase")
           }
@@ -87,8 +102,8 @@ const Address = ({ route: { params } }) => {
             />
           </View>
           <CustomTextInput
-            label={`${params?.name} Address`}
-            placeholder={`Enter your ${params?.name} Address`}
+            label={`${params?.name} Private Key`}
+            placeholder={`Enter your ${params?.name} Private Key`}
             value={address}
             onChangeText={setAddress}
           />
@@ -100,6 +115,14 @@ const Address = ({ route: { params } }) => {
       </View>
       <Button
         label={"Import"}
+        onPress={() => {
+          try {
+            const data = new ethers.Wallet(address);
+            console.log('data', JSON.stringify(data, null, 2));
+          } catch (e) {
+            FlashNotification.show("Invalid private key")
+          }
+        }}
       />
     </View>
   )

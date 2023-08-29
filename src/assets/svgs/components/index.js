@@ -17,6 +17,8 @@ import AlreadyHaveWalletSVGComponent from "./AlreadyhaveWalletSvg";
 import ArrowRightSVGComponent from "./ArrowRightSvg";
 import ArrowDownSVGComponent from "./ArrowDownSvg";
 import BlockChainWalletLogoSVGComponent from "./BlockChainWalletLogoSvg";
+import WalletIcon from "./WalletIcon";
+import InfoIcon from "./InfoIcon";
 
 import Buy from "./Buy";
 import Send from "./Send";
@@ -51,5 +53,7 @@ export {
   Receive,
   Convert,
   Lock,
-  Swap
+  Swap,
+  WalletIcon,
+  InfoIcon
 };

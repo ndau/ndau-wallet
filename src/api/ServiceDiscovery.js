@@ -17,7 +17,7 @@ import moment from 'moment'
 const BLOCKCHAIN = 1
 const RECOVERY = 2
 
-const PROTOCOL = 'https'
+const PROTOCOL = 'https';
 
 const AWS_S3_SERVICE_JSON =
   'https://s3.us-east-2.amazonaws.com/ndau-json/services.json'
