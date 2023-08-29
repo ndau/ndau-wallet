@@ -28,6 +28,7 @@ import NDAUDetail from './screens/NDAUDetail';
 import ERCDetail from './screens/ERCDetail';
 import { FlashMessage } from './components/common/FlashNotification';
 import SwitchWallet from './screens/SwitchWallet';
+import AddNdauAccount from './screens/AddNdauAccount';
 
 LogBox.ignoreAllLogs()
 
@@ -85,6 +86,8 @@ const MainStack = () => {
       <Stack.Screen name={ScreenNames.NDAUDetail} component={NDAUDetail} />
       <Stack.Screen name={ScreenNames.ERCDetail} component={ERCDetail} />
       <Stack.Screen name={ScreenNames.SwitchWallet} component={SwitchWallet} />
+      <Stack.Screen name={ScreenNames.AddNdauAccount} component={AddNdauAccount} />
+      
     </Stack.Navigator>
   )
 }

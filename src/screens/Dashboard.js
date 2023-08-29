@@ -22,6 +22,7 @@ import Spacer from "../components/Spacer";
 import { addWalletsData } from "../utils";
 import DashBoardBottomSheetCard from "./components/DashBoardBottomSheetCard";
 import { useIsFocused } from "@react-navigation/native";
+import AddWalletsPopup from "./components/dashboard/AddWalletsPopup";
 
 const Dashboard = ({ navigation }) => {
 
@@ -146,7 +147,7 @@ const Dashboard = ({ navigation }) => {
 	}, [])
 
 	const handleNavigation = useCallback((item) => {
-		if (item.name === "NDAU") navigation.navigate(ScreenNames.NDAUDetail, { item });
+		if (item.name === "NDAU") navigation.navigate(ScreenNames.AddNdauAccount, { item });
 		else navigation.navigate(ScreenNames.ERCDetail, { item });
 	}, [])
 
@@ -159,10 +160,10 @@ const Dashboard = ({ navigation }) => {
 					marketPrice={currentPrice}
 					totalBalance={totalBalance}
 					accounts={accounts}
-					onAddWallet={() => navigation.navigate(ScreenNames.IntroCreateWallet)}
-				// onAddWallet={() => {
-				// 	refAddWalletSheet.current.open()
-				// }}
+					// onAddWallet={() => navigation.navigate(ScreenNames.IntroCreateWallet)}
+					onAddWallet={() => {
+						refAddWalletSheet.current.open()
+					}}
 				/>
 				<View style={styles.line} />
 
@@ -214,44 +215,21 @@ const Dashboard = ({ navigation }) => {
 				}}
 				height={Dimensions.get('window').height * 0.55}
 			>
-				<View>
-					<View style={styles.modal}>
-						<CustomText bold body>Wallet</CustomText>
-						<TouchableOpacity onPress={() => {
-							refAddWalletSheet.current.close();
-						}}>
-							<ArrowDownSVGComponent />
-						</TouchableOpacity>
-					</View>
-					<Spacer height={12} />
-					<View style={styles.divider} />
-					<Spacer height={30} />
+				<AddWalletsPopup
 
-					<View style={styles.svgContainer}>
-						<BlockChainWalletLogoSVGComponent />
-					</View>
-					<Spacer height={25} />
-					<View style={styles.modalCardContainer}>
-						{
-							addWalletsData.map((item, index) => {
-								return (
-									<DashBoardBottomSheetCard
-										key={index}
-										rightSvg={item.svg}
-										label={item.label}
-										title={item.title}
-										onPress={() => { }}
-										onClose={() => {
-											refAddWalletSheet.current.close();
-										}}
+					onClose={() => {
+						refAddWalletSheet.current.close()
+					}}
+					onItemClick={(index) => {
 
-									/>
-								)
-							})
-						}
-					</View>
+						if (index === 0) navigation.navigate(ScreenNames.CreateWallet, { isAlreadyWallet: true })
 
-				</View>
+						else navigation.navigate(ScreenNames.ImportWallet, { forCreation: true })
+
+						refAddWalletSheet.current.close();
+
+					}}
+				/>
 
 			</BottomSheetModal>
 
@@ -309,23 +287,7 @@ const styles = StyleSheet.create({
 	unSelect: {
 		backgroundColor: themeColors.white
 	},
-	divider: {
-		width: '100%',
-		height: 1,
-		backgroundColor: "#484848"
-	},
-	modal: {
-		flexDirection: 'row',
-		paddingHorizontal: 20,
-		width: Dimensions.get('window').width,
-		justifyContent: 'space-between'
-	},
-	svgContainer: {
-		alignSelf: 'center'
-	},
-	modalCardContainer: {
-		paddingHorizontal: 16
-	}
+
 
 })
 
