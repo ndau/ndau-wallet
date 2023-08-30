@@ -80,9 +80,9 @@ const saveUser = async (user, encryptionPassword, recoveryPhraseString, walletId
 
   const multiSafe = new MultiSafe()
 
-  LogStore.log(
-    `Persisting key ${walletId} into MultiSafe: ${JSON.stringify(user)}`
-  )
+  // LogStore.log(
+  //   `Persisting key ${walletId} into MultiSafe: ${JSON.stringify(user)}`
+  // )
 
   // create a multisafe
   await multiSafe.create(walletId.replace(/\s+/g, ''), encryptionPassword)

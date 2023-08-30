@@ -60,7 +60,7 @@ const ScreenContainer = ({ children, style, steps, preventBackPress, tabScreen =
         </View>
       </View>
     );
-  }, [steps]);
+  }, [steps, preventBackPress]);
 
   return (
     <SafeAreaView style={styles.container}>

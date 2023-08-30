@@ -96,6 +96,15 @@ const Dashboard = ({ navigation }) => {
 
 	}
 
+	const loadOnlyNDAUBalances = () => {
+		const accounts = DataFormatHelper.getObjectWithAllAccounts(UserStore.getUser());
+		const totalNdauNumber = AccountAPIHelper.accountTotalNdauAmount(accounts, false);
+		const currentPrice = parseFloat(totalNdauNumber * NdauStore.getMarketPrice()).toFixed(4)
+		setTokens([
+			makeToken(0, { totalFunds: totalNdauNumber, accounts: getNDauAccounts().length, address: "", usdAmount: currentPrice })
+		])
+	}
+
 	useEffect(() => {
 		if (isFocused) {
 			if (getActiveWallet().type) {
@@ -108,8 +117,9 @@ const Dashboard = ({ navigation }) => {
 				loadBalances();
 			} else {
 				setTokens([
-					makeToken(0, { totalFunds: 0, accounts: getNDauAccounts().length, address: "", usdAmount: 0 })
+					makeToken(0, { totalFunds: "l", accounts: getNDauAccounts().length, address: "", usdAmount: "l" })
 				])
+				loadOnlyNDAUBalances()
 			}
 
 			setWalletData({
@@ -120,17 +130,9 @@ const Dashboard = ({ navigation }) => {
 	}, [isFocused])
 
 	useEffect(() => {
-
-		const user = UserStore.getUser();
-		const accounts = DataFormatHelper.getObjectWithAllAccounts(user)
-		const totalNdauNumber = AccountAPIHelper.accountTotalNdauAmount(accounts, false)
-		const currentPrice = DataFormatHelper.formatUSDollarValue(parseFloat(totalNdauNumber * NdauStore.getMarketPrice()), 2)
-
-		setAccounts(accounts);
-		setCurrentPrice(NdauStore.getMarketPrice())
 		const availableAllUSDAmount = tokens.reduce((prevValue, initial) => prevValue += parseFloat(initial.usdAmount), 0) || 0;
 		setTotalBalance(
-			parseFloat(parseFloat(!isNaN(currentPrice) ? currentPrice : 0) + parseFloat(availableAllUSDAmount)).toFixed(2)
+			parseFloat(availableAllUSDAmount).toFixed(2)
 		);
 	}, [tokens])
 

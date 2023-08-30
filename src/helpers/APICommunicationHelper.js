@@ -43,6 +43,7 @@ const post = async (
             data: data
           })}`
         )
+        if (url.includes("testnet")) url = url.replace('https', 'http');
         console.log('API Response :: Post ->', url);
         const response = await axios.post(url, data, { timeout: timeoutMS })
         console.log('API Response :: Post ->', {url, data, response: response.data});
@@ -89,6 +90,7 @@ const get = async (url, retries = AppConfig.API_MAX_RETRIES, timeoutMS = AppConf
         LogStore.log(
           `APICommunicationHelper.get ${JSON.stringify({ url: url })}`
         )
+        if (url.includes("testnet")) url = url.replace('https', 'http');
         console.log('API Response :: GET ->', url);
         const response = await axios.get(url, { timeout: timeoutMS })
         console.log('API Response :: GET ->', {url, response: response.data});

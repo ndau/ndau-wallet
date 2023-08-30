@@ -1,5 +1,5 @@
-import React from "react";
-import { Image, ScrollView, StyleSheet, View } from "react-native";
+import React, { useRef } from "react";
+import { Image, Linking, ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
 
 import CopyAddressButton from "../components/CopyAddressButton";
 import CustomText from "../components/CustomText";
@@ -9,9 +9,24 @@ import IconButton from "../components/IconButton";
 import { Buy, Convert, Delete, DollarSign, EAI, Lock, Receive, Send, Swap, UnLocked } from "../assets/svgs/components";
 import Spacer from "../components/Spacer";
 import Button from "../components/Button";
+import CustomModal from "../components/Modal";
+import AppConstants from "../AppConstants";
+import { ScreenNames } from "./ScreenNames";
+import AppConfig from "../AppConfig";
 
 const NDAUDetail = (props) => {
 	const { item } = props?.route?.params ?? {};
+	const customModalRef = useRef();
+
+	const openLink = () => {
+		customModalRef.current(false);
+		Linking.openURL(AppConfig.TRANSACTION_FEE_KNOWLEDGEBASE_URL);
+	}
+
+	const navigateToSend = () => {
+		customModalRef.current(false);
+		setTimeout(() => props.navigation.navigate(ScreenNames.Send, { item }), 250);
+	}
 
 	return (
 		<ScreenContainer headerTitle={item.name} headerRight={<CopyAddressButton />}>
@@ -23,11 +38,10 @@ const NDAUDetail = (props) => {
 					<View style={styles.buttonContainer}>
 						<View style={styles.row}>
 							<IconButton label="Buy" icon={<Buy />} />
-							<IconButton label="Send" icon={<Send />} />
+							<IconButton label="Send" icon={<Send />} onPress={() => customModalRef.current(true)} />
 							<IconButton label="Receive" icon={<Receive />} />
 						</View>
 						<View style={styles.row}>
-							<IconButton label="Swap" icon={<Swap />} />
 							<IconButton label="Convert" icon={<Convert />} />
 							<IconButton label="Lock" icon={<Lock />} />
 						</View>
@@ -61,6 +75,31 @@ const NDAUDetail = (props) => {
 					</View>
 				</View>
 			</ScrollView>
+			<CustomModal bridge={customModalRef}>
+				<View style={styles.innerModalContainer}>
+					<Image style={styles.icon} source={item.image} />
+					<CustomText titiliumSemiBold h5 style={{ marginVertical: 6 }}>NDAU TRANSFER FEE</CustomText>
+					<View style={styles.separator} />
+					<CustomText titilium style={styles.textPara}>Transaction are subject to a small fee that supports the operations of the ndau network</CustomText>
+					<View style={styles.transferFeeContainer}>
+						<CustomText titiliumSemiBold style={styles.textPara}>Transfer Fee</CustomText>
+						<CustomText titiliumSemiBold style={styles.textPara}>{`(${AppConstants.TRANSACTION_FEE} ndau)`}</CustomText>
+					</View>
+					<TouchableOpacity onPress={openLink}>
+						<CustomText titilium caption style={[{ marginTop: 0, marginBottom: 10 }]}>Read more about fees</CustomText>
+					</TouchableOpacity>
+				</View>
+				<Button
+					label={'I Understand'}
+					onPress={navigateToSend}
+				/>
+				<Button
+					textOnly
+					label={'Cancel'}
+					onPress={() => customModalRef.current(false)}
+					buttonContainerStyle={styles.cancelButton}
+				/>
+			</CustomModal>
 			<Button
 				label={'View Transaction'}
 			/>
@@ -125,6 +164,32 @@ const styles = StyleSheet.create({
 		backgroundColor: themeColors.error500,
 		flexDirection: "row",
 		alignItems: "center"
+	},
+	cancelButton: {
+		marginTop: 7,
+		borderWidth: 1,
+		borderColor: themeColors.white
+	},
+	innerModalContainer: {
+		paddingVertical: 10,
+		justifyContent: "center",
+		alignItems: "center"
+	},
+	textPara: {
+		marginVertical: 6,
+		textAlign: "center"
+	},
+	transferFeeContainer: {
+		padding: 10,
+		borderRadius: 14,
+		borderWidth: 1,
+		borderColor: themeColors.white,
+		flexDirection: "row",
+		alignItems: "center",
+		width: "100%",
+		marginVertical: 20,
+		justifyContent: "space-between",
+		backgroundColor: themeColors.black300
 	}
 })
 

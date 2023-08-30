@@ -12,7 +12,8 @@ const CustomTextInput = ({
 	password = false,
 	errors = [],
 	success = [],
-	value = undefined
+	value = undefined,
+	onBlur
 }) => {
 
 	const RenderMsg = useCallback(({ msg, isError }) => {
@@ -37,6 +38,7 @@ const CustomTextInput = ({
 				style={styles.container}
 				onChangeText={onChangeText}
 				secureTextEntry={password}
+				onBlur={onBlur}
 			/>
 			{errors.map(msg => <RenderMsg key={msg} msg={msg} isError />)}
 			{success.map(msg => <RenderMsg key={msg} msg={msg} />)}

@@ -26,14 +26,8 @@
 	<true/>
 	<key>NSAppTransportSecurity</key>
 	<dict>
-		<key>NSExceptionDomains</key>
-		<dict>
-			<key>localhost</key>
-			<dict>
-				<key>NSExceptionAllowsInsecureHTTPLoads</key>
+		<key>NSAllowsArbitraryLoads</key>
 				<true/>
-			</dict>
-		</dict>
 	</dict>
 	<key>NSFaceIDUsageDescription</key>
 	<string></string>

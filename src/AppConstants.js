@@ -65,7 +65,9 @@ const FLASH_MESSAGE_COLOR = '#FFFFFF'
 
 const WALLET_NAME = "Main Wallet";
 
-const NDAU_WEBSITE = "https://ndau.io"
+const NDAU_WEBSITE = "https://ndau.io";
+
+const TRANSACTION_FEE = 0.005;
 
 const TRANSACTION_TYPES = {
   1: 'Transfer',
@@ -153,5 +155,6 @@ export default {
   FLASH_MESSAGE_ERROR_BACKGROUND_COLOR,
   FLASH_MESSAGE_ERROR_COLOR,
   NDAU_WEBSITE,
-  WALLET_NAME
+  WALLET_NAME,
+  TRANSACTION_FEE
 }

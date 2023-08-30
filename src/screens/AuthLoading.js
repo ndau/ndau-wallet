@@ -46,7 +46,7 @@ const AuthLoading = ({}) => {
 
   useEffect(() => {
     DeviceStore.setOnline(true);
-    SettingsStore.useMainNet();
+    SettingsStore.useTestNet();
     authenticating();
   }, []);
 
