@@ -7,7 +7,7 @@ import Spacer from '../../../components/Spacer'
 import Button from '../../../components/Button'
 import { Plus } from '../../../assets/svgs/components'
 
-const NdauAddAccounHeaderCard = ({ addAccountPress }) => {
+const NdauAddAccounHeaderCard = ({ addAccountPress, totalAccounts, totalBalance, convertBalance }) => {
 
     return (
         <View style={styles.container}>
@@ -19,7 +19,7 @@ const NdauAddAccounHeaderCard = ({ addAccountPress }) => {
                     <CustomText color={themeColors.white} body>My NDAU Accounts</CustomText>
                 </View>
                 <View style={styles.totalAccountCon}>
-                    <CustomText color={themeColors.black} body2>4 accounts</CustomText>
+                    <CustomText color={themeColors.black} body2>{totalAccounts?.length > 0 ? `${totalAccounts?.length } accounts`: "0 accounts"}</CustomText>
                 </View>
             </View>
             <Spacer height={20} />
@@ -27,9 +27,9 @@ const NdauAddAccounHeaderCard = ({ addAccountPress }) => {
                 <View>
                     <CustomText color={themeColors.white} body>ndau Balance</CustomText>
                     <Spacer height={8} />
-                    <CustomText color={themeColors.white} bold h3>64.483745</CustomText>
+                    <CustomText color={themeColors.white} bold h3>{totalBalance ? totalBalance : "0"}</CustomText>
                     <Spacer height={8} />
-                    <CustomText color={themeColors.white} body>≈$100.34</CustomText>
+                    <CustomText color={themeColors.white} body>≈ ${convertBalance ? convertBalance : "0"}</CustomText>
                 </View>
                 <View>
                     <Spacer height={30} />

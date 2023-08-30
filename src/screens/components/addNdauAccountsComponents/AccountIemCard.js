@@ -6,9 +6,17 @@ import { themeColors } from '../../../config/colors'
 import NdauAccountLogoSVGComponent from '../../../assets/svgs/components/NdauLogoSvg'
 import { images } from '../../../assets/images'
 
-const AccountIemCard = ({ item, index }) => {
+const AccountItemCard = ({ item, index,onItemClick }) => {
+
+    const makeStringShort = (val) => {
+        console.log(val.length)
+        return val.length < 20
+            ? `${val}`
+            : `${val.substring(0, 20)}.......`
+    }
+
     return (
-        <TouchableOpacity>
+        <TouchableOpacity onPress={()=>onItemClick(item)}>
             <Animated.View style={styles.container}>
 
                 <View style={styles.leftView}>
@@ -18,13 +26,13 @@ const AccountIemCard = ({ item, index }) => {
                     </View>
                     <Spacer width={105} />
                     <View>
-                        <CustomText color={themeColors.white} body >Account 1</CustomText>
-                        <CustomText color={themeColors.white} caption>3528dXaaswaxoc1wd........</CustomText>
+                        <CustomText color={themeColors.white} body >{item?.addressData?.nickname}</CustomText>
+                        <CustomText color={themeColors.white} caption>{makeStringShort(item?.address)}</CustomText>
                     </View>
                 </View>
                 <View style={styles.rightView}>
-                    <CustomText color={themeColors.white} body>16.12075</CustomText>
-                    <CustomText color={themeColors.white} body2>≈$25.08</CustomText>
+                    <CustomText color={themeColors.white} body>0.0</CustomText>
+                    <CustomText color={themeColors.white} body2>≈0.0</CustomText>
                 </View>
 
             </Animated.View>
@@ -32,7 +40,7 @@ const AccountIemCard = ({ item, index }) => {
     )
 }
 
-export default AccountIemCard
+export default AccountItemCard
 
 const styles = StyleSheet.create({
 
@@ -42,7 +50,7 @@ const styles = StyleSheet.create({
         borderWidth: StyleSheet.hairlineWidth,
         borderColor: themeColors.white,
         marginBottom: 12,
-        marginTop:12,
+        marginTop: 12,
         marginLeft: 2,
         justifyContent: 'space-between',
         alignItems: "center",
@@ -66,7 +74,7 @@ const styles = StyleSheet.create({
         left: -1,
         justifyContent: "flex-end",
         paddingTop: 0,
-        paddingLeft:6
+        paddingLeft: 6
 
 
     },

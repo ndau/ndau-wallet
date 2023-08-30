@@ -49,6 +49,9 @@ const Dashboard = ({ navigation }) => {
 		// { name: "Valhala", image: images.nPay }
 	];
 
+
+	console.log(getNDauAccounts(), 'activeWallet------')
+
 	const makeToken = (type, { totalFunds, usdAmount, accounts, address }) => {
 		const tokens = {
 			0: { name: "NDAU", network: "nDau", totalFunds: "0", usdAmount: "0", image: images.nDau, accounts: getNDauAccounts().length },
@@ -68,11 +71,13 @@ const Dashboard = ({ navigation }) => {
 	const loadBalances = async () => {
 
 		const { result: { ethusd } } = await EthersScanAPI.getEthPriceInUSD();
+		console.log(ethusd,'ethusd-----')
 
 		Promise.allSettled([
 			EthersScanAPI.getAddressBalance(getActiveWallet().ercAddress),
 			EthersScanAPI.getAddressBalance(getActiveWallet().ercAddress, EthersScanAPI.contractaddress.USDC)
 		]).then(results => {
+
 
 			// getting all results
 			const availableEthInWEI = results[0].status === "fulfilled" ? results[0].value.result : 0;
@@ -83,6 +88,8 @@ const Dashboard = ({ navigation }) => {
 			// handle eth
 			const eth = { totalFunds: Converters.WEI_ETH(availableEthInWEI), usdAmount: Converters.ETH_USD(Converters.WEI_ETH(availableEthInWEI), ethusd) };
 
+
+			console.log(eth,'results-----')
 			// handle usdc
 			const usdc = { totalFunds: availableUSDC, usdAmount: availableUSDC };
 
@@ -222,9 +229,11 @@ const Dashboard = ({ navigation }) => {
 					}}
 					onItemClick={(index) => {
 
-						if (index === 0) navigation.navigate(ScreenNames.CreateWallet, { isAlreadyWallet: true })
+						console.log(index, 'index--')
 
-						else navigation.navigate(ScreenNames.ImportWallet, { forCreation: true })
+						if (index == 0) navigation.navigate(ScreenNames.ImportWallet,{ forCreation: true } )
+
+						else if (index == 1) navigation.navigate(ScreenNames.CreateWallet,  { isAlreadyWallet: true })
 
 						refAddWalletSheet.current.close();
 

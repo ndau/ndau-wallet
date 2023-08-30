@@ -12,6 +12,8 @@ import Minus from '../../../assets/svgs/components/MinusSvg'
 
 const AddAccountPopupCard = ({ val, increment, decrement, addAccount, onCancel }) => {
 
+
+
     return (
         <View>
             <TouchableOpacity onPress={onCancel}>
@@ -42,6 +44,7 @@ const AddAccountPopupCard = ({ val, increment, decrement, addAccount, onCancel }
                 </View>
                 <Spacer height={30} />
                 <Button
+                
                     label={"Add"}
                     onPress={addAccount}
                     buttonContainerStyle={styles.adBtn} />
