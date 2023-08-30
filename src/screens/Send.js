@@ -10,17 +10,25 @@ import ScreenContainer from "../components/Screen";
 import Spacer from "../components/Spacer";
 import { themeColors } from "../config/colors";
 import Loading from "../components/Loading";
-import AppConstants from "../AppConstants";
+import { useTransaction } from "../hooks";
+import UserStore from "../stores/UserStore";
+import FlashNotification from "../components/common/FlashNotification";
 
 const Send = (props) => {
   const { item } = props?.route?.params ?? {};
 
   const navigation = useNavigation();
+  const { getTransactionFee, sendAmountToNdauAddress } = useTransaction();
 
   const [section, setSection] = useState(0);
   const [ndauAddress, setNdauAddress] = useState("");
   const [ndauAmount, setNdauAmount] = useState("");
   const [loading, setLoading] = useState("");
+  const [transaction, setTransaction] = useState({
+    transactionFee: 0,
+    sib: 0,
+    total: 0
+  })
 
   const renderDetail = ({ title, value }) => {
     return (
@@ -33,7 +41,7 @@ const Send = (props) => {
 
   const getRemainBalance = () => {
     try {
-      const toShow = parseFloat(item.totalFunds - ndauAmount).toFixed(3);
+      const toShow = parseFloat(item.totalFunds - transaction.total).toFixed(3);
       return toShow < 0 ? 0 : toShow
     } catch (e) {
       return "0"
@@ -77,9 +85,22 @@ const Send = (props) => {
 
     const getQuotes = () => {
       setLoading("Updating");
-      setTimeout(() => {
+      getTransactionFee(
+        UserStore.getAccountDetail(
+          item.address
+          // "ndarpiqdjsxa4ywnxjxqhd64mbn3pwaxcb2n2epgj2by9idk"
+        ),
+        ndauAddress,
+        ndauAmount
+      ).then(res => {
         setLoading("");
-      }, 2000);
+        setTransaction(res);
+        setSection(2);
+      }).catch(err => {
+        FlashNotification.show(`${err.message}`);
+        setLoading("");
+        console.log('error', JSON.stringify(err.message, null, 2));
+      });
     }
 
     return (
@@ -92,7 +113,7 @@ const Send = (props) => {
           value={ndauAmount}
           placeholder={"ndau address"}
           onChangeText={setNdauAmount}
-          onBlur={getQuotes}
+          // onBlur={getQuotes}
         />
 
         <Spacer height={10} />
@@ -107,14 +128,14 @@ const Send = (props) => {
             <View style={{ flex: 1 }}>
               <CustomText titiliumSemiBold h6>Fees</CustomText>
               <Spacer height={10} />
-              {renderDetail({ title: "Transaction Fee", value: AppConstants.TRANSACTION_FEE })}
-              {renderDetail({ title: "SIB", value: "0" })}
-              {renderDetail({ title: "Total", value: parseFloat(AppConstants.TRANSACTION_FEE + parseFloat(ndauAmount || 0)).toFixed(8) })}
+              {renderDetail({ title: "Transaction Fee", value: transaction.transactionFee })}
+              {renderDetail({ title: "SIB", value: transaction.sib })}
+              {renderDetail({ title: "Total", value: parseFloat(transaction.total).toFixed(8) })}
             </View>
             <Button
               disabled={ndauAmount.length === 0}
               label={"Next"}
-              onPress={() => setSection(2)}
+              onPress={getQuotes}
             />
           </View>
         </View>
@@ -124,12 +145,20 @@ const Send = (props) => {
 
   const sendTheAmount = () => {
     setLoading("Sending...");
-    setTimeout(() => {
+    sendAmountToNdauAddress(
+      UserStore.getAccountDetail(
+        item.address
+        // "ndarpiqdjsxa4ywnxjxqhd64mbn3pwaxcb2n2epgj2by9idk"
+      ),
+      ndauAddress,
+      ndauAmount
+    ).then(resonse => {
       setLoading("");
-      setTimeout(() => {
-        navigation.goBack();
-      }, 200);
-    }, 2000);
+      navigation.goBack();
+    }).catch(err => {
+      setLoading("")
+      FlashNotification.show(`${err.message}`);
+    })
   }
 
   const renderConfirmation = () => {
@@ -148,7 +177,7 @@ const Send = (props) => {
         <View style={styles.remainngContainer}>
           <CustomText titilium style={{ flex: 1 }}>Amount to be sent</CustomText>
           <Image style={styles.icon} source={item.image} />
-          <CustomText titilium style={{ marginHorizontal: 6 }}>{ndauAmount}</CustomText>
+          <CustomText titilium style={{ marginHorizontal: 6 }}>{transaction.total}</CustomText>
         </View>
         <View style={styles.remainngContainer}>
           <CustomText titilium style={{ flex: 1 }}>Remaining Balance</CustomText>
@@ -161,9 +190,9 @@ const Send = (props) => {
             <View style={{ flex: 1 }}>
               <CustomText titiliumSemiBold h6>Fees</CustomText>
               <Spacer height={10} />
-              {renderDetail({ title: "Transaction Fee", value: AppConstants.TRANSACTION_FEE })}
-              {renderDetail({ title: "SIB", value: "0" })}
-              {renderDetail({ title: "Total", value: parseFloat(AppConstants.TRANSACTION_FEE + parseFloat(ndauAmount || 0)).toFixed(8) })}
+              {renderDetail({ title: "Transaction Fee", value: transaction.transactionFee })}
+              {renderDetail({ title: "SIB", value: transaction.sib })}
+              {renderDetail({ title: "Total", value: parseFloat(transaction.total).toFixed(8) })}
             </View>
             <Button
               label={"Confirm & Send"}

@@ -13,6 +13,8 @@ import AppConstants from "../AppConstants";
 import { KeyAddr } from "../helpers/KeyAddrManager";
 import KeyPathHelper from "../helpers/KeyPathHelper";
 import KeyMaster from "../helpers/KeyMaster";
+import APIAddressHelper from "../helpers/APIAddressHelper";
+import APICommunicationHelper from "../helpers/APICommunicationHelper";
 
 export default useWallet = () => {
   const { wallets } = useSelector(state => state.WalletReducer);
@@ -162,6 +164,20 @@ export default useWallet = () => {
     );
   }
 
+  const getNdauAccountsDetails = () => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const accountsArray = getNDauAccounts().map(account => account.address)
+        const accountAPI = await APIAddressHelper.getAccountsAPIAddress()
+        const accountData = await APICommunicationHelper.post(accountAPI, JSON.stringify(accountsArray))
+        resolve(accountData);
+      } catch(e) {
+        reject(e)
+      }
+
+    })
+  }
+
   return {
     wallets,
     isWalletSetup: !!wallets.length,
@@ -173,6 +189,7 @@ export default useWallet = () => {
     getActiveWallet,
     addLegacyWallet,
     getWallets,
-    setActiveWallet
+    setActiveWallet,
+    getNdauAccountsDetails
   }
 }

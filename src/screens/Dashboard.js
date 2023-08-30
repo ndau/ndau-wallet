@@ -25,7 +25,7 @@ import { useIsFocused } from "@react-navigation/native";
 
 const Dashboard = ({ navigation }) => {
 
-	const { getNDauAccounts, addAccountsInNdau, getActiveWallet, addLegacyWallet } = useWallet();
+	const { getNDauAccounts, addAccountsInNdau, getActiveWallet, getNdauAccountsDetails } = useWallet();
 	const isFocused = useIsFocused();
 
 	const [walletData, setWalletData] = useState({ walletName: "", type: "" });
@@ -67,15 +67,17 @@ const Dashboard = ({ navigation }) => {
 	const loadBalances = async () => {
 
 		const { result: { ethusd } } = await EthersScanAPI.getEthPriceInUSD();
-
 		Promise.allSettled([
 			EthersScanAPI.getAddressBalance(getActiveWallet().ercAddress),
-			EthersScanAPI.getAddressBalance(getActiveWallet().ercAddress, EthersScanAPI.contractaddress.USDC)
+			EthersScanAPI.getAddressBalance(getActiveWallet().ercAddress, EthersScanAPI.contractaddress.USDC),
+			getNdauAccountsDetails()
 		]).then(results => {
 
 			// getting all results
 			const availableEthInWEI = results[0].status === "fulfilled" ? results[0].value.result : 0;
 			const availableUSDC = results[1].status === "fulfilled" ? results[1].value.result : 0;
+			const ndauAccounts = results[2].status === "fulfilled" ? results[2].value : 0;
+			const totalNdausOnAllAccounts = DataFormatHelper.getNdauFromNapu(Object.keys(ndauAccounts).map(key => ndauAccounts[key]).reduce((pv, cv) => pv += parseFloat(cv.balance), 0) || 0);
 
 			const npay = { totalFunds: 0, usdAmount: 0 };
 
@@ -85,8 +87,9 @@ const Dashboard = ({ navigation }) => {
 			// handle usdc
 			const usdc = { totalFunds: availableUSDC, usdAmount: availableUSDC };
 
+			const currentPriceOfNdauInUsd = parseFloat(totalNdausOnAllAccounts * NdauStore.getMarketPrice()).toFixed(4)
 			setTokens([
-				makeToken(0, { totalFunds: 0, accounts: getNDauAccounts().length, usdAmount: 0 }),
+				makeToken(0, { totalFunds: totalNdausOnAllAccounts, accounts: getNDauAccounts().length, usdAmount: currentPriceOfNdauInUsd }),
 				makeToken(1, { totalFunds: npay.totalFunds, address: getActiveWallet().ercAddress, usdAmount: npay.usdAmount }),
 				makeToken(2, { totalFunds: eth.totalFunds, address: getActiveWallet().ercAddress, usdAmount: eth.usdAmount }),
 				makeToken(3, { totalFunds: usdc.totalFunds, address: getActiveWallet().ercAddress, usdAmount: usdc.usdAmount }),
@@ -97,12 +100,13 @@ const Dashboard = ({ navigation }) => {
 	}
 
 	const loadOnlyNDAUBalances = () => {
-		const accounts = DataFormatHelper.getObjectWithAllAccounts(UserStore.getUser());
-		const totalNdauNumber = AccountAPIHelper.accountTotalNdauAmount(accounts, false);
-		const currentPrice = parseFloat(totalNdauNumber * NdauStore.getMarketPrice()).toFixed(4)
-		setTokens([
-			makeToken(0, { totalFunds: totalNdauNumber, accounts: getNDauAccounts().length, address: "", usdAmount: currentPrice })
-		])
+		getNdauAccountsDetails().then(ndauAccounts => {
+			const totalNdausOnAllAccounts = DataFormatHelper.getNdauFromNapu(Object.keys(ndauAccounts).map(key => ndauAccounts[key]).reduce((pv, cv) => pv += parseFloat(cv.balance), 0) || 0);
+			const currentPriceOfNdauInUsd = parseFloat(totalNdausOnAllAccounts * NdauStore.getMarketPrice()).toFixed(4)
+			setTokens([
+				makeToken(0, { totalFunds: totalNdausOnAllAccounts, accounts: getNDauAccounts().length, usdAmount: currentPriceOfNdauInUsd })
+			])
+		})
 	}
 
 	useEffect(() => {
@@ -158,7 +162,7 @@ const Dashboard = ({ navigation }) => {
 			<ScrollView showsVerticalScrollIndicator={false}>
 				<DashboardHeader
 					currentWalletName={walletData?.walletName}
-					marketPrice={currentPrice}
+					marketPrice={NdauStore.getMarketPrice()}
 					totalBalance={totalBalance}
 					accounts={accounts}
 					onAddWallet={() => navigation.navigate(ScreenNames.IntroCreateWallet)}

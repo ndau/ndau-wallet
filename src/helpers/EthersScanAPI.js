@@ -12,7 +12,7 @@ export const EthersScanAPI = {
   apiKey: "4MKRXSSHHXW9DCBG63F28JDZJA7U8ETBZR",
 
   modules: {
-    ACOUNT: "account",
+    ACCOUNT: "account",
     STATS: "stats",
   },
 
@@ -58,7 +58,7 @@ export const EthersScanAPI = {
   getAddressBalance: (address, contractaddress = undefined) => {
     return new Promise((resolve, reject) => {
       const apiToCall = EthersScanAPI.__getFormattedEndpoint({
-        module: EthersScanAPI.modules.ACOUNT,
+        module: EthersScanAPI.modules.ACCOUNT,
         action: contractaddress ? EthersScanAPI.actions.TOKEN_BALANCE : EthersScanAPI.actions.BALANCE,
         params: { address, contractaddress }
       })

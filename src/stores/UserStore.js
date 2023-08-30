@@ -60,6 +60,16 @@ class UserStore {
     }
   }
 
+  getAccountDetail(account) {
+    const currentWalletId = this.getActiveWalletId();
+    const currentWallet = this._user[0].wallets[currentWalletId];
+    if (currentWallet?.accounts) {
+      return currentWallet.accounts[account];
+    } else {
+      return {}
+    }
+  }
+
   getNdauAccounts() {
     const currentWalletId = this.getActiveWalletId();
     const currentWallet = this._user[0].wallets[currentWalletId];
