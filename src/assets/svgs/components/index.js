@@ -26,7 +26,10 @@ import Receive from "./Receive";
 import Convert from "./Convert";
 import Lock from "./Lock";
 import Swap from "./Swap";
-
+import UnLocked from "./UnLocked";
+import DollarSign from "./DollarSign";
+import EAI from "./EAI";
+import Delete from "./Delete";
 
 export {
   BackSVGComponent,
@@ -55,5 +58,9 @@ export {
   Lock,
   Swap,
   WalletIcon,
-  InfoIcon
+  InfoIcon,
+  UnLocked,
+  DollarSign,
+  EAI,
+  Delete
 };
