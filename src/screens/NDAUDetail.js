@@ -28,8 +28,6 @@ const NDAUDetail = (props) => {
 		setTimeout(() => props.navigation.navigate(ScreenNames.Send, { item }), 250);
 	}
 
-	console.log('item', JSON.stringify(item, null, 2));
-
 	return (
 		<ScreenContainer headerTitle={item.name} headerRight={<CopyAddressButton />}>
 			<ScrollView>
