@@ -34,8 +34,6 @@ const SwitchWallet = () => {
     )
   }, [])
 
-  console.log(JSON.stringify(getWallets(),null,2),'wallet00000000')
-
   return (
     <ScreenContainer>
       <Spacer height={16} />

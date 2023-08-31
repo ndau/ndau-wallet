@@ -9,7 +9,6 @@ import { images } from '../../../assets/images'
 const AccountItemCard = ({ item, index,onItemClick }) => {
 
     const makeStringShort = (val) => {
-        console.log(val.length)
         return val.length < 20
             ? `${val}`
             : `${val.substring(0, 20)}.......`

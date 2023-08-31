@@ -15,6 +15,9 @@ import NdauAccountFeeCard from './components/addNdauAccountsComponents/NdauAccou
 import UserStore from "../stores/UserStore";
 
 const AddNdauAccount = (props) => {
+    const { item } = props?.route?.params ?? {};
+    const paramItem = item;
+
     const modalRef = useRef(null);
     const modelNdauFeeRef = useRef(null);
     const [noOfAccounts, setNoOfAccounts] = useState(1)
@@ -73,7 +76,7 @@ const AddNdauAccount = (props) => {
                         key={index}
                         item={item}
                         index={index}
-                        onItemClick={(val) => props.navigation.navigate(ScreenNames.NDAUDetail, { item: val })}
+                        onItemClick={(val) => props.navigation.navigate(ScreenNames.NDAUDetail, { item: { ...val, ...paramItem } })}
                     />}
                 keyExtractor={(item, index) => index.toString()}
             />

@@ -49,9 +49,6 @@ const Dashboard = ({ navigation }) => {
 		// { name: "Valhala", image: images.nPay }
 	];
 
-
-	console.log(getNDauAccounts(), 'activeWallet------')
-
 	const makeToken = (type, { totalFunds, usdAmount, accounts, address }) => {
 		const tokens = {
 			0: { name: "NDAU", network: "nDau", totalFunds: "0", usdAmount: "0", image: images.nDau, accounts: getNDauAccounts().length },
@@ -89,8 +86,6 @@ const Dashboard = ({ navigation }) => {
 			// handle eth
 			const eth = { totalFunds: Converters.WEI_ETH(availableEthInWEI), usdAmount: Converters.ETH_USD(Converters.WEI_ETH(availableEthInWEI), ethusd) };
 
-
-			console.log(eth,'results-----')
 			// handle usdc
 			const usdc = { totalFunds: availableUSDC, usdAmount: availableUSDC };
 
