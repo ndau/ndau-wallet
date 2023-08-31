@@ -13,6 +13,7 @@ import CustomModal from "../components/Modal";
 import AppConstants from "../AppConstants";
 import { ScreenNames } from "./ScreenNames";
 import AppConfig from "../AppConfig";
+import Clipboard from "@react-native-clipboard/clipboard";
 
 const NDAUDetail = (props) => {
 	const { item } = props?.route?.params ?? {};
@@ -28,22 +29,28 @@ const NDAUDetail = (props) => {
 		setTimeout(() => props.navigation.navigate(ScreenNames.Send, { item }), 250);
 	}
 
+	const copyAddress = () => {
+		Clipboard.setString(item.address);
+	}
+
+	const disableButton = item.totalFunds === null || item.totalFunds === undefined || parseFloat(item.totalFunds) <= 0
+
 	return (
-		<ScreenContainer headerTitle={item.name} headerRight={<CopyAddressButton />}>
+		<ScreenContainer headerTitle={item.name} headerRight={<CopyAddressButton onPress={copyAddress}/>}>
 			<ScrollView>
 				<View style={styles.headerContainer}>
 					<Image style={styles.icon} source={item.image} />
-					<CustomText semiBold h4 style={styles.balance}>{item.balance || "0.00"}</CustomText>
+					<CustomText semiBold h4 style={styles.balance}>{item.totalFunds || "0.00"}</CustomText>
 
 					<View style={styles.buttonContainer}>
 						<View style={styles.row}>
 							<IconButton label="Buy" icon={<Buy />} />
-							<IconButton disabled={parseFloat(item.totalFunds) <= 0} label="Send" icon={<Send />} onPress={() => customModalRef.current(true)} />
+							<IconButton disabled={disableButton} label="Send" icon={<Send />} onPress={() => customModalRef.current(true)} />
 							<IconButton label="Receive" icon={<Receive />} />
 						</View>
 						<View style={styles.row}>
-							<IconButton disabled={parseFloat(item.totalFunds) <= 0} label="Convert" icon={<Convert />} />
-							<IconButton disabled={parseFloat(item.totalFunds) <= 0} label="Lock" icon={<Lock />} />
+							<IconButton disabled={disableButton} label="Convert" icon={<Convert />} />
+							<IconButton disabled={disableButton} label="Lock" icon={<Lock />} />
 						</View>
 					</View>
 					<View style={styles.infoContainer}>

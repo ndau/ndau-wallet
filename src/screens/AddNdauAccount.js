@@ -44,8 +44,6 @@ const AddNdauAccount = (props) => {
         setNoOfAccounts(1);
     };
 
-    console.log(JSON.stringify(UserStore),'ndayaccount---')
-
     return (
         <ScreenContainer>
             {loading && <Loading label={loading} />}
@@ -78,7 +76,7 @@ const AddNdauAccount = (props) => {
                         key={index}
                         item={item}
                         index={index}
-                        onItemClick={(val) => props.navigation.navigate(ScreenNames.NDAUDetail, { item: { ...val, ...paramItem } })}
+                        onItemClick={(val) => props.navigation.navigate(ScreenNames.NDAUDetail, { item: { image: paramItem.image, name: val?.addressData?.nickname, ...val } })}
                     />}
                 keyExtractor={(item, index) => index.toString()}
             />

@@ -10,6 +10,7 @@ const IconButton = ({ label = "", onPress, icon, disabled = false }) => {
 		<View style={styles.buttonContainer}>
 			<Button
 				disabled={disabled}
+				buttonDisabledBG={themeColors.white800}
 				rightIcon={icon}
 				onPress={onPress}
 				buttonContainerStyle={styles.button}

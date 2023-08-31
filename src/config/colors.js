@@ -92,7 +92,7 @@ const themeColors = {
     font: mainPallet.white,
     fontLight: colors.black100,
     buttonPrimary: colors.primary500,
-    buttonDisabled: colors.white800,
+    buttonDisabled: colors.white600,
     buttonDisabledText: colors.black200,
     error: mainPallet.error,
     success: mainPallet.success,

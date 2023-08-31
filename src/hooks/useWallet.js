@@ -172,6 +172,7 @@ export default useWallet = () => {
         const accountsArray = getNDauAccounts().map(account => account.address)
         const accountAPI = await APIAddressHelper.getAccountsAPIAddress()
         const accountData = await APICommunicationHelper.post(accountAPI, JSON.stringify(accountsArray))
+        UserStore.setNdauAccounts(accountData)
         resolve(accountData);
       } catch(e) {
         reject(e)

@@ -6,7 +6,7 @@ import { themeColors } from '../../../config/colors'
 import NdauAccountLogoSVGComponent from '../../../assets/svgs/components/NdauLogoSvg'
 import { images } from '../../../assets/images'
 
-const AccountItemCard = ({ item, index,onItemClick }) => {
+const AccountItemCard = ({ item, index, onItemClick }) => {
 
     const makeStringShort = (val) => {
         return val.length < 20
@@ -15,7 +15,7 @@ const AccountItemCard = ({ item, index,onItemClick }) => {
     }
 
     return (
-        <TouchableOpacity onPress={()=>onItemClick(item)}>
+        <TouchableOpacity onPress={() => onItemClick(item)}>
             <Animated.View style={styles.container}>
 
                 <View style={styles.leftView}>
@@ -30,8 +30,8 @@ const AccountItemCard = ({ item, index,onItemClick }) => {
                     </View>
                 </View>
                 <View style={styles.rightView}>
-                    <CustomText color={themeColors.white} body>0.0</CustomText>
-                    <CustomText color={themeColors.white} body2>≈0.0</CustomText>
+                    <CustomText color={themeColors.white} body>{item.totalFunds || 0}</CustomText>
+                    <CustomText color={themeColors.white} body2>≈{item.usdAmount || 0}</CustomText>
                 </View>
 
             </Animated.View>

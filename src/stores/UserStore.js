@@ -8,6 +8,9 @@
  * - -- --- ---- -----
  */
 
+import DataFormatHelper from "../helpers/DataFormatHelper";
+import NdauStore from "../stores/NdauStore";
+
 class UserStore {
   constructor() {
     if (!UserStore.instance) {
@@ -80,6 +83,25 @@ class UserStore {
       })
     }
     return accounts;
+  }
+
+  setNdauAccounts(data) {
+    const currentWalletId = this.getActiveWalletId();
+    const currentWallet = this._user[0].wallets[currentWalletId];
+    if (data) {
+      Object.keys(data).forEach(key => {
+        const totalFunds = DataFormatHelper.getNdauFromNapu(data[key].balance);
+        const usdAmount = totalFunds * NdauStore.getMarketPrice();
+        currentWallet.accounts[key] = {
+          ...currentWallet.accounts[key],
+          ...data[key],
+          validationKeys: currentWallet.accounts[key].validationKeys,
+          totalFunds,
+          usdAmount
+        }
+      })
+    }
+    return currentWallet;
   }
 
   setPassword(password) {

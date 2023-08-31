@@ -229,8 +229,6 @@ const Dashboard = ({ navigation }) => {
 					}}
 					onItemClick={(index) => {
 
-						console.log(index, 'index--')
-
 						if (index == 0) navigation.navigate(ScreenNames.ImportWallet,{ forCreation: true } )
 
 						else if (index == 1) navigation.navigate(ScreenNames.CreateWallet,  { isAlreadyWallet: true })
