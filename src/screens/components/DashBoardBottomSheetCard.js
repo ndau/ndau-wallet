@@ -1,14 +1,13 @@
-import { View, Text, StyleSheet } from 'react-native'
+import { View, Text, StyleSheet,TouchableOpacity } from 'react-native'
 import React from 'react'
 import CustomText from '../../components/CustomText'
 import { themeColors } from '../../config/colors'
 import { ArrowRightSVGComponent } from '../../assets/svgs/components'
 import Spacer from '../../components/Spacer'
-import { TouchableOpacity } from 'react-native-gesture-handler'
 
 const DashBoardBottomSheetCard = ({ rightSvg, label, title, onPress }) => {
     return (
-        <TouchableOpacity style={styles.container} onPress={onPress}>
+        <TouchableOpacity style={styles.container} onPress={onPress} activeOpacity={0.8}>
             <View style={styles.leftView}>
                 {rightSvg}
                 <Spacer width={12} />
@@ -35,10 +34,7 @@ const styles = StyleSheet.create({
         borderRadius: 12,
         borderWidth: 1,
         borderColor: themeColors.primary,
-        marginBottom: 25
-
-
-
+        marginBottom: 25,
     },
     leftView: {
         flexDirection: "row",

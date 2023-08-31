@@ -26,11 +26,13 @@ export default useWallet = () => {
   }
 
   const addAccountsInNdau = (numbersOfAccount = 1) => {
-    try {
-      AccountHelper.createAccounts(UserStore.getActiveWallet(), numbersOfAccount).then(res => null);
-    } catch (error) {
-      FlashNotification.show(`Problem adding new account: ${error.message}`);
-    }
+    return new Promise((resolve, reject) => {
+      try {
+        AccountHelper.createAccounts(UserStore.getActiveWallet(), numbersOfAccount).then(res => resolve(res));
+      } catch (error) {
+        FlashNotification.show(`Problem adding new account: ${error.message}`);
+      }
+    })
   }
 
   const setActiveWallet = (wallet, onSuccess) => {

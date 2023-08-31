@@ -15,6 +15,7 @@ const images = {
   nDau: require('./nDau.png'),
   nPay: require('./nPay.png'),
   USDC: require('./USDC.png'),
+  ndauAccountImage: require('./ndauAccount.png'),
 }
 
 export { images };

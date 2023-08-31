@@ -4,7 +4,8 @@ const mainPallet = {
     success: '#1EB35A',
     warning: '#FA9F47',
     white: '#ffffff',
-    black: '#000000'
+    black: '#000000',
+    orange:"#F7941D"
 }
 
 const colors = {
@@ -83,6 +84,7 @@ const themeColors = {
     collapsibleBackground: colors.primary100,
     white: mainPallet.white,
     black: mainPallet.black,
+    orange:mainPallet.orange,
     background: mainPallet.black,
     dangerFlashBackground: colors.error400,
     lightBackground: colors.white500 + "33",
@@ -95,6 +97,7 @@ const themeColors = {
     error: mainPallet.error,
     success: mainPallet.success,
     modalBackground: colors.black400,
+    
 
     applyOpacityOn: (color, opacity) => `${color}${opacity}`
 }
