@@ -1,10 +1,12 @@
 
+import { ethers } from "ethers";
 import AppConfig from "../AppConfig";
 import AccountAPIHelper from "../helpers/AccountAPIHelper";
 import DataFormatHelper from "../helpers/DataFormatHelper";
 import UserStore from "../stores/UserStore";
 import { Transaction } from "../transactions/Transaction";
 import { TransferTransaction } from "../transactions/TransferTransaction";
+import { EthersScanAPI } from "../helpers/EthersScanAPI";
 
 export default useTransaction = () => {
 
@@ -99,8 +101,60 @@ export default useTransaction = () => {
     })
   }
 
+  const getTransactionFeeForERC = (toAddress, ethAmount) => {
+    return new Promise((resolve, reject) => {
+      const provider = new ethers.providers.EtherscanProvider(EthersScanAPI.networks.goerli, EthersScanAPI.apiKey);
+      const wallet = new ethers.Wallet(UserStore.getActiveWallet().ercKeys.privateKey, provider);
+
+      wallet.estimateGas({
+        to: toAddress,
+        value: ethers.utils.parseEther(ethAmount)
+      }).then(res => {
+        resolve({
+          ethPrice: ethers.utils.formatEther(res._hex),
+          hex: res._hex
+        })
+      }).catch(err => {
+        reject(err)
+        console.log('err	', JSON.stringify(err, null, 2));
+      })
+    })
+  }
+
+  const sendERCFunds = (toAddress, ethAmount) => {
+    return new Promise((resolve, reject) => {
+      const provider = new ethers.providers.EtherscanProvider(EthersScanAPI.networks.goerli, EthersScanAPI.apiKey);
+      const wallet = new ethers.Wallet(UserStore.getActiveWallet().ercKeys.privateKey, provider);
+
+      wallet.sendTransaction({
+        to: toAddress,
+        value: ethers.utils.parseEther(ethAmount)
+      }).then(res => {
+        resolve(res)
+      }).catch(err => {
+        reject(err)
+        console.log('err	', JSON.stringify(err, null, 2));
+      })
+    })
+  }
+
+  const getERCTransactionHistory = (address) => {
+    return new Promise((resolve, reject) => {
+      const provider = new ethers.providers.EtherscanProvider(EthersScanAPI.networks.goerli, EthersScanAPI.apiKey);
+      provider.getHistory(address).then(res => {
+        resolve(res)
+      }).catch(err => {
+        reject(err)
+        console.log('err	', JSON.stringify(err, null, 2));
+      })
+    })
+  }
+
   return {
     getTransactionFee,
-    sendAmountToNdauAddress
+    sendAmountToNdauAddress,
+    getTransactionFeeForERC,
+    sendERCFunds,
+    getERCTransactionHistory
   }
 }

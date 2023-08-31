@@ -8,12 +8,23 @@ import { themeColors } from "../config/colors";
 import IconButton from "../components/IconButton";
 import { Buy, Delete, Receive, Send } from "../assets/svgs/components";
 import Button from "../components/Button";
+import { ScreenNames } from "./ScreenNames";
+import Clipboard from "@react-native-clipboard/clipboard";
+import { useTransaction } from "../hooks";
 
 const ERCDetail = (props) => {
 	const { item } = props?.route?.params ?? {};
 
+	const { getERCTransactionHistory } = useTransaction();
+
+	const disableButton = item.totalFunds === null || item.totalFunds === undefined || parseFloat(item.totalFunds) <= 0
+
+	const copyAddress = () => {
+		Clipboard.setString(item.address);
+	}
+
 	return (
-		<ScreenContainer headerTitle={item.name} headerRight={<CopyAddressButton />}>
+		<ScreenContainer headerTitle={" "} headerRight={<CopyAddressButton onPress={copyAddress}/>}>
 			<View style={styles.headerContainer}>
 				<Image style={styles.icon} source={item.image} />
 				<CustomText semiBold h4 style={styles.balance}>{item?.totalFunds?.toFixed?.(4) || "0.00"}</CustomText>
@@ -21,7 +32,7 @@ const ERCDetail = (props) => {
 				<View style={styles.buttonContainer}>
 					<View style={styles.row}>
 						<IconButton label="Buy" icon={<Buy />} />
-						<IconButton label="Send" icon={<Send />} />
+						<IconButton disabled={disableButton} label="Send" icon={<Send />} onPress={() => props.navigation.navigate(ScreenNames.Send, { item })} />
 						<IconButton label="Receive" icon={<Receive />} />
 					</View>
 				</View>
@@ -29,6 +40,11 @@ const ERCDetail = (props) => {
 			<View style={{ flex: 1, justifyContent: "flex-end" }}>
 				<Button
 					label={'View Transaction'}
+					onPress={() => {
+						getERCTransactionHistory(item.address).then(res => {
+							console.log('res', JSON.stringify(res, null, 2));
+						})
+					}}
 				/>
 				<Button
 					label={'Remove Account'}

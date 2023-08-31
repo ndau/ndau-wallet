@@ -38,10 +38,10 @@ const Dashboard = ({ navigation }) => {
 	const refAddWalletSheet = useRef(null)
 
 	const [tokens, setTokens] = useState([
-		{ name: "NDAU", network: "nDau", totalFunds: "0", usdAmount: "0", image: images.nDau, accounts: getNDauAccounts().length },
-		{ name: "NPAY (ERC20)", network: "zkSync Era", totalFunds: "0", usdAmount: "0", image: images.nPay },
-		{ name: "ETHEREUM", network: "ethereum", totalFunds: "0", usdAmount: "0", image: images.ethereum },
-		{ name: "USDC (ERC20)", network: "ethereum", totalFunds: "0", usdAmount: "0", image: images.USDC },
+		{ shortName: "ndau", name: "NDAU", network: "nDau", totalFunds: "0", usdAmount: "0", image: images.nDau, accounts: getNDauAccounts().length },
+		{ shortName: "nPay", name: "NPAY (ERC20)", network: "zkSync Era", totalFunds: "0", usdAmount: "0", image: images.nPay },
+		{ shortName: "Eth", name: "ETHEREUM", network: "ethereum", totalFunds: "0", usdAmount: "0", image: images.ethereum },
+		{ shortName: "USDC", name: "USDC (ERC20)", network: "ethereum", totalFunds: "0", usdAmount: "0", image: images.USDC },
 	]);
 
 	const nfts = [
@@ -51,10 +51,10 @@ const Dashboard = ({ navigation }) => {
 
 	const makeToken = (type, { totalFunds, usdAmount, accounts, address }) => {
 		const tokens = {
-			0: { name: "NDAU", network: "nDau", totalFunds: "0", usdAmount: "0", image: images.nDau, accounts: getNDauAccounts().length },
-			1: { name: "NPAY (ERC20)", network: "zkSync Era", totalFunds: "0", usdAmount: "0", image: images.nPay },
-			2: { name: "ETHEREUM", network: "ethereum", totalFunds: "0", usdAmount: "0", image: images.ethereum },
-			3: { name: "USDC (ERC20)", network: "ethereum", totalFunds: "0", usdAmount: "0", image: images.USDC },
+			0: { shortName: "ndau", name: "NDAU", network: "nDau", totalFunds: "0", usdAmount: "0", image: images.nDau, accounts: getNDauAccounts().length },
+			1: { shortName: "nPay", name: "NPAY (ERC20)", network: "zkSync Era", totalFunds: "0", usdAmount: "0", image: images.nPay },
+			2: { shortName: "Eth", name: "ETHEREUM", network: "ethereum", totalFunds: "0", usdAmount: "0", image: images.ethereum },
+			3: { shortName: "USDC", name: "USDC (ERC20)", network: "ethereum", totalFunds: "0", usdAmount: "0", image: images.USDC },
 		}
 		return {
 			...tokens[type],
@@ -229,9 +229,9 @@ const Dashboard = ({ navigation }) => {
 					}}
 					onItemClick={(index) => {
 
-						if (index == 0) navigation.navigate(ScreenNames.ImportWallet,{ forCreation: true } )
+						if (index == 0) navigation.navigate(ScreenNames.ImportWallet, { forCreation: true })
 
-						else if (index == 1) navigation.navigate(ScreenNames.CreateWallet,  { isAlreadyWallet: true })
+						else if (index == 1) navigation.navigate(ScreenNames.CreateWallet, { isAlreadyWallet: true })
 
 						refAddWalletSheet.current.close();
 

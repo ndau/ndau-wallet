@@ -181,6 +181,17 @@ export default useWallet = () => {
     })
   }
 
+  const removeWallet = (walletId) => {
+    return new Promise(async (resolve, reject) => {
+      const user = UserStore.removeWallet(walletId)
+      await MultiSafeHelper.saveUser(
+        user,
+        UserStore.getPassword()
+      );
+      resolve();
+    })
+  }
+
   return {
     wallets,
     isWalletSetup: !!wallets.length,
@@ -193,6 +204,7 @@ export default useWallet = () => {
     addLegacyWallet,
     getWallets,
     setActiveWallet,
-    getNdauAccountsDetails
+    getNdauAccountsDetails,
+    removeWallet
   }
 }

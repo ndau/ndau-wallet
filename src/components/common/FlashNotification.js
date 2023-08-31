@@ -5,8 +5,8 @@ import CustomText from "../CustomText";
 import { themeColors } from "../../config/colors";
 
 const FlashNotification = {
-  show: (message) => {
-    global.flashMessageRef(message);
+  show: (message, long = false) => {
+    global.flashMessageRef(message, long);
   }
 }
 
@@ -21,12 +21,12 @@ const FlashMessage = ({ }) => {
   })
   const [text, setText] = useState("");
 
-  const show = (message) => {
+  const show = (message, long) => {
     setText(message);
     animValue.value = withTiming(1, { duration: 500 });
     setTimeout(() => {
       animValue.value = withTiming(0, { duration: 500 });
-    }, 2000);
+    }, long ? 4000 : 2000);
   }
 
   useEffect(() => {

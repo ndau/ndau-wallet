@@ -121,6 +121,13 @@ class UserStore {
       return wallets;
     } else return []
   }
+
+  removeWallet(walletId) {
+    if (this._user[0] && this._user[0].wallets[walletId]) {
+      delete this._user[0].wallets[walletId];
+    }
+    return this._user[0];
+  }
 }
 
 const instance = new UserStore()
