@@ -5,10 +5,11 @@ import { themeColors } from "../config/colors";
 import Button from "./Button";
 import CustomText from "./CustomText";
 
-const IconButton = ({ label = "", onPress, icon }) => {
+const IconButton = ({ label = "", onPress, icon, disabled = false }) => {
 	return (
 		<View style={styles.buttonContainer}>
 			<Button
+				disabled={disabled}
 				rightIcon={icon}
 				onPress={onPress}
 				buttonContainerStyle={styles.button}

@@ -28,6 +28,8 @@ const NDAUDetail = (props) => {
 		setTimeout(() => props.navigation.navigate(ScreenNames.Send, { item }), 250);
 	}
 
+	console.log('item', JSON.stringify(item, null, 2));
+
 	return (
 		<ScreenContainer headerTitle={item.name} headerRight={<CopyAddressButton />}>
 			<ScrollView>
@@ -38,12 +40,12 @@ const NDAUDetail = (props) => {
 					<View style={styles.buttonContainer}>
 						<View style={styles.row}>
 							<IconButton label="Buy" icon={<Buy />} />
-							<IconButton label="Send" icon={<Send />} onPress={() => customModalRef.current(true)} />
+							<IconButton disabled={parseFloat(item.totalFunds) <= 0} label="Send" icon={<Send />} onPress={() => customModalRef.current(true)} />
 							<IconButton label="Receive" icon={<Receive />} />
 						</View>
 						<View style={styles.row}>
-							<IconButton label="Convert" icon={<Convert />} />
-							<IconButton label="Lock" icon={<Lock />} />
+							<IconButton disabled={parseFloat(item.totalFunds) <= 0} label="Convert" icon={<Convert />} />
+							<IconButton disabled={parseFloat(item.totalFunds) <= 0} label="Lock" icon={<Lock />} />
 						</View>
 					</View>
 					<View style={styles.infoContainer}>
