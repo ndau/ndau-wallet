@@ -12,7 +12,6 @@ const CustomText = ({
 	button,
 	caption,
 	size = 14,
-
 	regular = true,
 	light, medium, semiBold, bold,
 
@@ -50,7 +49,7 @@ const CustomText = ({
 		...(titiliumSemiBold && { fontFamily: "TitilliumWeb-SemiBold" }),
 	})
 
-	return <Text style={[styles.text, style, getStyles()]}>{children}</Text>
+	return <Text  style={[styles.text, style, getStyles()]}>{children}</Text>
 }
 
 const styles = StyleSheet.create({

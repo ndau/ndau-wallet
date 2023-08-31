@@ -20,7 +20,8 @@ const ScreenNames = {
   NDAUDetail: "NDAUDetail",
   ERCDetail: "ERCDetail",
   SwitchWallet: "SwitchWallet",
-  Send: "Send"
+  Send: "Send",
+  AddNdauAccount: "AddNdauAccount"
 }
 
 export { ScreenNames }
