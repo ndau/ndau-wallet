@@ -24,7 +24,7 @@ const AddAccountPopupCard = ({ val, increment, decrement, addAccount, onCancel }
                 <Spacer height={25} />
                 <Image style={styles.image} source={images.nDau} />
                 <Spacer height={25} />
-                <CustomText body2 color='white' style={{ textAlign: 'center' }}>
+                <CustomText body color='white' style={{ textAlign: 'center' }}>
                     How many ndau accounts would you like to add to your wallet?
                 </CustomText>
                 <Spacer height={15} />
@@ -44,7 +44,6 @@ const AddAccountPopupCard = ({ val, increment, decrement, addAccount, onCancel }
                 </View>
                 <Spacer height={30} />
                 <Button
-                
                     label={"Add"}
                     onPress={addAccount}
                     buttonContainerStyle={styles.adBtn} />
@@ -78,8 +77,9 @@ const styles = StyleSheet.create({
     },
 
     button: {
-        width: 160,
+        // width: 160,
         height: 54,
+        paddingHorizontal: 62,
         borderRadius: 100,
         borderWidth: 1,
         borderColor: themeColors.white,

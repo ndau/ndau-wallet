@@ -6,7 +6,7 @@ import { addWalletsData } from '../../../utils';
 import DashBoardBottomSheetCard from '../DashBoardBottomSheetCard';
 import Spacer from '../../../components/Spacer';
 
-const AddWalletsPopup = ({ onItemClick,onClose}) => {
+const AddWalletsPopup = ({ onItemClick, onClose }) => {
     return (
         <View>
             <View style={styles.modal}>
@@ -32,8 +32,7 @@ const AddWalletsPopup = ({ onItemClick,onClose}) => {
                                 rightSvg={item.svg}
                                 label={item.label}
                                 title={item.title}
-                                onPress={()=>onItemClick(index)}
-                            
+                                onPress={() => onItemClick(index)}
 
                             />
                         )
@@ -63,6 +62,7 @@ const styles = StyleSheet.create({
         alignSelf: 'center'
     },
     modalCardContainer: {
-        paddingHorizontal: 16
+        paddingHorizontal: 16,
+
     }
 })

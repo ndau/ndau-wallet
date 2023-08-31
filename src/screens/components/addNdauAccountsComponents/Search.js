@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, TextInput } from 'react-native'
+import { View, Text, StyleSheet, TextInput, Platform } from 'react-native'
 import React from 'react'
 import { themeColors } from '../../../config/colors'
 import SearchSVGComponent from '../../../assets/svgs/components/searchSvg'
@@ -16,7 +16,9 @@ const Search = ({ value, maxLength, placeholder, onChangeText, secureTextEntry }
                 onChangeText={onChangeText}
                 secureTextEntry={secureTextEntry}
             />
-            <SearchSVGComponent />
+            <View style={styles.seachSvg}>
+                <SearchSVGComponent />
+            </View>
 
         </View>
     )
@@ -31,12 +33,17 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         paddingHorizontal: 12,
-        borderWidth:1,
-        borderColor:themeColors.white,
-        padding:12
+        borderWidth: 1,
+        borderColor: themeColors.white,
+        alignItems: 'center',
+        padding: Platform.OS === 'ios' && 10,
     },
     inputContainer: {
-       color:themeColors.white,
-       width:300
+        color: themeColors.white,
+        width: 250
+    },
+    seachSvg: {
+        alignItems: 'center',
+        justifyContent: 'center'
     }
 })
