@@ -24,7 +24,8 @@ const ScreenNames = {
   AddNdauAccount: "AddNdauAccount",
   LockPeriod: "LockPeriod",
   EAIDestination: "EAIDestination",
-  SelectNDAU: "SelectNDAU"
+  SelectNDAU: "SelectNDAU",
+  Transactions: 'Transactions',
 }
 
 export { ScreenNames }

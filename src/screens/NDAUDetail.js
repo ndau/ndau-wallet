@@ -31,7 +31,7 @@ const NDAUDetail = (props) => {
 	const isFocused = useIsFocused();
 	const [loading, setLoading] = useState("");
 	const { getNdauAccountDetail } = useWallet();
-	const { notifyForNDAU } = useTransaction();
+	const { notifyForNDAU, getTransactions, getTransactionByHash } = useTransaction();
 
 	const [accountInfo, setAccountInfo] = useState({
 		isLocked: false,
@@ -50,7 +50,7 @@ const NDAUDetail = (props) => {
 			setLoading("Please wait")
 
 			getNdauAccountDetail(item.address).then(res => {
-
+				console.log('aa', JSON.stringify(res, null, 2));
 				const addressData = res[item.address] || {};
 
 				if (addressData.incomingRewardsFrom?.length && !addressData.incomingRewardsFromNickname) {
@@ -118,6 +118,10 @@ const NDAUDetail = (props) => {
 	const navigateToSend = () => {
 		customModalRef.current(false);
 		setTimeout(() => props.navigation.navigate(ScreenNames.Send, { item }), 250);
+	}
+
+	const navigateToTransaction = () => {
+		props.navigation.navigate(ScreenNames.Transactions, { item })
 	}
 
 	const copyAddress = () => {
@@ -260,6 +264,7 @@ const NDAUDetail = (props) => {
 			}
 			<Button
 				label={'View Transaction'}
+				onPress={navigateToTransaction}
 			/>
 			<Button
 				label={'Remove Account'}
