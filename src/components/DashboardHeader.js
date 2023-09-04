@@ -10,6 +10,7 @@ import CustomText from "./CustomText";
 import { ArrowForward, Plus } from "../assets/svgs/components";
 import AppConstants from "../AppConstants";
 import { ScreenNames } from "../screens/ScreenNames";
+import DataFormatHelper from "../helpers/DataFormatHelper";
 
 const DashboardHeader = ({ currentWalletName = "", marketPrice = 0, totalBalance = 0, accounts = {}, onAddWallet = () => null }) => {
 
@@ -104,7 +105,7 @@ const DashboardHeader = ({ currentWalletName = "", marketPrice = 0, totalBalance
 
 				<View style={{ marginTop: 30 }}>
 					<CustomText titilium body style={{ marginBottom: 6 }}>Your Balance</CustomText>
-					<CustomText h1 semiBold>${totalBalance}</CustomText>
+					<CustomText h1 semiBold>${DataFormatHelper.formatUSDollarValue(totalBalance)}</CustomText>
 					<Collapsible />
 				</View>
 			</View>

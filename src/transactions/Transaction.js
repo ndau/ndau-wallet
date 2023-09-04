@@ -88,7 +88,7 @@ export const Transaction = {
       // If it was an error, append the message to the flash message
       msg += `: ${msgOrErr.message}`
     }
-    FlashNotification.showError(new OfflineError(msg))
+    FlashNotification.show(msg, true)
     if (msgOrErr instanceof Error) {
       throw msgOrErr
     } else {

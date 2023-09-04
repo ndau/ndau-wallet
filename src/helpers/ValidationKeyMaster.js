@@ -334,7 +334,7 @@ const getValidationKeys = async (wallet, account, startIndex, endIndex) => {
       keys[legacyKey1.publicKey] = legacyKey1;
     }
   } catch (error) {
-    FlashNotification.showError(
+    FlashNotification.show(
       `problem encountered creating object of validation public and private keys: ${error.message}`,
     );
     throw error;

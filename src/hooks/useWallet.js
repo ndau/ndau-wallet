@@ -172,11 +172,37 @@ export default useWallet = () => {
         const accountsArray = getNDauAccounts().map(account => account.address)
         const accountAPI = await APIAddressHelper.getAccountsAPIAddress()
         const accountData = await APICommunicationHelper.post(accountAPI, JSON.stringify(accountsArray))
+        UserStore.setNdauAccounts(accountData);
         resolve(accountData);
       } catch(e) {
         reject(e)
       }
 
+    })
+  }
+
+  const getNdauAccountDetail = (ndauAddress) => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const accountsArray = [ndauAddress];
+        const accountAPI = await APIAddressHelper.getAccountsAPIAddress()
+        const accountData = await APICommunicationHelper.post(accountAPI, JSON.stringify(accountsArray))
+        resolve(accountData);
+      } catch(e) {
+        reject(e)
+      }
+
+    })
+  }
+
+  const removeWallet = (walletId) => {
+    return new Promise(async (resolve, reject) => {
+      const user = UserStore.removeWallet(walletId)
+      await MultiSafeHelper.saveUser(
+        user,
+        UserStore.getPassword()
+      );
+      resolve();
     })
   }
 
@@ -192,6 +218,8 @@ export default useWallet = () => {
     addLegacyWallet,
     getWallets,
     setActiveWallet,
-    getNdauAccountsDetails
+    getNdauAccountsDetails,
+    getNdauAccountDetail,
+    removeWallet
   }
 }

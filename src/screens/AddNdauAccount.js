@@ -1,5 +1,6 @@
-import { View, Text, StyleSheet, FlatList } from 'react-native'
+import { StyleSheet, FlatList } from 'react-native'
 import React, { useEffect, useRef, useState } from 'react'
+
 import ScreenContainer from '../components/Screen'
 import { themeColors } from '../config/colors'
 import NdauAddAccounHeaderCard from './components/addNdauAccountsComponents/NdauAddAccounHeaderCard'
@@ -12,11 +13,13 @@ import AccountItemCard from './components/addNdauAccountsComponents/AccountIemCa
 import Loading from '../components/Loading'
 import { ScreenNames } from './ScreenNames'
 import NdauAccountFeeCard from './components/addNdauAccountsComponents/NdauAccountFeeCard'
-import UserStore from "../stores/UserStore";
+import { useIsFocused } from '@react-navigation/native'
 
 const AddNdauAccount = (props) => {
-    const { item } = props?.route?.params ?? {};
+    const { item, onSelectAccount } = props?.route?.params ?? {};
     const paramItem = item;
+    const isFocused = useIsFocused();
+    const { getNdauAccountsDetails } = useWallet();
 
     const modalRef = useRef(null);
     const modelNdauFeeRef = useRef(null);
@@ -27,6 +30,11 @@ const AddNdauAccount = (props) => {
     const increment = () => setNoOfAccounts(noOfAccounts + 1)
     const [searchQuery, setSearchQuery] = useState("");
 
+    useEffect(() => {
+        if (isFocused) {
+            getNdauAccountsDetails().then(() => setNDauAccounts([...getNDauAccounts()]));
+        }
+    }, [isFocused])
 
 
     const decremnet = () => {
@@ -43,8 +51,6 @@ const AddNdauAccount = (props) => {
         });
         setNoOfAccounts(1);
     };
-
-    console.log(JSON.stringify(UserStore),'ndayaccount---')
 
     return (
         <ScreenContainer>
@@ -78,7 +84,10 @@ const AddNdauAccount = (props) => {
                         key={index}
                         item={item}
                         index={index}
-                        onItemClick={(val) => props.navigation.navigate(ScreenNames.NDAUDetail, { item: { ...val, ...paramItem } })}
+                        onItemClick={(val) => {
+                            if (onSelectAccount) return onSelectAccount(val);
+                            props.navigation.navigate(ScreenNames.NDAUDetail, { item: { image: paramItem.image, name: val?.addressData?.nickname, ...val } })
+                        }}
                     />}
                 keyExtractor={(item, index) => index.toString()}
             />

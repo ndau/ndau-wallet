@@ -1,5 +1,5 @@
-import React, { useCallback } from "react";
-import { FlatList, StyleSheet, TouchableOpacity, View } from "react-native";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { Alert, Dimensions, FlatList, StyleSheet, TouchableOpacity, View } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
 import { InfoIcon, WalletIcon } from "../assets/svgs/components";
@@ -9,17 +9,46 @@ import ScreenContainer from "../components/Screen";
 import Spacer from "../components/Spacer";
 import { themeColors } from "../config/colors";
 import { useWallet } from "../hooks";
+import { ScreenNames } from "./ScreenNames";
+import BottomSheetModal from "../components/BottomSheetModal";
+import AddWalletsPopup from "./components/dashboard/AddWalletsPopup";
 
 const SwitchWallet = () => {
+  const refAddWalletSheet = useRef();
   const navigation = useNavigation();
-  const { getWallets, setActiveWallet } = useWallet();
+  const { getWallets, setActiveWallet, removeWallet, getActiveWallet } = useWallet();
+
+  const [refresh, setRefresh] = useState(false);
+  const [wallets, setWallets] = useState(getWallets());
+
+  useEffect(() => {
+    setWallets([...getWallets()])
+  }, [refresh])
+
+  const confirm = (onYes) => {
+    Alert.alert(
+      'Delete wallet',
+      'Are you sure that you want to delete wallet?',
+      [
+        { text: "Yes", onPress: onYes },
+        { text: "No", onPress: () => null },
+      ]
+    )
+  }
 
   const RenderItem = useCallback(({ item }) => {
     const { walletId, type } = item;
     return (
-      <TouchableOpacity onPress={() => setActiveWallet(item, navigation.goBack())}>
+      <TouchableOpacity
+        disabled={getActiveWallet().walletId === walletId}
+        onLongPress={() => confirm(() => {
+          removeWallet(item.key).then(() => {
+            setRefresh(!refresh);
+          })
+        })}
+        onPress={() => setActiveWallet(item, navigation.goBack())}>
         <View style={styles.walletContainer}>
-          <View style={styles.icon}>
+          <View style={[styles.icon, getActiveWallet().walletId !== walletId && { borderColor: themeColors.black300 }]}>
             <WalletIcon />
           </View>
           <View style={{ justifyContent: "space-between", padding: 4, flex: 1 }}>
@@ -41,17 +70,36 @@ const SwitchWallet = () => {
       <Spacer height={16} />
       <View style={styles.container}>
         <FlatList
-          data={getWallets()}
+          data={wallets}
           keyExtractor={(_, i) => i.toString()}
           renderItem={RenderItem}
         />
         <Button
           label={"Add New Wallet"}
           onPress={() => {
-
+            refAddWalletSheet.current.open();
           }}
         />
       </View>
+      <BottomSheetModal
+        refRBSheet={refAddWalletSheet}
+        setIsVisible={() => {
+          refAddWalletSheet.current.close();
+        }}
+        height={Dimensions.get('window').height * 0.55}
+      >
+        <AddWalletsPopup
+          onClose={() => {
+            refAddWalletSheet.current.close()
+          }}
+          onItemClick={(index) => {
+            if (index == 0) navigation.navigate(ScreenNames.ImportWallet, { forCreation: true })
+            else if (index == 1) navigation.navigate(ScreenNames.CreateWallet, { isAlreadyWallet: true })
+            refAddWalletSheet.current.close();
+          }}
+        />
+
+      </BottomSheetModal>
     </ScreenContainer>
   );
 };

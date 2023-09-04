@@ -33,6 +33,8 @@ import AddNdauAccount from './screens/AddNdauAccount';
 import Receive from './screens/Receive';
 import QRCodeScannerScreen from './screens/QRScanner';
 import Swap from './screens/Swap';
+import LockPeriod from './screens/LockPeriod';
+import EAIDestination from './screens/EAIDestination';
 
 LogBox.ignoreAllLogs()
 
@@ -96,6 +98,10 @@ const MainStack = () => {
       <Stack.Screen name={ScreenNames.QRCodeScannerScreen} component={QRCodeScannerScreen} />
       <Stack.Screen name={ScreenNames.Swap} component={Swap} />
       
+      <Stack.Screen name={ScreenNames.SelectNDAU} component={AddNdauAccount} />
+      <Stack.Screen name={ScreenNames.LockPeriod} component={LockPeriod} />
+      <Stack.Screen name={ScreenNames.EAIDestination} component={EAIDestination} />
+
     </Stack.Navigator>
   )
 }

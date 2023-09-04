@@ -25,7 +25,9 @@ const ScreenNames = {
   Receive: "Receive",
   QRCodeScannerScreen: "QRCodeScannerScreen",
   Swap: "Swap",
-
+  LockPeriod: "LockPeriod",
+  EAIDestination: "EAIDestination",
+  SelectNDAU: "SelectNDAU"
 }
 
 export { ScreenNames }

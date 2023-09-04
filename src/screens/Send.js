@@ -18,12 +18,13 @@ const Send = (props) => {
   const { item } = props?.route?.params ?? {};
 
   const navigation = useNavigation();
-  const { getTransactionFee, sendAmountToNdauAddress } = useTransaction();
+  const { getTransactionFee, sendAmountToNdauAddress, getTransactionFeeForERC, sendERCFunds } = useTransaction();
 
   const [section, setSection] = useState(0);
   const [ndauAddress, setNdauAddress] = useState("");
   const [ndauAmount, setNdauAmount] = useState("");
   const [loading, setLoading] = useState("");
+  const [errors, setErrors] = useState([]);
   const [transaction, setTransaction] = useState({
     transactionFee: 0,
     sib: 0,
@@ -32,11 +33,17 @@ const Send = (props) => {
 
   const renderDetail = ({ title, value }) => {
     return (
-      <View style={styles.detailContainer}>
-        <CustomText titiliumSemiBold style={styles.textPara}>{title}</CustomText>
-        <CustomText titiliumSemiBold style={styles.textPara}>{value}</CustomText>
-      </View>
+      value !== undefined ? (
+        <View style={styles.detailContainer}>
+          <CustomText titiliumSemiBold style={styles.textPara}>{title}</CustomText>
+          <CustomText titiliumSemiBold style={styles.textPara}>{value}</CustomText>
+        </View>
+      ) : null
     )
+  }
+
+  const getName = () => {
+    return item?.shortName || "Ndau";
   }
 
   const getRemainBalance = () => {
@@ -56,7 +63,8 @@ const Send = (props) => {
         <Spacer height={10} />
         <CustomTextInput
           label={'Address'}
-          placeholder={"ndau address"}
+          placeholder={getName() + " address"}
+          value={ndauAddress}
           onChangeText={setNdauAddress}
         />
         <View style={styles.container}>
@@ -85,22 +93,42 @@ const Send = (props) => {
 
     const getQuotes = () => {
       setLoading("Updating");
-      getTransactionFee(
-        UserStore.getAccountDetail(
-          item.address
-          // "ndarpiqdjsxa4ywnxjxqhd64mbn3pwaxcb2n2epgj2by9idk"
-        ),
-        ndauAddress,
-        ndauAmount
-      ).then(res => {
-        setLoading("");
-        setTransaction(res);
-        setSection(2);
-      }).catch(err => {
-        FlashNotification.show(`${err.message}`);
-        setLoading("");
-        console.log('error', JSON.stringify(err.message, null, 2));
-      });
+
+      if (item.shortName) {
+        getTransactionFeeForERC(
+          ndauAddress,
+          ndauAmount
+        ).then(res => {
+          setLoading("");
+          setTransaction({
+            transactionFee: res.ethPrice,
+            sib: undefined,
+            total: parseFloat(res.ethPrice) + parseFloat(ndauAmount)
+          });
+          setSection(2);
+        }).catch(err => {
+          setLoading("");
+          if(err.reason?.includes("ENS name not configured")) {
+            FlashNotification.show("Address not found (" + ndauAddress + ")", true)
+          } else {
+            FlashNotification.show(err.message, true)
+          }
+        })
+      } else {
+        getTransactionFee(
+          UserStore.getAccountDetail(item.address),
+          ndauAddress,
+          ndauAmount
+        ).then(res => {
+          setLoading("");
+          setTransaction(res);
+          setSection(2);
+        }).catch(err => {
+          FlashNotification.show(`${err.message}`, true);
+          setLoading("");
+          console.log('error', JSON.stringify(err.message, null, 2));
+        });
+      }
     }
 
     return (
@@ -109,11 +137,25 @@ const Send = (props) => {
         <CustomText titiliumSemiBold body>How much are you sending?</CustomText>
         <Spacer height={10} />
         <CustomTextInput
-          label={'Ndau amount'}
+          label={getName() + ' amount'}
           value={ndauAmount}
-          placeholder={"ndau address"}
-          onChangeText={setNdauAmount}
-          // onBlur={getQuotes}
+          placeholder={getName() + " amount"}
+          errors={errors}
+          onChangeText={(t) => {
+            if (t[0] === "0" && t[1] === "0") return
+            if (/^\d*\.?\d*$/.test(t)) {
+              setNdauAmount(t)
+              if (parseFloat(t) <= parseFloat(item.totalFunds)) {
+                setErrors([]);
+              } else if (t.length > 0 && t !== ".") {
+                setErrors(["Insufficent balance"]);
+              }
+            } else {
+              setErrors([]);
+            }
+          }}
+          maxLength={10}
+        // onBlur={getQuotes}
         />
 
         <Spacer height={10} />
@@ -133,7 +175,7 @@ const Send = (props) => {
               {renderDetail({ title: "Total", value: parseFloat(transaction.total).toFixed(8) })}
             </View>
             <Button
-              disabled={ndauAmount.length === 0}
+              disabled={errors.length > 0 || ndauAmount.length === 0}
               label={"Next"}
               onPress={getQuotes}
             />
@@ -145,20 +187,32 @@ const Send = (props) => {
 
   const sendTheAmount = () => {
     setLoading("Sending...");
-    sendAmountToNdauAddress(
-      UserStore.getAccountDetail(
-        item.address
-        // "ndarpiqdjsxa4ywnxjxqhd64mbn3pwaxcb2n2epgj2by9idk"
-      ),
-      ndauAddress,
-      ndauAmount
-    ).then(resonse => {
-      setLoading("");
-      navigation.goBack();
-    }).catch(err => {
-      setLoading("")
-      FlashNotification.show(`${err.message}`);
-    })
+
+    if (item.shortName) {
+      sendERCFunds(
+        ndauAddress,
+        ndauAmount
+      ).then(res => {
+        setLoading("");
+        navigation.goBack();
+      }).catch(err => {
+        setLoading("");
+        FlashNotification.show(err.message, true)
+      })
+    } else {
+      sendAmountToNdauAddress(
+        UserStore.getAccountDetail(item.address),
+        ndauAddress,
+        ndauAmount
+      ).then(resonse => {
+        setLoading("");
+        navigation.goBack();
+      }).catch(err => {
+        setLoading("")
+        FlashNotification.show(`${err.message}`);
+      })
+    }
+
   }
 
   const renderConfirmation = () => {
@@ -192,7 +246,7 @@ const Send = (props) => {
               <Spacer height={10} />
               {renderDetail({ title: "Transaction Fee", value: transaction.transactionFee })}
               {renderDetail({ title: "SIB", value: transaction.sib })}
-              {renderDetail({ title: "Total", value: parseFloat(transaction.total).toFixed(8) })}
+              {renderDetail({ title: "Total", value: parseFloat(transaction.total) })}
             </View>
             <Button
               label={"Confirm & Send"}
@@ -221,6 +275,20 @@ const Send = (props) => {
   };
 
   const handleBack = () => {
+    if (section === 1) {
+      setNdauAmount("");
+      setTransaction({
+        transactionFee: 0,
+        sib: 0,
+        total: 0
+      })
+    } else if (section === 2) {
+      setTransaction({
+        transactionFee: 0,
+        sib: 0,
+        total: 0
+      })
+    }
     if (section > 0) setSection(_ => _ -= 1);
     else navigation.goBack()
   }

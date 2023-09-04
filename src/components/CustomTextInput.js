@@ -3,6 +3,7 @@ import { StyleSheet, TextInput, View } from "react-native";
 import { themeColors } from "../config/colors";
 import CustomText from "./CustomText";
 import Animated, { FadeInDown, FadeOutDown } from "react-native-reanimated";
+import { ErrorIcon, SuccessIcon } from "../assets/svgs/components";
 
 const CustomTextInput = ({
 	label,
@@ -21,8 +22,8 @@ const CustomTextInput = ({
 			<Animated.View style={styles.msgBox}
 				// entering={FadeInDown} exiting={FadeOutDown}
 			>
-				<View style={[styles.icon, { backgroundColor: isError ? themeColors.error : themeColors.success }]} />
-				<CustomText>{msg}</CustomText>
+				{isError ? <ErrorIcon /> : <SuccessIcon />}
+				<CustomText style={{ marginLeft: 4 }}>{msg}</CustomText>
 			</Animated.View>
 		)
 	}, [errors, success])

@@ -24,11 +24,8 @@ import Base64 from 'base-64';
 const generateEntropy = async (byteCount = 16) => {
   let initArray = new Uint8Array(byteCount);
   const secureRandom = crypto.getRandomValues(initArray);
-  console.log({secureRandom});
   const secureRandomString = String.fromCharCode.apply(null, secureRandom);
-  console.log({secureRandomString});
   const base64Value = Base64.encode(secureRandomString);
-  console.log({base64Value});
 
   SetupStore.entropy = base64Value;
   return base64Value;
