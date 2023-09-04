@@ -8,6 +8,7 @@ import { themeColors } from "../config/colors";
 import IconButton from "../components/IconButton";
 import { Buy, Delete, Receive, Send } from "../assets/svgs/components";
 import Button from "../components/Button";
+import { ScreenNames } from "./ScreenNames";
 
 const ERCDetail = (props) => {
 	const { item } = props?.route?.params ?? {};
@@ -22,7 +23,9 @@ const ERCDetail = (props) => {
 					<View style={styles.row}>
 						<IconButton label="Buy" icon={<Buy />} />
 						<IconButton label="Send" icon={<Send />} />
-						<IconButton label="Receive" icon={<Receive />} />
+						<IconButton label="Receive" icon={<Receive />} onPress={()=>{
+						  return	props.navigation.navigate(ScreenNames.Receive)
+						}}/>
 					</View>
 				</View>
 			</View>

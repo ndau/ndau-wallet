@@ -56,13 +56,18 @@ export const EthersScanAPI = {
     })
   },
   getAddressBalance: (address, contractaddress = undefined) => {
+
+    
     return new Promise((resolve, reject) => {
       const apiToCall = EthersScanAPI.__getFormattedEndpoint({
         module: EthersScanAPI.modules.ACCOUNT,
         action: contractaddress ? EthersScanAPI.actions.TOKEN_BALANCE : EthersScanAPI.actions.BALANCE,
         params: { address, contractaddress }
       })
+
+ 
       APICommunicationHelper.get(apiToCall).then(res => {
+        console.log('res----',res)
         if (res.message === "OK") resolve(res);
         else reject(res);
       }).catch(err => reject(err))

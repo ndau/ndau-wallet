@@ -5,15 +5,15 @@ import CustomText from "./CustomText";
 import StateButton from "./StateButton";
 import { Copy } from "../assets/svgs/components";
 
-const CopyAddressButton = ({ onPress }) => {
+const CopyAddressButton = ({ onPress,label,customStyles }) => {
 	return (
 		<StateButton
 			resetToPrevious
 			onButtonPress={onPress}
 			states={[
 				(
-					<View style={styles.buttonCopy}>
-						<CustomText titiliumSemiBolds body2 style={{ marginRight: 6 }}>Address</CustomText>
+					<View style={[styles.buttonCopy,customStyles]}>
+						<CustomText titiliumSemiBolds body2 style={{ marginRight: 6 }}>{label || "Address"}</CustomText>
 						<Copy />
 					</View>
 				),

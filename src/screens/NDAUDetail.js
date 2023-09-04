@@ -39,7 +39,7 @@ const NDAUDetail = (props) => {
 						<View style={styles.row}>
 							<IconButton label="Buy" icon={<Buy />} />
 							<IconButton disabled={parseFloat(item.totalFunds) <= 0} label="Send" icon={<Send />} onPress={() => customModalRef.current(true)} />
-							<IconButton label="Receive" icon={<Receive />} />
+							<IconButton label="Receive" icon={<Receive />} onPress={()=>props.navigation.navigate(ScreenNames.Receive)}/>
 						</View>
 						<View style={styles.row}>
 							<IconButton disabled={parseFloat(item.totalFunds) <= 0} label="Convert" icon={<Convert />} />

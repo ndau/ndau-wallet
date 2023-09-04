@@ -30,6 +30,8 @@ import { FlashMessage } from './components/common/FlashNotification';
 import SwitchWallet from './screens/SwitchWallet';
 import Send from './screens/Send';
 import AddNdauAccount from './screens/AddNdauAccount';
+import Receive from './screens/Receive';
+import QRCodeScannerScreen from './screens/QRScanner';
 
 LogBox.ignoreAllLogs()
 
@@ -89,6 +91,8 @@ const MainStack = () => {
       <Stack.Screen name={ScreenNames.SwitchWallet} component={SwitchWallet} />
       <Stack.Screen name={ScreenNames.Send} component={Send} />
       <Stack.Screen name={ScreenNames.AddNdauAccount} component={AddNdauAccount} />
+      <Stack.Screen name={ScreenNames.Receive} component={Receive} />
+      <Stack.Screen name={ScreenNames.QRCodeScannerScreen} component={QRCodeScannerScreen} />
       
     </Stack.Navigator>
   )

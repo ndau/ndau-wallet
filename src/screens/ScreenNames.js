@@ -21,7 +21,10 @@ const ScreenNames = {
   ERCDetail: "ERCDetail",
   SwitchWallet: "SwitchWallet",
   Send: "Send",
-  AddNdauAccount: "AddNdauAccount"
+  AddNdauAccount: "AddNdauAccount",
+  Receive: "Receive",
+  QRCodeScannerScreen: "QRCodeScannerScreen",
+
 }
 
 export { ScreenNames }
