@@ -24,6 +24,7 @@ const ScreenNames = {
   AddNdauAccount: "AddNdauAccount",
   Receive: "Receive",
   QRCodeScannerScreen: "QRCodeScannerScreen",
+  Swap: "Swap",
 
 }
 

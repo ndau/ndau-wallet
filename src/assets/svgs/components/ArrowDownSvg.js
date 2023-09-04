@@ -11,7 +11,7 @@ const ArrowDownSVGComponent = (props) => (
   >
     <Path
       d="M1.41 0.794922L6 5.37492L10.59 0.794922L12 2.20492L6 8.20492L0 2.20492L1.41 0.794922Z"
-      fill="white"
+      fill={props.stroke ? props.stroke : "white"}
     />
   </Svg>
 );

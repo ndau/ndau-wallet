@@ -15,6 +15,7 @@ const QRScanner = () => {
         cameraStyle={styles.camera}
         reactivate={true}
       /> */}
+    
     </View>
   );
 };

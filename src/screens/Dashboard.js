@@ -169,7 +169,7 @@ const Dashboard = ({ navigation }) => {
 	}, [])
 
 
-	console.log(JSON.stringify(tokens,null,2), 'results-------')
+
 
 	return (
 		<ScreenContainer tabScreen>

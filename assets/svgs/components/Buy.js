@@ -1,6 +1,5 @@
 import * as React from "react";
 import Svg, { Path, ClipPath, G, Rect, Defs } from "react-native-svg";
-import { themeColors } from "../../../config/colors";
 
 const Buy = ({ white = false }) => (
   <Svg width="24" height="20" viewBox="0 0 24 20" fill="none" xmlns="http://www.w3.org/2000/svg">

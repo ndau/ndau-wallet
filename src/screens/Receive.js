@@ -16,24 +16,25 @@ const Receive = (props) => {
 
   
     const shareQRCode =  async () => {
+      props.navigation.navigate("QRCodeScannerScreen")
 
-        try {
-          const result = await Share.share({
-            message:
-              'React Native | A framework for building native apps using React',
-          });
-          if (result.action === Share.sharedAction) {
-            if (result.activityType) {
-              // shared with activity type of result.activityType
-            } else {
-              // shared
-            }
-          } else if (result.action === Share.dismissedAction) {
-            // dismissed
-          }
-        } catch (error) {
-          alert(error.message);
-        }
+        // try {
+        //   const result = await Share.share({
+        //     message:
+        //       '0xb5300b33A656A291f4400D76fD9572011698EC71',
+        //   });
+        //   if (result.action === Share.sharedAction) {
+        //     if (result.activityType) {
+        //       // shared with activity type of result.activityType
+        //     } else {
+        //       // shared
+        //     }
+        //   } else if (result.action === Share.dismissedAction) {
+        //     // dismissed
+        //   }
+        // } catch (error) {
+        //   alert(error.message);
+        // }
       };
 
 
@@ -81,6 +82,7 @@ export default Receive
 
 
 const styles = StyleSheet.create({
+
     btnContainer: {
         justifyContent: 'flex-end',
         flex: 1,
