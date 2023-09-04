@@ -16,7 +16,7 @@ import AddWalletsPopup from "./components/dashboard/AddWalletsPopup";
 const SwitchWallet = () => {
   const refAddWalletSheet = useRef();
   const navigation = useNavigation();
-  const { getWallets, setActiveWallet, removeWallet } = useWallet();
+  const { getWallets, setActiveWallet, removeWallet, getActiveWallet } = useWallet();
 
   const [refresh, setRefresh] = useState(false);
   const [wallets, setWallets] = useState(getWallets());
@@ -40,6 +40,7 @@ const SwitchWallet = () => {
     const { walletId, type } = item;
     return (
       <TouchableOpacity
+        disabled={getActiveWallet().walletId === walletId}
         onLongPress={() => confirm(() => {
           removeWallet(item.key).then(() => {
             setRefresh(!refresh);
@@ -47,7 +48,7 @@ const SwitchWallet = () => {
         })}
         onPress={() => setActiveWallet(item, navigation.goBack())}>
         <View style={styles.walletContainer}>
-          <View style={styles.icon}>
+          <View style={[styles.icon, getActiveWallet().walletId !== walletId && { borderColor: themeColors.black300 }]}>
             <WalletIcon />
           </View>
           <View style={{ justifyContent: "space-between", padding: 4, flex: 1 }}>

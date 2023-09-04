@@ -52,7 +52,7 @@ const getRootAddresses = async (rootPrivateKey, startIndex, endIndex) => {
       }
     }
   } catch (error) {
-    FlashNotification.showError(
+    FlashNotification.show(
       `problem encountered creating root addresses: ${error.message}`
     )
     throw error
@@ -94,7 +94,7 @@ const getBIP44Addresses = async (rootPrivateKey, startIndex, endIndex) => {
       }
     }
   } catch (error) {
-    FlashNotification.showError(
+    FlashNotification.show(
       `problem encountered creating BIP44 addresses: ${error.message}`
     )
     throw error

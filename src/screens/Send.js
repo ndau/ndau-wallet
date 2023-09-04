@@ -106,7 +106,6 @@ const Send = (props) => {
             total: parseFloat(res.ethPrice) + parseFloat(ndauAmount)
           });
           setSection(2);
-          console.log('res', JSON.stringify(res, null, 2));
         }).catch(err => {
           setLoading("");
           if(err.reason?.includes("ENS name not configured")) {
@@ -146,7 +145,7 @@ const Send = (props) => {
             if (t[0] === "0" && t[1] === "0") return
             if (/^\d*\.?\d*$/.test(t)) {
               setNdauAmount(t)
-              if (parseFloat(t) < parseFloat(item.totalFunds)) {
+              if (parseFloat(t) <= parseFloat(item.totalFunds)) {
                 setErrors([]);
               } else if (t.length > 0 && t !== ".") {
                 setErrors(["Insufficent balance"]);

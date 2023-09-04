@@ -37,17 +37,17 @@ const post = async (
           LogStore.log(`Device offline. Can't POST to ${url}`)
           reject(new OfflineError())
         }
-        LogStore.log(
-          `APICommunicationHelper.post ${JSON.stringify({
-            url: url,
-            data: data
-          })}`
-        )
+        // LogStore.log(
+        //   `APICommunicationHelper.post ${JSON.stringify({
+        //     url: url,
+        //     data: data
+        //   })}`
+        // )
         if (url.includes("testnet")) url = url.replace('https', 'http');
         console.log('API Response :: Post ->', url);
         const response = await axios.post(url, data, { timeout: timeoutMS })
-        console.log('API Response :: Post ->', {url, data, response: response.data});
-        LogStore.log(`${url} response: ${JSON.stringify(response.data)}`)
+        // console.log('API Response :: Post ->', {url, data, response: response.data});
+        // LogStore.log(`${url} response: ${JSON.stringify(response.data)}`)
         resolve(response.data)
       } catch (error) {
         const safeStatus =
@@ -87,13 +87,13 @@ const get = async (url, retries = AppConfig.API_MAX_RETRIES, timeoutMS = AppConf
           LogStore.log(`Device offline. Can't GET ${url}`)
           reject(new OfflineError())
         }
-        LogStore.log(
-          `APICommunicationHelper.get ${JSON.stringify({ url: url })}`
-        )
+        // LogStore.log(
+        //   `APICommunicationHelper.get ${JSON.stringify({ url: url })}`
+        // )
         if (url.includes("testnet")) url = url.replace('https', 'http');
         console.log('API Response :: GET ->', url);
         const response = await axios.get(url, { timeout: timeoutMS })
-        console.log('API Response :: GET ->', {url, response: response.data});
+        // console.log('API Response :: GET ->', {url, response: response.data});
 
         // LogStore.log(`Response is: ${JSON.stringify(response)}`)
         resolve(response.data)

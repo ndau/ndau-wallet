@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, Animated, TouchableOpacity, Image, Dimensions } from 'react-native'
-import React from 'react'
+import React, { useEffect } from 'react'
 import Spacer from '../../../components/Spacer'
 import CustomText from '../../../components/CustomText'
 import { themeColors } from '../../../config/colors'
@@ -30,8 +30,8 @@ const AccountItemCard = ({ item, index, onItemClick }) => {
                     </View>
                 </View>
                 <View style={styles.rightView}>
-                    <CustomText color={themeColors.white} body>{item.totalFunds || 0}</CustomText>
-                    <CustomText color={themeColors.white} body2>≈{item.usdAmount || 0}</CustomText>
+                    <CustomText color={themeColors.white} body>{(parseFloat(item.totalFunds || 0)?.toFixed(4)) || 0}</CustomText>
+                    <CustomText color={themeColors.white} body2>≈{(parseFloat(item.usdAmount || 0)?.toFixed(4)) || 0}</CustomText>
                 </View>
 
             </Animated.View>

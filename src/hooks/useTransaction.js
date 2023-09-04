@@ -7,6 +7,10 @@ import UserStore from "../stores/UserStore";
 import { Transaction } from "../transactions/Transaction";
 import { TransferTransaction } from "../transactions/TransferTransaction";
 import { EthersScanAPI } from "../helpers/EthersScanAPI";
+import { LockTransaction } from "../transactions/LockTransaction";
+import NdauNumber from "../helpers/NdauNumber";
+import { NotifyTransaction } from "../transactions/NotifyTransaction";
+import { SetRewardsDestinationTransaction } from "../transactions/SetRewardsDestinationTransaction";
 
 export default useTransaction = () => {
 
@@ -150,11 +154,115 @@ export default useTransaction = () => {
     })
   }
 
+  const getNDAULockFee = (account, lockISO) => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        Object.assign(LockTransaction.prototype, Transaction)
+        const lockTransaction = new LockTransaction(
+          UserStore.getActiveWallet(),
+          account,
+          lockISO
+        )
+        await lockTransaction.create()
+        await lockTransaction.sign()
+        const data = await lockTransaction.prevalidate()
+        resolve(new NdauNumber(data.fee_napu).toDetail())
+      } catch (err) {
+        reject(err)
+        console.log('error: Getting NDAU Lock fee', JSON.stringify(err, null, 2));
+      }
+    })
+  }
+
+  const lockNDAUAccount = (account, lockISO, accountAddressForEAI = "") => {
+    return new Promise(async (resolve, reject) => {
+      try {
+
+        const wallet = UserStore.getActiveWallet();
+
+        Object.assign(NotifyTransaction.prototype, Transaction)
+        const notifyTransaction = new NotifyTransaction(
+          wallet,
+          account
+        )
+
+        Object.assign(SetRewardsDestinationTransaction.prototype, Transaction)
+        const setRewardsDestinationTransaction = new SetRewardsDestinationTransaction(
+          wallet,
+          account,
+          accountAddressForEAI
+        )
+
+        Object.assign(LockTransaction.prototype, Transaction)
+        const lockTransaction = new LockTransaction(
+          wallet,
+          account,
+          lockISO
+        )
+
+        await lockTransaction.createSignPrevalidateSubmit()
+
+        await notifyTransaction.createSignPrevalidateSubmit()
+
+        // Now make sure we send the EAI where it belongs if it is different
+        // than the account address
+        if (account.address !== accountAddressForEAI) {
+          await setRewardsDestinationTransaction.createSignPrevalidateSubmit()
+        }
+
+        resolve(true);
+      } catch (err) {
+        reject(err)
+        console.log('error: Getting NDAU Lock fee', JSON.stringify(err, null, 2));
+      }
+    })
+  }
+
+  const notifyForNDAU = (account) => {
+    return new Promise(async (resolve, reject) => {
+      try {
+
+        const wallet = UserStore.getActiveWallet();
+
+        Object.assign(NotifyTransaction.prototype, Transaction)
+        const notifyTransaction = new NotifyTransaction(
+          wallet,
+          account
+        )
+        const response = await notifyTransaction.createSignPrevalidateSubmit();
+        resolve(response)
+      } catch (e) {
+        reject(e)
+      }
+    });
+  }
+
+  const setEAI = (account, accountAddressForEAI = "") => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        Object.assign(SetRewardsDestinationTransaction.prototype, Transaction)
+        const setRewardsDestinationTransaction = new SetRewardsDestinationTransaction(
+          UserStore.getActiveWallet(),
+          account,
+          accountAddressForEAI || account.address
+        )
+        const response = await setRewardsDestinationTransaction.createSignPrevalidateSubmit();
+        resolve(response);
+      } catch (e) {
+        reject(e)
+      }
+    })
+  }
+
   return {
     getTransactionFee,
     sendAmountToNdauAddress,
     getTransactionFeeForERC,
     sendERCFunds,
-    getERCTransactionHistory
+    getERCTransactionHistory,
+    getNDAULockFee,
+    lockNDAUAccount,
+    notifyForNDAU,
+    setEAI
   }
 }

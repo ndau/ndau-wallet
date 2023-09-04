@@ -21,7 +21,10 @@ const ScreenNames = {
   ERCDetail: "ERCDetail",
   SwitchWallet: "SwitchWallet",
   Send: "Send",
-  AddNdauAccount: "AddNdauAccount"
+  AddNdauAccount: "AddNdauAccount",
+  LockPeriod: "LockPeriod",
+  EAIDestination: "EAIDestination",
+  SelectNDAU: "SelectNDAU"
 }
 
 export { ScreenNames }

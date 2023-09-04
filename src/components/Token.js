@@ -7,7 +7,7 @@ import CustomText from "./CustomText";
 
 const Token = ({ name, network, totalFunds, usdAmount, image, index, accounts, onPress }) => {
 	return (
-		<TouchableOpacity activeOpacity={0.8} onPress={onPress}>
+		<TouchableOpacity disabled={totalFunds === "l"} activeOpacity={0.8} onPress={onPress}>
 			<Animated.View entering={FadeInDown.delay(100 * index)} style={styles.container}>
 				<View style={styles.image}>
 					<Image source={image} style={[styles.image, { position: "absolute", height: 84, width: 84, top: -2, left: -2 }]} />

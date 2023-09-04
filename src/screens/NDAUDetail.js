@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Image, Linking, ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
 
 import CopyAddressButton from "../components/CopyAddressButton";
@@ -6,7 +6,7 @@ import CustomText from "../components/CustomText";
 import ScreenContainer from "../components/Screen";
 import { themeColors } from "../config/colors";
 import IconButton from "../components/IconButton";
-import { Buy, Convert, Delete, DollarSign, EAI, Lock, Receive, Send, Swap, UnLocked } from "../assets/svgs/components";
+import { Buy, Clock, Convert, Delete, DollarSign, EAI, Exclamation, Lock, Receive, Send, Swap, UnLocked } from "../assets/svgs/components";
 import Spacer from "../components/Spacer";
 import Button from "../components/Button";
 import CustomModal from "../components/Modal";
@@ -14,10 +14,101 @@ import AppConstants from "../AppConstants";
 import { ScreenNames } from "./ScreenNames";
 import AppConfig from "../AppConfig";
 import Clipboard from "@react-native-clipboard/clipboard";
+import { useTransaction, useWallet } from "../hooks";
+import DateHelper from "../helpers/DateHelper";
+import AccountAPIHelper from "../helpers/AccountAPIHelper";
+import DataFormatHelper from "../helpers/DataFormatHelper";
+import NdauNumber from "../helpers/NdauNumber";
+import { ndauUtils } from "../utils";
+import UserStore from "../stores/UserStore";
+import Loading from "../components/Loading";
+import AccountAPI from "../api/AccountAPI";
+import { useIsFocused } from "@react-navigation/native";
 
 const NDAUDetail = (props) => {
 	const { item } = props?.route?.params ?? {};
 	const customModalRef = useRef();
+	const isFocused = useIsFocused();
+	const [loading, setLoading] = useState("");
+	const { getNdauAccountDetail } = useWallet();
+	const { notifyForNDAU } = useTransaction();
+
+	const [accountInfo, setAccountInfo] = useState({
+		isLocked: false,
+		unlocksOn: "",
+		waaDays: 0,
+		spendableNdau: 0,
+		receivingEAIFrom: 0,
+		eaiValueForDisplay: 0,
+		baseEAI: 0,
+		lockBonusEAI: 0,
+		sendingEAITo: 0,
+	})
+
+	useEffect(() => {
+		if (isFocused) {
+			setLoading("Please wait")
+
+			getNdauAccountDetail(item.address).then(res => {
+
+				const addressData = res[item.address] || {};
+
+				if (addressData.incomingRewardsFrom?.length && !addressData.incomingRewardsFromNickname) {
+					addressData.incomingRewardsFromNickname = UserStore.getAccountDetail(addressData.incomingRewardsFrom)?.addressData?.nickname
+				} else if (addressData.incomingRewardsFrom?.length == 0) {
+					addressData.incomingRewardsFromNickname = null;
+				}
+
+				if (addressData.rewardsTarget && !addressData.rewardsTargetNickname) {
+					addressData.rewardsTargetNickname = UserStore.getAccountDetail(addressData.rewardsTarget)?.addressData?.nickname
+				} else if (addressData.rewardsTarget == null) {
+					addressData.rewardsTargetNickname = null;
+				}
+
+				AccountAPI.getLockRates(UserStore.getAccountDetail(item.address)).then(lockData => {
+					const notificePeriod = addressData.lock?.noticePeriod;
+					if (notificePeriod) {
+						const obj = lockData.filter(i => i.address === notificePeriod);
+						if (obj.length) {
+							addressData.eaiValueForDisplay = obj[0].eairate
+						}
+					}
+					setAccountInfo(prev => {
+						const _ = { ...prev }
+
+						const eaiValueForDisplay = AccountAPIHelper.eaiValueForDisplay(addressData)
+						const sendingEAITo = AccountAPIHelper.sendingEAITo(addressData)
+						const receivingEAIFrom = AccountAPIHelper.receivingEAIFrom(addressData)
+						const isAccountLocked = AccountAPIHelper.isAccountLocked(addressData)
+						const accountLockedUntil = AccountAPIHelper.accountLockedUntil(addressData)
+						const weightedAverageAgeInDays = AccountAPIHelper.weightedAverageAgeInDays(addressData)
+						const lockBonusEAI = DataFormatHelper.lockBonusEAI(DateHelper.getDaysFromISODate(addressData.lock ? addressData.lock.noticePeriod : 0))
+						const baseEAI = eaiValueForDisplay - lockBonusEAI
+						let spendableNdau = 0
+						if (!isAccountLocked) spendableNdau = AccountAPIHelper.spendableNdau(addressData, true, AppConfig.NDAU_DETAIL_PRECISION)
+
+						const showAllAcctButtons = !isAccountLocked && spendableNdau > 0
+						const spendableNdauDisplayed = new NdauNumber(spendableNdau).toDetail()
+
+						_.isLocked = isAccountLocked;
+						_.unlocksOn = accountLockedUntil;
+						_.receivingEAIFrom = receivingEAIFrom;
+						_.spendableNdau = spendableNdauDisplayed;
+						_.eaiValueForDisplay = eaiValueForDisplay; // annualized inncentive
+						_.waaDays = weightedAverageAgeInDays;
+						_.baseEAI = baseEAI; // current eai based on waa
+						_.lockBonusEAI = lockBonusEAI; // lock bonus
+						_.sendingEAITo = ndauUtils.truncateAddress(sendingEAITo) // being sent to
+
+						setLoading("")
+						return _;
+					})
+				})
+
+			})
+		}
+	}, [isFocused])
+
 
 	const openLink = () => {
 		customModalRef.current(false);
@@ -33,53 +124,104 @@ const NDAUDetail = (props) => {
 		Clipboard.setString(item.address);
 	}
 
+	const handleNotify = () => {
+		setLoading("Starting...")
+		notifyForNDAU(UserStore.getAccountDetail(item.address)).then(res => {
+			setLoading("")
+		}).catch(err => {
+			setLoading("")
+		})
+	}
+
 	const disableButton = item.totalFunds === null || item.totalFunds === undefined || parseFloat(item.totalFunds) <= 0
+	const canRecieve = accountInfo.unlocksOn == null;
 
 	return (
-		<ScreenContainer headerTitle={item.name} headerRight={<CopyAddressButton onPress={copyAddress}/>}>
-			<ScrollView>
+		<ScreenContainer headerTitle={item.name} headerRight={canRecieve && <CopyAddressButton onPress={copyAddress} />}>
+			<ScrollView showsVerticalScrollIndicator={false}>
 				<View style={styles.headerContainer}>
 					<Image style={styles.icon} source={item.image} />
 					<CustomText semiBold h4 style={styles.balance}>{item.totalFunds || "0.00"}</CustomText>
 
 					<View style={styles.buttonContainer}>
 						<View style={styles.row}>
-							<IconButton label="Buy" icon={<Buy />} />
-							<IconButton disabled={disableButton} label="Send" icon={<Send />} onPress={() => customModalRef.current(true)} />
-							<IconButton label="Receive" icon={<Receive />} />
+							<IconButton disabled={accountInfo.isLocked} label="Buy" icon={<Buy />} />
+							<IconButton disabled={accountInfo.isLocked || disableButton} label="Send" icon={<Send />} onPress={() => customModalRef.current(true)} />
+							<IconButton disabled={!canRecieve} label="Receive" icon={<Receive />} />
 						</View>
 						<View style={styles.row}>
-							<IconButton disabled={disableButton} label="Convert" icon={<Convert />} />
-							<IconButton disabled={disableButton} label="Lock" icon={<Lock />} />
+							<IconButton disabled={accountInfo.isLocked || disableButton} label="Convert" icon={<Convert />} />
+							<IconButton disabled={accountInfo.isLocked || disableButton} label="Lock" icon={<Lock />} onPress={() => props.navigation.navigate(ScreenNames.LockPeriod, { item })} />
 						</View>
 					</View>
 					<View style={styles.infoContainer}>
 						<CustomText titiliumSemiBold body>Account Status</CustomText>
 						<View style={styles.separator} />
 						<View style={styles.row}>
-							{false ? <Lock /> : <UnLocked />}
-							<CustomText style={styles.margin} titilium>Unlocked</CustomText>
+							{accountInfo.isLocked ? <Lock /> : <UnLocked />}
+							<CustomText style={styles.margin} titilium>{accountInfo.isLocked ? "Locked" : "UnLocked"}</CustomText>
 						</View>
+						{
+							accountInfo.isLocked ? (
+								<>
+									<Spacer height={6} />
+									<View style={styles.row}>
+										<Exclamation />
+										<CustomText style={styles.margin} titilium>You cannot send or receive</CustomText>
+									</View>
+									<Spacer height={6} />
+									<View style={styles.row}>
+										<Clock />
+										<CustomText style={styles.margin} titilium>Will unlock on {accountInfo.unlocksOn}</CustomText>
+									</View>
+								</>
+							) : null
+						}
 						<Spacer height={6} />
 						<View style={styles.row}>
 							<DollarSign />
-							<CustomText style={styles.margin} titilium>0.0000</CustomText>
+							<CustomText style={styles.margin} titilium>{accountInfo.spendableNdau}</CustomText>
+							<CustomText style={styles.margin} color={themeColors.success} titilium>Spendable</CustomText>
 						</View>
 						<View style={[styles.row, { marginTop: 20, justifyContent: "space-between" }]}>
-							<CustomText style={styles.margin} titilium>0% Annualized Incentive (EAI)</CustomText>
+							<CustomText style={styles.margin} titilium>{`${accountInfo.eaiValueForDisplay}% Annualized Incentive (EAI)`}</CustomText>
 							<Button
 								caption
 								rightIcon={<EAI />}
 								label={'Set EAI destination  '}
+								buttonDisabledTextColor={themeColors.white}
+								disabled={parseFloat(item.totalFunds) <= 0}
+								buttonDisabledBG={themeColors.black300}
 								buttonContainerStyle={styles.smallButton}
+								onPress={() => props.navigation.navigate(ScreenNames.EAIDestination, { item, onlySetDestination: true })}
 							/>
 						</View>
 						<View style={styles.separator} />
-						<View style={[styles.row, { marginTop: 20, justifyContent: "space-between" }]}>
+
+						<View style={[styles.row, { marginTop: 0, justifyContent: "space-between" }]}>
 							<CustomText style={styles.margin} titilium>Weighted average age (WAA)</CustomText>
-							<CustomText style={styles.margin} titilium>0 Days</CustomText>
+							<CustomText style={styles.margin} titilium>{accountInfo.waaDays} Days</CustomText>
 						</View>
+
+						<View style={[styles.row, { marginTop: 15, justifyContent: "space-between" }]}>
+							<CustomText style={styles.margin} titilium>Current EAI based on WAA</CustomText>
+							<CustomText style={styles.margin} titilium>{accountInfo.baseEAI}%</CustomText>
+						</View>
+
+						<View style={[styles.row, { marginTop: 15, justifyContent: "space-between" }]}>
+							<CustomText style={styles.margin} titilium>Lock Bonus EAI</CustomText>
+							<CustomText style={styles.margin} titilium>{accountInfo.lockBonusEAI}%</CustomText>
+						</View>
+						{
+							!!accountInfo.sendingEAITo && (
+								<View style={[styles.row, { marginTop: 15, justifyContent: "space-between" }]}>
+									<CustomText style={styles.margin} titilium>EAI being sent to: </CustomText>
+									<CustomText style={styles.margin} titilium>{accountInfo.sendingEAITo}</CustomText>
+								</View>
+							)
+						}
 					</View>
+					<Spacer height={100} />
 				</View>
 			</ScrollView>
 			<CustomModal bridge={customModalRef}>
@@ -107,6 +249,15 @@ const NDAUDetail = (props) => {
 					buttonContainerStyle={styles.cancelButton}
 				/>
 			</CustomModal>
+			{
+				accountInfo.isLocked && accountInfo.unlocksOn === null && (
+					<Button
+						onPress={handleNotify}
+						label={'Start Count down timer'}
+						buttonContainerStyle={{ marginBottom: 10 }}
+					/>
+				)
+			}
 			<Button
 				label={'View Transaction'}
 			/>
@@ -115,6 +266,7 @@ const NDAUDetail = (props) => {
 				iconLeft={<Delete />}
 				buttonContainerStyle={styles.removeButton}
 			/>
+			{loading && <Loading label={loading} />}
 		</ScreenContainer>
 	)
 }

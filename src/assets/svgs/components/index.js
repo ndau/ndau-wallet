@@ -31,6 +31,8 @@ import DollarSign from "./DollarSign";
 import EAI from "./EAI";
 import Delete from "./Delete";
 import QRCode from "./QRCode";
+import Clock from "./Clock";
+import Exclamation from "./Exclamation";
 
 export {
   BackSVGComponent,
@@ -64,5 +66,7 @@ export {
   DollarSign,
   EAI,
   Delete,
-  QRCode
+  QRCode,
+  Clock,
+  Exclamation
 };

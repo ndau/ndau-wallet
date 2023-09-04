@@ -90,16 +90,19 @@ class UserStore {
     const currentWallet = this._user[0].wallets[currentWalletId];
     if (data) {
       Object.keys(data).forEach(key => {
-        const totalFunds = DataFormatHelper.getNdauFromNapu(data[key].balance);
+        const totalFunds = DataFormatHelper.getNdauFromNapu(data[key].balance, 4);
         const usdAmount = totalFunds * NdauStore.getMarketPrice();
-        currentWallet.accounts[key] = {
-          ...currentWallet.accounts[key],
-          ...data[key],
-          validationKeys: currentWallet.accounts[key].validationKeys,
-          totalFunds,
-          usdAmount
-        }
+
+        const accounts = currentWallet.accounts;
+        accounts[key].addressData = {
+          ...accounts[key].addressData,
+          ...data[key]
+        };
+        accounts[key].totalFunds = totalFunds;
+        accounts[key].usdAmount = usdAmount;
+        currentWallet.accounts = accounts;
       })
+      this._user[0].wallets[currentWalletId] = currentWallet;
     }
     return currentWallet;
   }

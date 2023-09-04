@@ -172,7 +172,21 @@ export default useWallet = () => {
         const accountsArray = getNDauAccounts().map(account => account.address)
         const accountAPI = await APIAddressHelper.getAccountsAPIAddress()
         const accountData = await APICommunicationHelper.post(accountAPI, JSON.stringify(accountsArray))
-        UserStore.setNdauAccounts(accountData)
+        UserStore.setNdauAccounts(accountData);
+        resolve(accountData);
+      } catch(e) {
+        reject(e)
+      }
+
+    })
+  }
+
+  const getNdauAccountDetail = (ndauAddress) => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const accountsArray = [ndauAddress];
+        const accountAPI = await APIAddressHelper.getAccountsAPIAddress()
+        const accountData = await APICommunicationHelper.post(accountAPI, JSON.stringify(accountsArray))
         resolve(accountData);
       } catch(e) {
         reject(e)
@@ -205,6 +219,7 @@ export default useWallet = () => {
     getWallets,
     setActiveWallet,
     getNdauAccountsDetails,
+    getNdauAccountDetail,
     removeWallet
   }
 }
