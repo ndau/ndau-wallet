@@ -61,7 +61,6 @@ const TransactionDetail = (props) => {
 		)
 	}
 	const renderNDAUDetail = () => {
-		console.log('hahah', JSON.stringify(transaction, null, 2));
 		return (
 			<View styles={styles.container}>
 				<CustomText semiBold style={{ marginVertical: 20 }}>{moment(transaction.Timestamp).format("DD  MMM, YYYY")}</CustomText>
