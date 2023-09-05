@@ -46,7 +46,7 @@ const getTransactionByHashAPIAddress = async transactionHash => {
   // transaction hash's can contain characters that must be encoded
   // for a URI
   const urlEncodedTransactionHash = encodeURIComponent(transactionHash)
-  return (await getNodeAddress()) + `/transaction/${urlEncodedTransactionHash}`
+  return (await getNodeAddress()) + `/transaction/detail/${urlEncodedTransactionHash}`
 }
 
 export default {

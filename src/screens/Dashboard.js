@@ -23,6 +23,7 @@ import { addWalletsData } from "../utils";
 import DashBoardBottomSheetCard from "./components/DashBoardBottomSheetCard";
 import { useIsFocused } from "@react-navigation/native";
 import AddWalletsPopup from "./components/dashboard/AddWalletsPopup";
+import { ethers } from "ethers";
 
 const Dashboard = ({ navigation }) => {
 
@@ -71,22 +72,22 @@ const Dashboard = ({ navigation }) => {
 		Promise.allSettled([
 			EthersScanAPI.getAddressBalance(getActiveWallet().ercAddress),
 			EthersScanAPI.getAddressBalance(getActiveWallet().ercAddress, EthersScanAPI.contractaddress.USDC),
-			getNdauAccountsDetails()
+			getNdauAccountsDetails(),
+			EthersScanAPI.getZksyncAddressBalance()
 		]).then(results => {
-
 
 			// getting all results
 			const availableEthInWEI = results[0].status === "fulfilled" ? results[0].value.result : 0;
 			const availableUSDC = results[1].status === "fulfilled" ? results[1].value.result : 0;
 			const ndauAccounts = results[2].status === "fulfilled" ? results[2].value : 0;
+			const npayAccount = results[3].status === "fulfilled" ? results[3].value : 0;
+
 			const totalNdausOnAllAccounts = DataFormatHelper.getNdauFromNapu(Object.keys(ndauAccounts).map(key => ndauAccounts[key]).reduce((pv, cv) => pv += parseFloat(cv.balance), 0) || 0);
 
-			const npay = { totalFunds: 0, usdAmount: 0 };
+			const npay = { totalFunds: ethers.utils.formatEther(npayAccount?._hex), usdAmount: 0 };
 
-			// handle eth
 			const eth = { totalFunds: Converters.WEI_ETH(availableEthInWEI), usdAmount: Converters.ETH_USD(Converters.WEI_ETH(availableEthInWEI), ethusd) };
 
-			// handle usdc
 			const usdc = { totalFunds: availableUSDC, usdAmount: availableUSDC };
 
 			const currentPriceOfNdauInUsd = parseFloat(totalNdausOnAllAccounts * NdauStore.getMarketPrice()).toFixed(4)

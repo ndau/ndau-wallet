@@ -33,6 +33,7 @@ import AddNdauAccount from './screens/AddNdauAccount';
 import LockPeriod from './screens/LockPeriod';
 import EAIDestination from './screens/EAIDestination';
 import Transactions from './screens/Transactions';
+import TransactionDetail from './screens/TransactionDetail';
 
 LogBox.ignoreAllLogs()
 
@@ -96,6 +97,7 @@ const MainStack = () => {
       <Stack.Screen name={ScreenNames.LockPeriod} component={LockPeriod} />
       <Stack.Screen name={ScreenNames.EAIDestination} component={EAIDestination} />
       <Stack.Screen name={ScreenNames.Transactions} component={Transactions} />
+      <Stack.Screen name={ScreenNames.TransactionDetail} component={TransactionDetail} />
 
     </Stack.Navigator>
   )

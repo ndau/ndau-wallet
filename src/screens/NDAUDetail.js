@@ -51,7 +51,6 @@ const NDAUDetail = (props) => {
 			setLoading("Please wait")
 
 			getNdauAccountDetail(item.address).then(res => {
-				console.log('aa', JSON.stringify(res, null, 2));
 				const addressData = res[item.address] || {};
 
 				if (addressData.incomingRewardsFrom?.length && !addressData.incomingRewardsFromNickname) {

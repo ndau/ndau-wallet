@@ -26,6 +26,7 @@ const ScreenNames = {
   EAIDestination: "EAIDestination",
   SelectNDAU: "SelectNDAU",
   Transactions: 'Transactions',
+  TransactionDetail: "TransactionDetail"
 }
 
 export { ScreenNames }
