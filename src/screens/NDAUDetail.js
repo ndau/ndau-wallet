@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Image, Linking, ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
+import { Alert, Image, Linking, ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
 
 import CopyAddressButton from "../components/CopyAddressButton";
 import CustomText from "../components/CustomText";
@@ -24,14 +24,15 @@ import UserStore from "../stores/UserStore";
 import Loading from "../components/Loading";
 import AccountAPI from "../api/AccountAPI";
 import { useIsFocused } from "@react-navigation/native";
+import FlashNotification from "../components/common/FlashNotification";
 
 const NDAUDetail = (props) => {
 	const { item } = props?.route?.params ?? {};
 	const customModalRef = useRef();
 	const isFocused = useIsFocused();
 	const [loading, setLoading] = useState("");
-	const { getNdauAccountDetail } = useWallet();
-	const { notifyForNDAU, getTransactions, getTransactionByHash } = useTransaction();
+	const { getNdauAccountDetail, removeAccount } = useWallet();
+	const { notifyForNDAU } = useTransaction();
 
 	const [accountInfo, setAccountInfo] = useState({
 		isLocked: false,
@@ -137,6 +138,17 @@ const NDAUDetail = (props) => {
 		})
 	}
 
+	const confirm = (onYes) => {
+		Alert.alert(
+			'Delete account',
+			'Are you sure that you want to delete the account?',
+			[
+				{ text: "Yes", onPress: onYes },
+				{ text: "No", onPress: () => null },
+			]
+		)
+	}
+
 	const disableButton = item.totalFunds === null || item.totalFunds === undefined || parseFloat(item.totalFunds) <= 0
 	const canRecieve = accountInfo.unlocksOn == null;
 
@@ -194,7 +206,7 @@ const NDAUDetail = (props) => {
 								rightIcon={<EAI />}
 								label={'Set EAI destination  '}
 								buttonDisabledTextColor={themeColors.white}
-								disabled={parseFloat(item.totalFunds) <= 0}
+								disabled={item.totalFunds === undefined || parseFloat(item.totalFunds) <= 0}
 								buttonDisabledBG={themeColors.black300}
 								buttonContainerStyle={styles.smallButton}
 								onPress={() => props.navigation.navigate(ScreenNames.EAIDestination, { item, onlySetDestination: true })}
@@ -270,6 +282,18 @@ const NDAUDetail = (props) => {
 				label={'Remove Account'}
 				iconLeft={<Delete />}
 				buttonContainerStyle={styles.removeButton}
+				onPress={() => {
+					confirm(() => {
+						setLoading("Deleting");
+						removeAccount(item.address).then(res => {
+							setLoading("");
+							props.navigation.goBack();
+						}).catch(err => {
+							setLoading("");
+							FlashNotification.show(err.message);
+						})
+					})
+				}}
 			/>
 			{loading && <Loading label={loading} />}
 		</ScreenContainer>
