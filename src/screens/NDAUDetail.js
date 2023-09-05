@@ -26,12 +26,15 @@ import AccountAPI from "../api/AccountAPI";
 import { useIsFocused } from "@react-navigation/native";
 
 const NDAUDetail = (props) => {
+
 	const { item } = props?.route?.params ?? {};
 	const customModalRef = useRef();
 	const isFocused = useIsFocused();
 	const [loading, setLoading] = useState("");
 	const { getNdauAccountDetail } = useWallet();
 	const { notifyForNDAU } = useTransaction();
+
+	console.log(JSON.stringify(item, null, 2), 'item-----')
 
 	const [accountInfo, setAccountInfo] = useState({
 		isLocked: false,
@@ -109,6 +112,23 @@ const NDAUDetail = (props) => {
 		}
 	}, [isFocused])
 
+	const launchBuyNdauInBrowser = async () => {
+		const url = AppConfig.BUY_NDAU_URL;
+	
+		const supported = await Linking.canOpenURL(url);
+	
+		if (supported) {
+		  await Linking.openURL(url);
+		} else {
+		  Alert.alert(
+			'Error',
+			`Don't know how to open this URL: ${url}`,
+			[{text: 'OK', onPress: () => {}}],
+			{cancelable: false},
+		  );
+		}
+	  };
+
 
 	const openLink = () => {
 		customModalRef.current(false);
@@ -145,9 +165,9 @@ const NDAUDetail = (props) => {
 
 					<View style={styles.buttonContainer}>
 						<View style={styles.row}>
-							<IconButton disabled={accountInfo.isLocked} label="Buy" icon={<Buy />} />
+							<IconButton disabled={accountInfo.isLocked} label="Buy" icon={<Buy />} onPress={launchBuyNdauInBrowser} />
 							<IconButton disabled={accountInfo.isLocked || disableButton} label="Send" icon={<Send />} onPress={() => customModalRef.current(true)} />
-							<IconButton disabled={!canRecieve} label="Receive" icon={<Receive />} onPress={()=>props.navigation.navigate(ScreenNames.Receive)} />
+							<IconButton disabled={!canRecieve} label="Receive" icon={<Receive />} onPress={() => props.navigation.navigate(ScreenNames.Receive, { address: item.address })} />
 						</View>
 						<View style={styles.row}>
 							<IconButton disabled={accountInfo.isLocked || disableButton} label="Convert" icon={<Convert />} />

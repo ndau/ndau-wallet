@@ -95,7 +95,6 @@ const MainStack = () => {
       <Stack.Screen name={ScreenNames.Send} component={Send} />
       <Stack.Screen name={ScreenNames.AddNdauAccount} component={AddNdauAccount} />
       <Stack.Screen name={ScreenNames.Receive} component={Receive} />
-      <Stack.Screen name={ScreenNames.QRCodeScannerScreen} component={QRCodeScannerScreen} />
       <Stack.Screen name={ScreenNames.Swap} component={Swap} />
       
       <Stack.Screen name={ScreenNames.SelectNDAU} component={AddNdauAccount} />

@@ -8,6 +8,8 @@ import { images } from '../../../assets/images'
 
 const AccountItemCard = ({ item, index, onItemClick }) => {
 
+   
+
     const makeStringShort = (val) => {
         return val.length < 20
             ? `${val}`

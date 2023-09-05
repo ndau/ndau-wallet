@@ -50,8 +50,6 @@ const Dashboard = ({ navigation }) => {
 	];
 
 	const makeToken = (type, { totalFunds, usdAmount, accounts, address }) => {
-
-		console.log(type,'type----')
 		const tokens = {
 			0: { shortName: "ndau", name: "NDAU", network: "nDau", totalFunds: "0", usdAmount: "0", image: images.nDau, accounts: getNDauAccounts().length },
 			1: { shortName: "nPay", name: "NPAY (ERC20)", network: "zkSync Era", totalFunds: "0", usdAmount: "0", image: images.nPay },
@@ -76,20 +74,14 @@ const Dashboard = ({ navigation }) => {
 			getNdauAccountsDetails()
 		]).then(results => {
 
-			console.log(JSON.stringify(results,null,2), 'results-------')
-
-
+	
 			// getting all results
 			const availableEthInWEI = results[0].status === "fulfilled" ? results[0].value.result : 0;
 			const availableUSDC = results[1].status === "fulfilled" ? results[1].value.result : 0;
 			const ndauAccounts = results[2].status === "fulfilled" ? results[2].value : 0;
 
-
-			console.log(JSON.stringify(ndauAccounts,null,2), 'ndauAccounts-------')
 			const totalNdausOnAllAccounts = DataFormatHelper.getNdauFromNapu(Object.keys(ndauAccounts).map(key => ndauAccounts[key]).reduce((pv, cv) => pv += parseFloat(cv.balance), 0) || 0);
 			
-			console.log(JSON.stringify(totalNdausOnAllAccounts,null,2), 'ndauAccounts-------')
-
 			
 			const npay = { totalFunds: 0, usdAmount: 0 };
 

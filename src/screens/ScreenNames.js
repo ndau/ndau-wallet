@@ -23,7 +23,6 @@ const ScreenNames = {
   Send: "Send",
   AddNdauAccount: "AddNdauAccount",
   Receive: "Receive",
-  QRCodeScannerScreen: "QRCodeScannerScreen",
   Swap: "Swap",
   LockPeriod: "LockPeriod",
   EAIDestination: "EAIDestination",

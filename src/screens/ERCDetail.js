@@ -1,5 +1,5 @@
 import React from "react";
-import { Image, StyleSheet, View } from "react-native";
+import { Alert, Image, Linking, StyleSheet, View } from "react-native";
 
 import CopyAddressButton from "../components/CopyAddressButton";
 import CustomText from "../components/CustomText";
@@ -12,6 +12,7 @@ import { ScreenNames } from "./ScreenNames";
 import Spacer from "../components/Spacer";
 import Clipboard from "@react-native-clipboard/clipboard";
 import { useTransaction } from "../hooks";
+import AppConfig from "../AppConfig";
 
 const ERCDetail = (props) => {
 	const { item } = props?.route?.params ?? {};
@@ -24,18 +25,36 @@ const ERCDetail = (props) => {
 		Clipboard.setString(item.address);
 	}
 
+	const launchBuyERCTokenInBrowser = async () => {
+		const url = AppConfig.BUY_ERC20_URL;
+
+		const supported = await Linking.canOpenURL(url);
+
+		if (supported) {
+			await Linking.openURL(url);
+		} else {
+			Alert.alert(
+				'Error',
+				`Don't know how to open this URL: ${url}`,
+				[{ text: 'OK', onPress: () => { } }],
+				{ cancelable: false },
+			);
+		}
+	};
+
+
 	return (
-		<ScreenContainer headerTitle={" "} headerRight={<CopyAddressButton onPress={copyAddress}/>}>
+		<ScreenContainer headerTitle={" "} headerRight={<CopyAddressButton onPress={copyAddress} />}>
 			<View style={styles.headerContainer}>
 				<Image style={styles.icon} source={item.image} />
 				<CustomText semiBold h4 style={styles.balance}>{item?.totalFunds?.toFixed?.(4) || "0.00"}</CustomText>
 
 				<View style={styles.buttonContainer}>
 					<View style={styles.row}>
-						<IconButton label="Buy" icon={<Buy />} />
+						<IconButton label="Buy" icon={<Buy />} onPress={launchBuyERCTokenInBrowser} />
 						<IconButton disabled={disableButton} label="Send" icon={<Send />} onPress={() => props.navigation.navigate(ScreenNames.Send, { item })} />
 						<IconButton label="Receive" icon={<Receive />} onPress={() => {
-							return props.navigation.navigate(ScreenNames.Receive)
+							return props.navigation.navigate(ScreenNames.Receive, { address: item.address })
 						}} />
 					</View>
 					<Spacer height={12} />
@@ -45,11 +64,10 @@ const ERCDetail = (props) => {
 						}} />
 					</View>
 
+					
 				</View>
-
-
-
 			</View>
+
 			<View style={{ flex: 1, justifyContent: "flex-end" }}>
 				<Button
 					label={'View Transaction'}

@@ -10,18 +10,22 @@ import QRCode from 'react-native-qrcode-svg';
 import CopyAddressButton from '../components/CopyAddressButton'
 import Clipboard from '@react-native-clipboard/clipboard'
 import { ScreenNames } from './ScreenNames'
+// import { ScreenNames } from './ScreenNames'
 
 const Receive = (props) => {
-    let base64Logo = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOEAA..';
+   
+    const { address } = props?.route?.params ?? {};
 
-  
+   
+
     const shareQRCode =  async () => {
-      props.navigation.navigate("QRCodeScannerScreen")
+
+        props.navigation.navigate(ScreenNames.QRCodeScannerScreen)
 
         // try {
         //   const result = await Share.share({
         //     message:
-        //       '0xb5300b33A656A291f4400D76fD9572011698EC71',
+        //     address,
         //   });
         //   if (result.action === Share.sharedAction) {
         //     if (result.activityType) {
@@ -49,7 +53,7 @@ const Receive = (props) => {
 
             <View style={styles.qrCodeContainer}>
                 <QRCode
-                    value="0xb5300b33A656A291f4400D76fD9572011698EC71"
+                    value={address}
                     size={150}
                     color='black'
                     backgroundColor='white'
@@ -59,7 +63,7 @@ const Receive = (props) => {
             <Spacer height={20} />
             <View style={styles.copyAddress}>
                 <CopyAddressButton label={"Copy Address"} customStyles={{ width: 170 }} onPress={() => {
-                    Clipboard.setString("0xb5300b33A656A291f4400D76fD9572011698EC71")
+                    Clipboard.setString(address)
                 }} />
             </View>
 
