@@ -15,6 +15,7 @@ import KeyPathHelper from "../helpers/KeyPathHelper";
 import KeyMaster from "../helpers/KeyMaster";
 import APIAddressHelper from "../helpers/APIAddressHelper";
 import APICommunicationHelper from "../helpers/APICommunicationHelper";
+import UserData from "../model/UserData";
 
 export default useWallet = () => {
   const { wallets } = useSelector(state => state.WalletReducer);
@@ -206,6 +207,32 @@ export default useWallet = () => {
     })
   }
 
+  const removeAccount = (accountAddress) => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const account = UserStore.getAccountDetail(accountAddress)
+        const walletId = UserStore.getActiveWallet().walletId
+        const user = UserStore.getUser()
+        for (let walletKey in user.wallets) {
+          const wallet = user.wallets[walletKey]
+          if (wallet.walletId === walletId) {
+            delete wallet.keys[account.ownershipKey]
+            account.validationKeys.forEach(k => {
+              delete wallet.keys[k]
+            })
+            delete wallet.accounts[account.address]
+            user.wallets[walletKey] = wallet
+            await UserData.loadUserData(user)
+            UserStore.setUser(user)
+            resolve(user);
+          }
+        }
+      } catch (e) {
+        reject(e)
+      }
+    })
+  }
+
   return {
     wallets,
     isWalletSetup: !!wallets.length,
@@ -220,6 +247,7 @@ export default useWallet = () => {
     setActiveWallet,
     getNdauAccountsDetails,
     getNdauAccountDetail,
-    removeWallet
+    removeWallet,
+    removeAccount
   }
 }
