@@ -34,6 +34,7 @@ import LockPeriod from './screens/LockPeriod';
 import EAIDestination from './screens/EAIDestination';
 import Transactions from './screens/Transactions';
 import TransactionDetail from './screens/TransactionDetail';
+import Scanner from './screens/Scanner';
 
 LogBox.ignoreAllLogs()
 
@@ -98,6 +99,7 @@ const MainStack = () => {
       <Stack.Screen name={ScreenNames.EAIDestination} component={EAIDestination} />
       <Stack.Screen name={ScreenNames.Transactions} component={Transactions} />
       <Stack.Screen name={ScreenNames.TransactionDetail} component={TransactionDetail} />
+      <Stack.Screen name={ScreenNames.Scanner} component={Scanner} />
 
     </Stack.Navigator>
   )
