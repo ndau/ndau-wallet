@@ -29,7 +29,8 @@ const ScreenNames = {
   SelectNDAU: "SelectNDAU",
   Transactions: 'Transactions',
   TransactionDetail: "TransactionDetail",
-  Scanner: "Scanner"
+  Scanner: "Scanner",
+  EditWallet: "EditWallet"
 }
 
 export { ScreenNames }

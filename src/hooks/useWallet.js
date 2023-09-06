@@ -175,7 +175,7 @@ export default useWallet = () => {
         const accountData = await APICommunicationHelper.post(accountAPI, JSON.stringify(accountsArray))
         UserStore.setNdauAccounts(accountData);
         resolve(accountData);
-      } catch(e) {
+      } catch (e) {
         reject(e)
       }
 
@@ -189,7 +189,7 @@ export default useWallet = () => {
         const accountAPI = await APIAddressHelper.getAccountsAPIAddress()
         const accountData = await APICommunicationHelper.post(accountAPI, JSON.stringify(accountsArray))
         resolve(accountData);
-      } catch(e) {
+      } catch (e) {
         reject(e)
       }
 
@@ -233,6 +233,23 @@ export default useWallet = () => {
     })
   }
 
+  const changeWalletName = (name, walletId) => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const user = UserStore.getUser()
+        const wallet = user.wallets[walletId]
+        wallet.walletId = name;
+        wallet.walletName = name;
+        user.wallets[walletId] = wallet
+        await MultiSafeHelper.saveUser(user, UserStore.getPassword());
+        UserStore.setUser(user)
+        resolve(user);
+      } catch (e) {
+        reject(e)
+      }
+    })
+  }
+
   return {
     wallets,
     isWalletSetup: !!wallets.length,
@@ -248,6 +265,7 @@ export default useWallet = () => {
     getNdauAccountsDetails,
     getNdauAccountDetail,
     removeWallet,
-    removeAccount
+    removeAccount,
+    changeWalletName
   }
 }
