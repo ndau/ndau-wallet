@@ -4,8 +4,9 @@ import { StyleSheet } from "react-native";
 import QRCodeScanner from 'react-native-qrcode-scanner';
 
 import ScreenContainer from "../components/Screen";
+import { ScreenNames } from "./ScreenNames";
 
-const Scanner = ({ }) => {
+const Scanner = (props) => {
   const navigation = useNavigation();
 
   useEffect(() => {
@@ -16,7 +17,7 @@ const Scanner = ({ }) => {
     <ScreenContainer>
       <QRCodeScanner
         onRead={(e) => {
-          console.log('e', JSON.stringify(e, null, 2));
+          props.navigation.navigate(ScreenNames.Send, { address:e?.data })
         }}
       />
     </ScreenContainer>

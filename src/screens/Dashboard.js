@@ -172,8 +172,7 @@ const Dashboard = ({ navigation }) => {
 					accounts={accounts}
 					// onAddWallet={() => navigation.navigate(ScreenNames.IntroCreateWallet)}
 					onAddWallet={() => {
-						// refAddWalletSheet.current.open()
-						navigation.navigate(ScreenNames.Scanner)
+						refAddWalletSheet.current.open()
 					}}
 				/>
 				<View style={styles.line} />
