@@ -42,6 +42,9 @@ const ERCDetail = (props) => {
 		}
 	};
 
+	const navigateToTransaction = () => {
+		props.navigation.navigate(ScreenNames.Transactions, { item })
+	}
 
 	return (
 		<ScreenContainer headerTitle={" "} headerRight={<CopyAddressButton onPress={copyAddress} />}>
@@ -71,11 +74,7 @@ const ERCDetail = (props) => {
 			<View style={{ flex: 1, justifyContent: "flex-end" }}>
 				<Button
 					label={'View Transaction'}
-					onPress={() => {
-						getERCTransactionHistory(item.address).then(res => {
-							console.log('res', JSON.stringify(res, null, 2));
-						})
-					}}
+					onPress={navigateToTransaction}
 				/>
 				<Button
 					label={'Remove Account'}

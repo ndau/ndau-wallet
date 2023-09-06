@@ -11,6 +11,9 @@ import { LockTransaction } from "../transactions/LockTransaction";
 import NdauNumber from "../helpers/NdauNumber";
 import { NotifyTransaction } from "../transactions/NotifyTransaction";
 import { SetRewardsDestinationTransaction } from "../transactions/SetRewardsDestinationTransaction";
+import APIAddressHelper from "../helpers/APIAddressHelper";
+import APICommunicationHelper from "../helpers/APICommunicationHelper";
+import TransactionAPI from "../api/TransactionAPI";
 
 export default useTransaction = () => {
 
@@ -153,6 +156,18 @@ export default useTransaction = () => {
       })
     })
   }
+  
+  const getERCTransactionDetail = (txHash) => {
+    return new Promise((resolve, reject) => {
+      const provider = new ethers.providers.EtherscanProvider(EthersScanAPI.networks.goerli, EthersScanAPI.apiKey);
+      provider.getTransaction(txHash).then(res => {
+        resolve(res)
+      }).catch(err => {
+        reject(err)
+        console.log('err	', JSON.stringify(err, null, 2));
+      })
+    })
+  }
 
   const getNDAULockFee = (account, lockISO) => {
     return new Promise(async (resolve, reject) => {
@@ -254,6 +269,31 @@ export default useTransaction = () => {
     })
   }
 
+  const getTransactions = (address) => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const accountAPI = await APIAddressHelper.getAccountHistoryAPIAddress(address)
+        const accountData = await APICommunicationHelper.get(accountAPI)
+        resolve(accountData);
+      } catch (e) {
+        reject(e)
+      }
+
+    })
+  }
+
+  const getTransactionByHash = (TxHash) => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const response = await TransactionAPI.transactionByHash(TxHash)
+        resolve(response);
+      } catch (e) {
+        reject(e)
+      }
+
+    })
+  }
+
   return {
     getTransactionFee,
     sendAmountToNdauAddress,
@@ -263,6 +303,9 @@ export default useTransaction = () => {
     getNDAULockFee,
     lockNDAUAccount,
     notifyForNDAU,
-    setEAI
+    setEAI,
+    getTransactions,
+    getTransactionByHash,
+    getERCTransactionDetail
   }
 }

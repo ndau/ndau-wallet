@@ -20,25 +20,25 @@ const Receive = (props) => {
 
     const shareQRCode =  async () => {
 
-        props.navigation.navigate(ScreenNames.QRCodeScannerScreen)
+        // props.navigation.navigate(ScreenNames.QRCodeScannerScreen)
 
-        // try {
-        //   const result = await Share.share({
-        //     message:
-        //     address,
-        //   });
-        //   if (result.action === Share.sharedAction) {
-        //     if (result.activityType) {
-        //       // shared with activity type of result.activityType
-        //     } else {
-        //       // shared
-        //     }
-        //   } else if (result.action === Share.dismissedAction) {
-        //     // dismissed
-        //   }
-        // } catch (error) {
-        //   alert(error.message);
-        // }
+        try {
+          const result = await Share.share({
+            message:
+            address,
+          });
+          if (result.action === Share.sharedAction) {
+            if (result.activityType) {
+              // shared with activity type of result.activityType
+            } else {
+              // shared
+            }
+          } else if (result.action === Share.dismissedAction) {
+            // dismissed
+          }
+        } catch (error) {
+          alert(error.message);
+        }
       };
 
 

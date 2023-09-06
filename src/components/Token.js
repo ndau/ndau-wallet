@@ -27,8 +27,8 @@ const Token = ({ name, network, totalFunds, usdAmount, image, index, accounts, o
 						<CustomText>{network}</CustomText>
 					</View>
 					<View style={{ justifyContent: "space-around", flex: 1, alignItems: "flex-end" }}>
-						{totalFunds === "l" ? <ActivityIndicator /> : <CustomText titiliumSemiBold body>{totalFunds == 0 ? 0 : parseFloat(totalFunds).toFixed(4)}</CustomText>}
-						{usdAmount === "l" ? <ActivityIndicator /> : <CustomText titiliumSemiBold>${usdAmount == 0 ? 0 : parseFloat(usdAmount).toFixed(4)}</CustomText>}
+						{totalFunds === "l" ? <ActivityIndicator color={themeColors.black300}/> : <CustomText titiliumSemiBold body>{totalFunds == 0 ? 0 : parseFloat(totalFunds).toFixed(4)}</CustomText>}
+						{usdAmount === "l" ? <ActivityIndicator color={themeColors.black300}/> : <CustomText titiliumSemiBold>${usdAmount == 0 ? 0 : parseFloat(usdAmount).toFixed(4)}</CustomText>}
 					</View>
 				</View>
 			</Animated.View>

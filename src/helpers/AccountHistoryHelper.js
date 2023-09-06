@@ -33,18 +33,18 @@ const getAccountHistory = async address => {
 
 
 
-export const getAccount=async(address)=>{
+export const getAccount = async (address) => {
   const getNodeAddress = async type => {
     return await ServiceDiscovery.getNodeAddress(type)
-  
 
-    
+
+
   }
 
 
   try {
-    const accountStateEndpoint= `${await getNodeAddress()}/account/account/${address}`;
-console.log('account..',accountStateEndpoint)
+    const accountStateEndpoint = `${await getNodeAddress()}/account/account/${address}`;
+    console.log('account..', accountStateEndpoint)
     let accountStateEndpointResponse = await axios.get(
       accountStateEndpoint,
       HTTP_REQUEST_HEADER
@@ -54,13 +54,13 @@ console.log('account..',accountStateEndpoint)
       address,
       ...accountStateEndpointResponse.data[address],
     };
-    console.log('account,,,',account)
+    console.log('account,,,', account)
 
     let formattedAccount = formatAccount(account);
 
     return formattedAccount;
 
-  }catch (e) {
+  } catch (e) {
     console.error(e);
     return null;
   }
@@ -83,9 +83,9 @@ export const getTransaction = async (hash) => {
   const getNodeAddress = async type => {
     return await ServiceDiscovery.getNodeAddress(type);
 
-    
+
   }
-  console.log('hash.......',hash);
+  console.log('hash.......', hash);
 
   // const transactionHash = window.decodeURIComponent(hash);
   // console.log('decodeURIComponent hash.......',transactionHash);
@@ -95,7 +95,7 @@ export const getTransaction = async (hash) => {
   let response = await axios.get(transactionEndpoint, HTTP_REQUEST_HEADER);
 
   while (response.data === null && getTransactionRetrycount < 8) {
-   
+
     const transactionEndpoint = `${await getNodeAddress()}/transaction/detail/${hash}`;
     response = await axios.get(transactionEndpoint, HTTP_REQUEST_HEADER);
     getTransactionRetrycount++;
@@ -150,81 +150,82 @@ const initDate30DaysAgo = new Date(Date.now());
 initDate30DaysAgo.setDate(initDate30DaysAgo.getDate() - 30);
 let Date30DaysAgo = initDate30DaysAgo.toISOString();
 
- const getAccountHistorywithfilter = async (
+const getAccountHistorywithfilter = async (
   address,
-  fromDate=Date30DaysAgo,
-  toDate=dateToday 
+  fromDate = Date30DaysAgo,
+  toDate = dateToday
 ) => {
-  try{
-
- 
-  const dateToday = new Date(Date.now()).toISOString();
-  const getAccountHistoryFromDate = fromDate?fromDate.toISOString(): Date30DaysAgo;
-  const getAccountHistoryToDate = toDate ?toDate.toISOString(): dateToday;
-  //
-  //
-const getNodeAddress = async type => {
-  return await ServiceDiscovery.getNodeAddress(type)
-}
+  try {
 
 
-  const BlockDateRangeEndpoint = `${await getNodeAddress()}/block/daterange/${getAccountHistoryFromDate}/${getAccountHistoryToDate}?noempty=true&limit=2`;
-  //
+    const dateToday = new Date(Date.now()).toISOString();
+    const getAccountHistoryFromDate = fromDate ? fromDate.toISOString() : Date30DaysAgo;
+    const getAccountHistoryToDate = toDate ? toDate.toISOString() : dateToday;
     //
-    console.log('BlockDateRangeEndpoint api..',BlockDateRangeEndpoint)
+    //
+    const getNodeAddress = async type => {
+      return await ServiceDiscovery.getNodeAddress(type)
+    }
+
+
+    const BlockDateRangeEndpoint = `${await getNodeAddress()}/block/daterange/${getAccountHistoryFromDate}/${getAccountHistoryToDate}?noempty=true&limit=2`;
+    //
+    //
+    console.log('BlockDateRangeEndpoint api..', BlockDateRangeEndpoint)
     const blocksInRange = await axios.get(BlockDateRangeEndpoint);
     const oldestBlockInRange = blocksInRange.data.last_height;
     //
 
-  const limitedAccountHistoryEndpoint = `${await getNodeAddress()}/account/history/${address}?after=${oldestBlockInRange}`;
+    const limitedAccountHistoryEndpoint = `${await getNodeAddress()}/account/history/${address}?after=${oldestBlockInRange}`;
 
-  const accountHistoryEndpoint = `${await getNodeAddress()}/account/history/${address}`;
+    const accountHistoryEndpoint = `${await getNodeAddress()}/account/history/${address}`;
 
-  //
+    //
 
-  var allItem=[];
- 
-  let offset = 0;
-  let MAX_LOOPS = 100;
-  while (true && MAX_LOOPS) {
-  
-    const url = offset
-      ? `${accountHistoryEndpoint}?after=${offset}`
-      : limitedAccountHistoryEndpoint;
+    var allItem = [];
 
-    const response = await axios.get(url, HTTP_REQUEST_HEADER);
-   
-    let history = response.data && response.data.Items;
+    let offset = 0;
+    let MAX_LOOPS = 100;
+    while (true && MAX_LOOPS) {
 
-    if (response.data && response.data.Next === "") {
-      // console.log('limitedAccountHistoryEndpoint',history)
-      
-      allItem = allItem.concat(history); // accumulate
-      break;
-    }
- 
+      const url = offset
+        ? `${accountHistoryEndpoint}?after=${offset}`
+        : limitedAccountHistoryEndpoint;
 
-    if (response.data && response.data.Next) {
-      // assert this format in the Next field since it's not a useable address by itself
-      if (!response.data.Next.match(/account\/history\/\?after=\d*/)) {
-        throw new Error(
-          `Expected /account/history?after=N, got ${response.data.Next}`
-        );
+      const response = await axios.get(url, HTTP_REQUEST_HEADER);
+
+      let history = response.data && response.data.Items;
+
+      if (response.data && response.data.Next === "") {
+        // console.log('limitedAccountHistoryEndpoint',history)
+
+        allItem = allItem.concat(history); // accumulate
+        break;
       }
-      allItem = allItem.concat(history); // accumulate
 
-      // remove everything but the numbers from the url
-      offset = response.data.Next.replace(/[^\d]/g, "");
+
+      if (response.data && response.data.Next) {
+        // assert this format in the Next field since it's not a useable address by itself
+        if (!response.data.Next.match(/account\/history\/\?after=\d*/)) {
+          throw new Error(
+            `Expected /account/history?after=N, got ${response.data.Next}`
+          );
+        }
+        allItem = allItem.concat(history); // accumulate
+
+        // remove everything but the numbers from the url
+        offset = response.data.Next.replace(/[^\d]/g, "");
+      }
     }
+
+
+
+    return allItem;
+  } catch (e) {
+    return e;
+
+    console.log('your error')
   }
-
-
- 
-  return allItem;
-}catch(e){
-  return e;
-    
-  console.log('your error')}
 };
 
 export default {

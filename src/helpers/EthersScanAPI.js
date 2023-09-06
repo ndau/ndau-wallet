@@ -1,4 +1,7 @@
+import { ethers } from "ethers";
 import APICommunicationHelper from "./APICommunicationHelper"
+
+import UserStore from "../stores/UserStore";
 
 export const Converters = {
   WEI_ETH: (wei) => wei / Math.pow(10, 18),
@@ -22,6 +25,11 @@ export const EthersScanAPI = {
     STATS: "stats",
   },
 
+  rpcUrl: {
+    MAIN: "https://mainnet.era.zksync.io",
+    TESTNET: "https://testnet.era.zksync.dev"
+  },
+
   actions: {
     BALANCE: "balance",
     ETH_PRICE: "ethprice",
@@ -30,7 +38,8 @@ export const EthersScanAPI = {
   },
 
   contractaddress: {
-    USDC: "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
+    USDC: "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+    NPAY: "0x1ab43093F4b3f8E5E4666d2062768ACCe67c9920",
   },
 
   __getFormattedEndpoint: ({ module, action, params }) => {
@@ -79,4 +88,15 @@ export const EthersScanAPI = {
       }).catch(err => reject(err))
     })
   },
+  getZksyncAddressBalance: () => {
+    return new Promise((resolve, reject) => {
+      const provider = new ethers.providers.JsonRpcProvider(EthersScanAPI.rpcUrl.TESTNET);
+      new ethers.Wallet(UserStore.getActiveWallet().ercKeys.privateKey, provider).getBalance().then(res => {
+        resolve(res);
+      }).catch(err => {
+        console.log('err', JSON.stringify(err.message, null, 2));
+        reject(err);
+      })
+    })
+  }
 }

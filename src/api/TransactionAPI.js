@@ -39,16 +39,12 @@ const submit = async (submitAddress, transaction) => {
 }
 
 const transactionByHash = async transactionHash => {
-  LogStore.log(
-    `TransactionAPI.transactionByHash ${JSON.stringify(transactionHash)}`
-  )
   try {
     const transactionByHashAddress = await APIAddressHelper.getTransactionByHashAPIAddress(
       transactionHash
     )
     return await APICommunicationHelper.get(transactionByHashAddress)
   } catch (error) {
-    LogStore.log(`TransactionAPI.transactionByHash ${JSON.stringify(error)}`)
     throw new BlockchainAPIError(error)
   }
 }

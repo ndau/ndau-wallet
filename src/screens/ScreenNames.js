@@ -26,7 +26,10 @@ const ScreenNames = {
   Swap: "Swap",
   LockPeriod: "LockPeriod",
   EAIDestination: "EAIDestination",
-  SelectNDAU: "SelectNDAU"
+  SelectNDAU: "SelectNDAU",
+  Transactions: 'Transactions',
+  TransactionDetail: "TransactionDetail",
+  Scanner: "Scanner"
 }
 
 export { ScreenNames }

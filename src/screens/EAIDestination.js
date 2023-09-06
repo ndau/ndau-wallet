@@ -51,7 +51,7 @@ const EAIDestination = (props) => {
 
 	const handleOption = () => {
 		if (selectedOption === OPTIONS.COMPOUND) {
-			setLoading("Please wait")
+			setLoading("Locking")
 			if (onlySetDestination) {
 				setEAI(item).then(res => {
 					setLoading("")
@@ -70,14 +70,11 @@ const EAIDestination = (props) => {
 				})
 			}
 		} else if (selectedOption === OPTIONS.NEW_ACCOUNT) {
-
-		} else if (selectedOption === OPTIONS.CHOOSE_ACCOUNT) {
 			props.navigation.navigate(ScreenNames.SelectNDAU, {
 				item,
 				onSelectAccount: (selectedAccount) => {
-					props.navigation.goBack();
-					setTimeout(() => {
-						setLoading("Updating");
+					if (onlySetDestination) {
+						setLoading("Change EAI")
 						setEAI(item, selectedAccount.address).then(res => {
 							setLoading("")
 							props.navigation.goBack();
@@ -85,7 +82,42 @@ const EAIDestination = (props) => {
 							setLoading("")
 							FlashNotification.show(err.message)
 						})
-					}, 250);
+					} else {
+						setLoading("Locking")
+						lockNDAUAccount(item, selectedPeriod?.lockISO, selectedAccount.address).then(res => {
+							setLoading("")
+							props.navigation.navigate(ScreenNames.NDAUDetail, { item });
+						}).catch(err => {
+							setLoading("")
+							FlashNotification.show(err.message)
+						})
+					}
+				},
+				addAccount: true
+			})
+		} else if (selectedOption === OPTIONS.CHOOSE_ACCOUNT) {
+			props.navigation.navigate(ScreenNames.SelectNDAU, {
+				item,
+				onSelectAccount: (selectedAccount) => {
+					if (onlySetDestination) {
+						setLoading("Change EAI")
+						setEAI(item, selectedAccount.address).then(res => {
+							setLoading("")
+							props.navigation.goBack();
+						}).catch(err => {
+							setLoading("")
+							FlashNotification.show(err.message)
+						})
+					} else {
+						setLoading("Locking")
+						lockNDAUAccount(item, selectedPeriod?.lockISO, selectedAccount.address).then(res => {
+							setLoading("")
+							props.navigation.navigate(ScreenNames.NDAUDetail, { item });
+						}).catch(err => {
+							setLoading("")
+							FlashNotification.show(err.message)
+						})
+					}
 				}
 			})
 		}
