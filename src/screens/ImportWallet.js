@@ -21,9 +21,9 @@ const ImportWallet = (props) => {
       setWalletItems([
         { type: "LEGACY", name: "Ndau Legacy Wallet", image: images.nDau },
         { type: "MULTI-COIN", name: "Multi-Coin Wallet", image: images.walletIcon },
-        { type: "ERC-20", name: "NPAY", image: images.nPay },
-        { type: "ERC-20", name: "Ethereum", image: images.ethereum },
-        { type: "ERC-20", name: "Polygon", image: images.polygonIcon }
+        // { type: "ERC-20", name: "NPAY", image: images.nPay },
+        // { type: "ERC-20", name: "Ethereum", image: images.ethereum },
+        // { type: "ERC-20", name: "Polygon", image: images.polygonIcon }
       ])
   }, [])
 
