@@ -40,6 +40,7 @@ export const EthersScanAPI = {
   contractaddress: {
     USDC: "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
     NPAY: "0x1ab43093F4b3f8E5E4666d2062768ACCe67c9920",
+    ETH: "0x1ab43093F4b3f8E5E4666d2062768ACCe67c9920",
   },
 
   __getFormattedEndpoint: ({ module, action, params }) => {

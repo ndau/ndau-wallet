@@ -14,20 +14,42 @@ import { ArrowDownSVGComponent } from '../assets/svgs/components'
 import { themeColors } from '../config/colors'
 import { Swap as SwapIcon } from '../../assets/svgs/components'
 import CustomTextInput from '../components/CustomTextInput'
-
+import { ethers } from 'ethers'
+import { EthersScanAPI } from '../helpers/EthersScanAPI'
+import UserStore from "../stores/UserStore";
 
 const Swap = (props) => {
 
-    const [token1, setToken1] = useState({balance:'12.34',coinType:'ndau'});
-    const [token2, setToken2] = useState('Token B');
+
+    const [amountToSwap, setAmountToSwap] = useState('');
+    const [swapResult, setSwapResult] = useState('');
+    const provider = new ethers.providers.EtherscanProvider("homestead", EthersScanAPI.apiKey)
+    const wallet =  new ethers.Wallet(UserStore.getActiveWallet().ercKeys.privateKey, provider)
 
 
-    const toggleViews = () => {
+    const token1Address = '0x2170Ed0880ac9A755fd29B2688956BD959F933F8';
+    const token2Address = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
+    const token1Contract = new ethers.Contract(token1Address, ['function approve(address spender, uint256 amount)'],wallet);
+    const token2Contract = new ethers.Contract(token2Address, ['function transferFrom(address sender, address recipient, uint256 amount)']);
+  
 
-        const tempToken = token1;
-        setToken1(token2);
-        setToken2(tempToken);
 
+    // const etherscanApiUrl = 'https://api.etherscan.io/rpc';
+
+    // // Create a JsonRpcProvider that connects to the Etherscan API
+    // const provider = new ethers.providers.JsonRpcProvider(etherscanApiUrl);
+    console.log(JSON.stringify(provider, null, 2),'provider---')
+
+    const handleSwap = async () => {
+        try {
+
+        
+      
+            setSwapResult(`Successfully swapped ${amountToSwap} Token 1 for Token 2.`);
+        } catch (error) {
+            console.error('Swap error:', error);
+            setSwapResult('Error occurred during the swap.');
+        }
     };
 
 
@@ -77,7 +99,7 @@ const Swap = (props) => {
 
             <Spacer height={12} />
 
-            <TouchableOpacity onPress={toggleViews} style={styles.svgView}>
+            <TouchableOpacity onPress={handleSwap} style={styles.svgView}>
                 <SwapIcon />
             </TouchableOpacity>
 
@@ -176,11 +198,11 @@ const styles = StyleSheet.create({
     svgView: {
         alignItems: 'center',
     },
-    inputCon:{
-         color:themeColors.white,
-         fontWeight:"bold",
-         fontSize:18,
-         
+    inputCon: {
+        color: themeColors.white,
+        fontWeight: "bold",
+        fontSize: 18,
+
     }
 
 
