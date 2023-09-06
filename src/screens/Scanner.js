@@ -7,7 +7,7 @@ import ScreenContainer from "../components/Screen";
 import { ScreenNames } from "./ScreenNames";
 
 const Scanner = (props) => {
-  const navigation = useNavigation();
+  const { onScan } = props.route.params ?? {};
 
   useEffect(() => {
 
@@ -17,7 +17,10 @@ const Scanner = (props) => {
     <ScreenContainer>
       <QRCodeScanner
         onRead={(e) => {
-          props.navigation.navigate(ScreenNames.Send, { address:e?.data })
+          if (e.data) {
+            onScan?.(e.data);
+            props.navigation.goBack();
+          }
         }}
       />
     </ScreenContainer>

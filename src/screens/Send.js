@@ -32,14 +32,6 @@ const Send = (props) => {
     total: 0
   })
 
-  useEffect(() => {
-
-    if (address) {
-      setNdauAddress(address)
-    }
-
-  }, [address])
-
   const renderDetail = ({ title, value }) => {
     return (
       value !== undefined ? (
@@ -86,7 +78,7 @@ const Send = (props) => {
             label={"Scan QR Code  "}
             rightIcon={<QRCode />}
             onPress={() => {
-              navigation.navigate(ScreenNames.Scanner)
+              navigation.navigate(ScreenNames.Scanner, { onScan: (data) => setNdauAddress(data) })
             }}
             buttonContainerStyle={styles.qrCodeButton}
           />
