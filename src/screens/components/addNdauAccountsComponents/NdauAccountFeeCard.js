@@ -5,6 +5,8 @@ import CustomText from '../../../components/CustomText'
 import { images } from '../../../assets/images'
 import { themeColors } from '../../../config/colors'
 import Button from '../../../components/Button'
+import ModalTextLink from '../../../components/common/ModalTextLink'
+import AppConfig from '../../../AppConfig'
 
 const NdauAccountFeeCard = ({ onUnderstand, onCancel, item }) => {
     return (
@@ -44,11 +46,9 @@ const NdauAccountFeeCard = ({ onUnderstand, onCancel, item }) => {
                 </View>
             </View>
             <Spacer height={8} />
-            <TouchableOpacity>
-                <CustomText caption color='white' style={{ textAlign: 'center' }}>
-                    Read more about fees
-                </CustomText>
-            </TouchableOpacity>
+            <ModalTextLink url={AppConfig.TRANSACTION_FEE_KNOWLEDGEBASE_URL}>
+                Read more about fees...
+            </ModalTextLink>
             <Spacer height={12} />
             <Button
                 label={"I understand & continue"}

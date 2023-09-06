@@ -160,6 +160,8 @@ const Dashboard = ({ navigation }) => {
 	}, [])
 
 
+
+
 	return (
 		<ScreenContainer tabScreen>
 			<ScrollView showsVerticalScrollIndicator={false}>

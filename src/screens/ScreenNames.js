@@ -22,11 +22,14 @@ const ScreenNames = {
   SwitchWallet: "SwitchWallet",
   Send: "Send",
   AddNdauAccount: "AddNdauAccount",
+  Receive: "Receive",
+  Swap: "Swap",
   LockPeriod: "LockPeriod",
   EAIDestination: "EAIDestination",
   SelectNDAU: "SelectNDAU",
   Transactions: 'Transactions',
-  TransactionDetail: "TransactionDetail"
+  TransactionDetail: "TransactionDetail",
+  Scanner: "Scanner"
 }
 
 export { ScreenNames }

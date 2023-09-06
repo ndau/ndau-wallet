@@ -30,10 +30,13 @@ import { FlashMessage } from './components/common/FlashNotification';
 import SwitchWallet from './screens/SwitchWallet';
 import Send from './screens/Send';
 import AddNdauAccount from './screens/AddNdauAccount';
+import Receive from './screens/Receive';
+import Swap from './screens/Swap';
 import LockPeriod from './screens/LockPeriod';
 import EAIDestination from './screens/EAIDestination';
 import Transactions from './screens/Transactions';
 import TransactionDetail from './screens/TransactionDetail';
+import Scanner from './screens/Scanner';
 
 LogBox.ignoreAllLogs()
 
@@ -93,11 +96,15 @@ const MainStack = () => {
       <Stack.Screen name={ScreenNames.SwitchWallet} component={SwitchWallet} />
       <Stack.Screen name={ScreenNames.Send} component={Send} />
       <Stack.Screen name={ScreenNames.AddNdauAccount} component={AddNdauAccount} />
+      <Stack.Screen name={ScreenNames.Receive} component={Receive} />
+      <Stack.Screen name={ScreenNames.Swap} component={Swap} />
+      
       <Stack.Screen name={ScreenNames.SelectNDAU} component={AddNdauAccount} />
       <Stack.Screen name={ScreenNames.LockPeriod} component={LockPeriod} />
       <Stack.Screen name={ScreenNames.EAIDestination} component={EAIDestination} />
       <Stack.Screen name={ScreenNames.Transactions} component={Transactions} />
       <Stack.Screen name={ScreenNames.TransactionDetail} component={TransactionDetail} />
+      <Stack.Screen name={ScreenNames.Scanner} component={Scanner} />
 
     </Stack.Navigator>
   )

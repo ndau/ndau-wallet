@@ -1,7 +1,7 @@
 import React, { useRef, useState } from "react";
 import { StyleSheet, TouchableOpacity } from "react-native";
 
-const StateButton = ({ states = [], onButtonPress, resetToPrevious }) => {
+const StateButton = ({ states = [], onButtonPress, resetToPrevious, }) => {
 	const [stateIndex, setStateIndex] = useState(0);
 	const timeoutId = useRef(null);
 

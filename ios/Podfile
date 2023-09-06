@@ -31,6 +31,9 @@ target 'NdauWallet' do
   # Flags change depending on the env values.
   flags = get_default_flags()
 
+  permissions_path = '../node_modules/react-native-permissions/ios'
+  pod 'Permission-Camera', :path => "#{permissions_path}/Camera"
+
   use_react_native!(
     :path => config[:reactNativePath],
     # Hermes is now enabled by default. Disable by setting this flag to false.

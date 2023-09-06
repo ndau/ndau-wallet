@@ -1,5 +1,5 @@
 import { useNavigation } from "@react-navigation/native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Image, StyleSheet, View } from "react-native";
 
 import { QRCode } from "../assets/svgs/components";
@@ -13,9 +13,10 @@ import Loading from "../components/Loading";
 import { useTransaction } from "../hooks";
 import UserStore from "../stores/UserStore";
 import FlashNotification from "../components/common/FlashNotification";
+import { ScreenNames } from "./ScreenNames";
 
 const Send = (props) => {
-  const { item } = props?.route?.params ?? {};
+  const { item, address } = props?.route?.params ?? {};
 
   const navigation = useNavigation();
   const { getTransactionFee, sendAmountToNdauAddress, getTransactionFeeForERC, sendERCFunds } = useTransaction();
@@ -30,6 +31,14 @@ const Send = (props) => {
     sib: 0,
     total: 0
   })
+
+  useEffect(() => {
+
+    if (address) {
+      setNdauAddress(address)
+    }
+
+  }, [address])
 
   const renderDetail = ({ title, value }) => {
     return (
@@ -76,7 +85,9 @@ const Send = (props) => {
           <Button
             label={"Scan QR Code  "}
             rightIcon={<QRCode />}
-            onPress={() => { }}
+            onPress={() => {
+              navigation.navigate(ScreenNames.Scanner)
+            }}
             buttonContainerStyle={styles.qrCodeButton}
           />
           <Button
@@ -108,7 +119,7 @@ const Send = (props) => {
           setSection(2);
         }).catch(err => {
           setLoading("");
-          if(err.reason?.includes("ENS name not configured")) {
+          if (err.reason?.includes("ENS name not configured")) {
             FlashNotification.show("Address not found (" + ndauAddress + ")", true)
           } else {
             FlashNotification.show(err.message, true)

@@ -43,6 +43,8 @@ const BLOCKCHAIN_KNOWLEDGEBASE_URL =
   'https://ndau.io/knowledge-base/what-is-market-price-and-how-is-it-recorded-on-the-ndau-blockchain/'
 const BUY_NDAU_URL = 'https://ndau.io/buy'
 
+const BUY_ERC20_URL = 'https://www.coinlore.com/coin/erc20/exchanges'
+
 const MAX_LOG_ENTRIES = 101
 
 const calcExplorerUrl = (address, network) =>
@@ -75,5 +77,6 @@ export default {
   SPENDABLE_KNOWLEDGEBASE_URL,
   EAI_KNOWLEDGEBASE_URL,
   FRESHDESK_INTEGRATION_API_KEY,
-  FRESHDESK_TICKET_ENDPOINT
+  FRESHDESK_TICKET_ENDPOINT,
+  BUY_ERC20_URL
 }
