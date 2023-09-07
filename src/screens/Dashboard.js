@@ -24,6 +24,7 @@ import DashBoardBottomSheetCard from "./components/DashBoardBottomSheetCard";
 import { useIsFocused } from "@react-navigation/native";
 import AddWalletsPopup from "./components/dashboard/AddWalletsPopup";
 import { ethers } from "ethers";
+import { Alchemy } from "alchemy-sdk";
 
 const Dashboard = ({ navigation }) => {
 
@@ -45,10 +46,7 @@ const Dashboard = ({ navigation }) => {
 		{ shortName: "USDC", name: "USDC (ERC20)", network: "ethereum", totalFunds: "0", usdAmount: "0", image: images.USDC },
 	]);
 
-	const nfts = [
-		// { name: "CLONE X - X TAKASHI MURAKAMI", image: images.nDau },
-		// { name: "Valhala", image: images.nPay }
-	];
+	const [nfts, setNfts] = useState([]);
 
 	const makeToken = (type, { totalFunds, usdAmount, accounts, address }) => {
 		const tokens = {
@@ -144,15 +142,21 @@ const Dashboard = ({ navigation }) => {
 	}, [tokens])
 
 	useEffect(() => {
-
-		if (selected === 0) setData(tokens);
-		else if (selected === 1) setData(nfts);
+		if (selected === 1) {
+			const c = new Alchemy().nft;
+			c.getNftsForOwner("0xe21dc18513e3e68a52f9fcdacfd56948d43a11c6", { pageSize: 5 }).then(res => {
+				const nftsList = res.ownedNfts.map(obj => ({ name: obj.contract.name, image: obj.contract.openSea.imageUrl }));
+				setNfts(nftsList);
+			})
+		} else {
+			setNfts([])
+		}
 	}, [selected])
 
 	const renderItem = useCallback(({ item, index }) => {
 		if (selected == 0) return <Token {...item} index={index} onPress={() => handleNavigation(item)} />
-		else if (selected == 1) return <NFT {...item} index={index} />
-	}, [])
+		else if (selected == 1) return <NFT {...item} index={index} isLast={(nfts.length - 1) === index}/>
+	}, [tokens, nfts])
 
 	const handleNavigation = useCallback((item) => {
 		if (item.name === "NDAU") navigation.navigate(ScreenNames.AddNdauAccount, { item });

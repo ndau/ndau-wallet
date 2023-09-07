@@ -21,6 +21,7 @@
     "@react-navigation/stack": "^6.3.17",
     "@reduxjs/toolkit": "^1.9.5",
     "@walletconnect/modal-react-native": "^1.0.0-rc.11",
+    "alchemy-sdk": "^2.10.0",
     "axios": "^1.4.0",
     "base-64": "^1.0.0",
     "crypto-js": "^4.1.1",
