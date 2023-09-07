@@ -1,6 +1,7 @@
 import Clipboard from '@react-native-clipboard/clipboard'
 import React, { useEffect, useRef } from 'react'
 import { Share, StyleSheet, View } from 'react-native'
+
 import QRCode from 'react-native-qrcode-svg'
 import ShareIcon from '../assets/svgs/ShareSvg'
 import Button from '../components/Button'
