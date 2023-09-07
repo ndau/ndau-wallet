@@ -35,8 +35,6 @@ const NDAUDetail = (props) => {
 	const { getNdauAccountDetail, removeAccount } = useWallet();
 	const { notifyForNDAU } = useTransaction();
 
-	console.log(JSON.stringify(item, null, 2), 'item-----')
-
 	const [accountInfo, setAccountInfo] = useState({
 		isLocked: false,
 		unlocksOn: "",
