@@ -91,6 +91,7 @@ const Receive = (props) => {
 
       <CustomModal bridge={modelNdauFeeRef}>
         <NdauAccountFeeCard
+          isReceiving
           onUnderstand={() => {
             modelNdauFeeRef.current(false)
 

@@ -8,7 +8,7 @@ import Button from '../../../components/Button'
 import ModalTextLink from '../../../components/common/ModalTextLink'
 import AppConfig from '../../../AppConfig'
 
-const NdauAccountFeeCard = ({ onUnderstand, onCancel, item, isCancel }) => {
+const NdauAccountFeeCard = ({ onUnderstand, onCancel, item, isCancel, isReceiving }) => {
     return (
 
         <View style={styles.container}>
@@ -16,7 +16,7 @@ const NdauAccountFeeCard = ({ onUnderstand, onCancel, item, isCancel }) => {
             <Image style={styles.image} source={images.nDau} />
             <Spacer height={25} />
             <CustomText body bold color='white' style={{ textAlign: 'center' }}>
-                NDAU NEW ACCOUNT FEES
+                {isReceiving ? "NDAU RECEIVING FEES" : "NDAU NEW ACCOUNT FEES"}
             </CustomText>
             <Spacer height={12} />
 

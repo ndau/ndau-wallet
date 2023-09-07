@@ -1,21 +1,66 @@
-import React from "react";
-import { Image, StyleSheet, View } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import React, { useEffect, useMemo, useState } from "react";
+import { FlatList, StyleSheet, TouchableOpacity, View } from "react-native";
 
-import Button from "../components/Button";
 import CustomText from "../components/CustomText";
 import ScreenContainer from "../components/Screen";
-import { ScreenNames } from "./ScreenNames";
 import { themeColors } from "../config/colors";
-import { images } from "../assets/images";
+import { useWallet, useWalletConnect } from "../hooks";
+import Spacer from "../components/Spacer";
+import { ArrowDownSVGComponent, ArrowRightSVGComponent, WalletIcon } from "../assets/svgs/components";
+import { ScreenNames } from "./ScreenNames";
+import { useIsFocused } from "@react-navigation/native";
 
-const Setting = () => {
-	const navigation = useNavigation();
+const Setting = (props) => {
+
+	const isFocused = useIsFocused();
+	const { getActiveWallet } = useWallet();
+	const [hideOptionForConnectWallet, setHideOptionForConnectWallet] = useState(false);
+
+	const options = useMemo(() => [
+		{ id: 0, name: "Wallets", image: <WalletIcon />, onPress: () => props.navigation.navigate(ScreenNames.SwitchWallet) },
+		{ id: 1, name: "Wallet Connect", image: <WalletIcon />, onPress: () => props.navigation.navigate(ScreenNames.WalletConnect) },
+		{ id: 2, name: "Node Environment", image: <WalletIcon />, onPress: () => null },
+		{ id: 3, name: "Contact Support", image: <WalletIcon />, onPress: () => null },
+		{ id: 4, name: "4.3", image: <WalletIcon />, onPress: () => null, hideArrow: true },
+		{ id: 5, name: "Logout", image: <WalletIcon />, onPress: () => null, hideArrow: true },
+	], [])
+
+	useEffect(() => {
+		if (isFocused) {
+			setHideOptionForConnectWallet(!!getActiveWallet().type);
+		}
+	}, [isFocused])
 
 	return (
 		<ScreenContainer tabScreen>
-			<View style={styles.textContainer}>
+			<View style={styles.container}>
 				<CustomText h6 semiBold style={styles.text1}>Settings</CustomText>
+				<Spacer height={16} />
+				<FlatList
+					data={options}
+					showsVerticalScrollIndicator={false}
+					keyExtractor={(i, _) => _.toString()}
+					renderItem={({ item }) => {
+						if (!hideOptionForConnectWallet && item.id == 1) return null;
+						return (
+							<TouchableOpacity activeOpacity={0.8} onPress={item.onPress}>
+								<View style={styles.optionItem}>
+									<View style={styles.iconContainer}>
+										{item.image}
+									</View>
+									<CustomText style={{ flex: 1 }} titilium>{item.name}</CustomText>
+									{
+										!item.hideArrow ? (
+											<View style={styles.arrow}>
+												<ArrowDownSVGComponent />
+											</View>
+										) : null
+									}
+								</View>
+							</TouchableOpacity>
+						)
+					}}
+				/>
 			</View>
 		</ScreenContainer>
 	)
@@ -23,11 +68,10 @@ const Setting = () => {
 
 const styles = StyleSheet.create({
 	container: {
-		flex: 1,
-		justifyContent: "center",
-		alignItems: "center"
+		flex: 1
 	},
-	textContainer: {
+	mainContainer: {
+		flex: 1,
 		paddingVertical: 10,
 		marginBottom: 20
 	},
@@ -45,6 +89,23 @@ const styles = StyleSheet.create({
 		borderColor: themeColors.fontLight,
 		backgroundColor: themeColors.lightBackground,
 		marginBottom: 20
+	},
+	optionItem: {
+		marginBottom: 14,
+		flexDirection: "row",
+		alignItems: "center"
+	},
+	iconContainer: {
+		backgroundColor: themeColors.primary,
+		borderRadius: 10,
+		height: 40,
+		width: 40,
+		marginRight: 6,
+		justifyContent: "center",
+		alignItems: "center"
+	},
+	arrow: {
+		transform: [{ rotate: "260deg" }]
 	}
 })
 

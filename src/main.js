@@ -38,6 +38,7 @@ import Transactions from './screens/Transactions';
 import TransactionDetail from './screens/TransactionDetail';
 import Scanner from './screens/Scanner';
 import EditWallet from './screens/EditWallet';
+import WalletConnect from './screens/WalletConnect';
 
 LogBox.ignoreAllLogs()
 
@@ -107,6 +108,7 @@ const MainStack = () => {
       <Stack.Screen name={ScreenNames.TransactionDetail} component={TransactionDetail} />
       <Stack.Screen name={ScreenNames.Scanner} component={Scanner} />
       <Stack.Screen name={ScreenNames.EditWallet} component={EditWallet} />
+      <Stack.Screen name={ScreenNames.WalletConnect} component={WalletConnect} />
 
     </Stack.Navigator>
   )

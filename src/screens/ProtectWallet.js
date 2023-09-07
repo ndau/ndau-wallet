@@ -26,7 +26,7 @@ import AppConstants from "../AppConstants";
 
 const ProtectWallet = (props) => {
 
-  const { item } = props?.route?.params ?? {};
+  const { item, isImporting } = props?.route?.params ?? {};
 
   const { addWalletWithAddress, addLegacyWallet } = useWallet()
   const navigation = useNavigation();
@@ -74,7 +74,8 @@ const ProtectWallet = (props) => {
   }, [pins.pin, pins.confirmPin]);
 
   const addUser = async () => {
-    setLoading(true);
+    const msg = isImporting ? "Importing your wallet" : "Creating your wallet"
+    setLoading(msg);
     let user = UserStore.getUser();
     const isFirstTime = !user;
     if (item.type === "LEGACY") {
@@ -86,7 +87,7 @@ const ProtectWallet = (props) => {
     } else {
       await addEVMWallet();
     }
-    setLoading(false);
+    setLoading("");
 
     if (isFirstTime) {
       verifyBiometric();
@@ -97,10 +98,11 @@ const ProtectWallet = (props) => {
 
   const addEVMWallet = async () => {
     return new Promise(async (resolve, reject) => {
-      setLoading(true);
+      const msg = isImporting ? "Importing your wallet" : "Creating your wallet"
+      setLoading(msg);
       await addWalletWithAddress(SetupStore.recoveryPhrase.join(' '), SetupStore.walletId);
       await UserData.loadUserData(UserStore.getUser())
-      setLoading(false);
+      setLoading("");
       resolve();
     })
   }
@@ -146,7 +148,7 @@ const ProtectWallet = (props) => {
 
   return (
     <ScreenContainer steps={{ total: 4, current: 4 }}>
-      {!!loading && <Loading label={"Creating your wallet"} />}
+      {!!loading && <Loading label={loading} />}
       <Spacer height={16} />
       <View style={styles.container}>
         <CustomText h6 semiBold style={styles.margin}>

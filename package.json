@@ -27,6 +27,7 @@
     "crypto-js": "^4.1.1",
     "ethers": "5",
     "events": "^3.3.0",
+    "fastestsmallesttextencoderdecoder": "^1.0.22",
     "lottie-react-native": "^6.1.0",
     "moment": "^2.29.4",
     "react": "18.2.0",

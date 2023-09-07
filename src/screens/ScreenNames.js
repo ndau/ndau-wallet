@@ -30,7 +30,8 @@ const ScreenNames = {
   Transactions: 'Transactions',
   TransactionDetail: "TransactionDetail",
   Scanner: "Scanner",
-  EditWallet: "EditWallet"
+  EditWallet: "EditWallet",
+  WalletConnect: "WalletConnect"
 }
 
 export { ScreenNames }
