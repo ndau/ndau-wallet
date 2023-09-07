@@ -25,22 +25,23 @@ const ERCDetail = (props) => {
 		Clipboard.setString(item.address);
 	}
 
-	const launchBuyERCTokenInBrowser = async () => {
-		const url = AppConfig.BUY_ERC20_URL;
-
-		const supported = await Linking.canOpenURL(url);
-
+	const launchBuyNdauInBrowser = async () => {
+		const url = AppConfig.BUY_NDAU_URL;
+	
+		const supported = await Linking.openURL(url);
+	
 		if (supported) {
-			await Linking.openURL(url);
+		  await Linking.openURL(url);
 		} else {
-			Alert.alert(
-				'Error',
-				`Don't know how to open this URL: ${url}`,
-				[{ text: 'OK', onPress: () => { } }],
-				{ cancelable: false },
-			);
+		  Alert.alert(
+			'Error',
+			`Don't know how to open this URL: ${url}`,
+			[{text: 'OK', onPress: () => {}}],
+			{cancelable: false},
+		  );
 		}
-	};
+	  };
+
 
 	const navigateToTransaction = () => {
 		props.navigation.navigate(ScreenNames.Transactions, { item })
@@ -54,20 +55,18 @@ const ERCDetail = (props) => {
 
 				<View style={styles.buttonContainer}>
 					<View style={styles.row}>
-						<IconButton label="Buy" icon={<Buy />} onPress={launchBuyERCTokenInBrowser} />
+						<IconButton label="Buy" icon={<Buy />} onPress={launchBuyNdauInBrowser} />
 						<IconButton disabled={disableButton} label="Send" icon={<Send />} onPress={() => props.navigation.navigate(ScreenNames.Send, { item })} />
 						<IconButton label="Receive" icon={<Receive />} onPress={() => {
-							return props.navigation.navigate(ScreenNames.Receive, { address: item.address })
+							return props.navigation.navigate(ScreenNames.Receive, { address: item?.address, tokenName: item?.name })
 						}} />
 					</View>
 					<Spacer height={12} />
 					<View style={styles.row}>
-						<IconButton label="Swap" icon={<Swap />} onPress={() => {
-							return props.navigation.navigate(ScreenNames.Swap)
-						}} />
+						<IconButton label="Swap" icon={<Swap />} onPress={launchBuyNdauInBrowser} />
 					</View>
 
-					
+
 				</View>
 			</View>
 

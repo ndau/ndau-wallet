@@ -6,6 +6,7 @@ import {
     TextInput
 } from 'react-native'
 import React, { useRef, useState } from 'react'
+
 import ScreenContainer from '../components/Screen'
 import Spacer from '../components/Spacer'
 import CustomText from '../components/CustomText'
@@ -21,38 +22,9 @@ import UserStore from "../stores/UserStore";
 const Swap = (props) => {
 
 
-    const [amountToSwap, setAmountToSwap] = useState('');
-    const [swapResult, setSwapResult] = useState('');
-    const provider = new ethers.providers.EtherscanProvider("homestead", EthersScanAPI.apiKey)
-    const wallet =  new ethers.Wallet(UserStore.getActiveWallet().ercKeys.privateKey, provider)
-
-
-    const token1Address = '0x2170Ed0880ac9A755fd29B2688956BD959F933F8';
-    const token2Address = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
-    const token1Contract = new ethers.Contract(token1Address, ['function approve(address spender, uint256 amount)'],wallet);
-    const token2Contract = new ethers.Contract(token2Address, ['function transferFrom(address sender, address recipient, uint256 amount)']);
-  
-
-
-    // const etherscanApiUrl = 'https://api.etherscan.io/rpc';
-
-    // // Create a JsonRpcProvider that connects to the Etherscan API
-    // const provider = new ethers.providers.JsonRpcProvider(etherscanApiUrl);
-    console.log(JSON.stringify(provider, null, 2),'provider---')
-
     const handleSwap = async () => {
-        try {
 
-        
-      
-            setSwapResult(`Successfully swapped ${amountToSwap} Token 1 for Token 2.`);
-        } catch (error) {
-            console.error('Swap error:', error);
-            setSwapResult('Error occurred during the swap.');
-        }
     };
-
-
 
     return (
         <ScreenContainer headerTitle={"Swap"}>
@@ -135,9 +107,6 @@ const Swap = (props) => {
                     </View>
                 </View>
             </View>
-
-
-
 
 
         </ScreenContainer>

@@ -68,12 +68,12 @@ const AddNdauAccount = (props) => {
         opacity: anim.value
     }), [])
 
-    const addAccounts = async () => {
-        modalRef.current(false);
+    const addAccounts = () => {
+
+        modelNdauFeeRef.current(false)
         setLoading("Creating Account")
         addAccountsInNdau(noOfAccounts).then((res) => {
             setLoading("")
-            modelNdauFeeRef.current(true)
             setNDauAccounts([...getNDauAccounts()]);
         });
         setNoOfAccounts(1);
@@ -92,10 +92,11 @@ const AddNdauAccount = (props) => {
                         }
                     }}
                 />
-                <View style={styles.line}/>
+                <View style={styles.line} />
             </View>
         )
     }
+
 
     return (
         <ScreenContainer>
@@ -111,13 +112,14 @@ const AddNdauAccount = (props) => {
 
             />
             <Spacer height={20} />
+            <View style={styles.divider} />
+            <Spacer height={20} />
             <Search
                 placeholder={"Search for account name or wallet address..."}
                 onChangeText={(query) => setSearchQuery(query)}
             />
             <Spacer height={25} />
             <FlatList
-                // data={nDauAccounts}
                 data={nDauAccounts.filter((account) => {
                     let name = account?.addressData?.nickname?.toLowerCase();
                     let address = account?.address?.toLowerCase();
@@ -137,7 +139,7 @@ const AddNdauAccount = (props) => {
                                 onSelectAccount(val);
                                 return props.navigation.goBack();
                             }
-                            props.navigation.navigate(ScreenNames.NDAUDetail, { item: { image: paramItem.image, name: val?.addressData?.nickname, ...val } })
+                            props.navigation.navigate(ScreenNames.NDAUDetail, { item: { image: paramItem.image, name: val?.addressData?.nickname, tokenName: 'ndau', ...val } })
                         }}
                     />
                 }}
@@ -147,7 +149,12 @@ const AddNdauAccount = (props) => {
             <CustomModal bridge={modalRef}>
                 <AddAccountPopupCard
                     val={noOfAccounts}
-                    addAccount={addAccounts}
+                    addAccount={() => {
+                        modalRef.current(false)
+                        setTimeout(() => {
+                            modelNdauFeeRef.current(true)
+                        }, 500)
+                    }}
                     increment={increment}
                     decrement={decremnet}
                     onCancel={() => {
@@ -159,8 +166,9 @@ const AddNdauAccount = (props) => {
             <CustomModal bridge={modelNdauFeeRef}>
                 <NdauAccountFeeCard
                     onUnderstand={() => {
-                        modelNdauFeeRef.current(false);
+
                         if (addAccount) {
+                            modelNdauFeeRef.current(false)
                             setLoading("Creating account");
                             addAccountsInNdau().then((res) => {
                                 setLoading("")
@@ -173,8 +181,14 @@ const AddNdauAccount = (props) => {
                                 FlashNotification.show(err.message, true)
                             });
                         }
+                        else {
+
+                            console.log('account')
+                            addAccounts()
+                        }
                     }}
                     onCancel={() => modelNdauFeeRef.current(false)}
+                    isCancel={true}
                 />
             </CustomModal>
 
@@ -219,5 +233,10 @@ const styles = StyleSheet.create({
         marginVertical: 10,
         width: "98%",
         alignSelf: "center",
+    },
+    divider: {
+        height: .5,
+        backgroundColor: "#808080",
+        opacity: .5
     }
 })

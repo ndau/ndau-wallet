@@ -46,6 +46,7 @@ export const EthersScanAPI = {
   __getFormattedEndpoint: ({ module, action, params }) => {
     return `${EthersScanAPI.endpoint}module=${module}&action=${action}&apiKey=${EthersScanAPI.apiKey}&tag=latest&${EthersScanAPI.__params(params)}`
   },
+
   __params: (params) => {
     if (!params) return "";
     let paramsStr = "";
@@ -71,17 +72,16 @@ export const EthersScanAPI = {
       }).catch(err => reject(err))
     })
   },
+
   getAddressBalance: (address, contractaddress = undefined) => {
 
-    
     return new Promise((resolve, reject) => {
       const apiToCall = EthersScanAPI.__getFormattedEndpoint({
         module: EthersScanAPI.modules.ACCOUNT,
         action: contractaddress ? EthersScanAPI.actions.TOKEN_BALANCE : EthersScanAPI.actions.BALANCE,
         params: { address, contractaddress }
       })
-
- 
+      
       APICommunicationHelper.get(apiToCall).then(res => {
         console.log('res----',res)
         if (res.message === "OK") resolve(res);

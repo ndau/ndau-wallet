@@ -7,18 +7,15 @@ import ScreenContainer from "../components/Screen";
 import { ScreenNames } from "./ScreenNames";
 
 const Scanner = (props) => {
-  const { onScan } = props.route.params ?? {};
 
-  useEffect(() => {
-
-  }, []);
+  const { onScan } = props?.route?.params ?? {};
 
   return (
     <ScreenContainer>
       <QRCodeScanner
         onRead={(e) => {
-          if (e.data) {
-            onScan?.(e.data);
+          if (e?.data) {
+            onScan?.(e?.data);
             props.navigation.goBack();
           }
         }}

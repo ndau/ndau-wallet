@@ -40,7 +40,8 @@ const styles = StyleSheet.create({
     },
     inputContainer: {
         color: themeColors.white,
-        width: 250
+        width: 260,
+        fontSize:12
     },
     seachSvg: {
         alignItems: 'center',
