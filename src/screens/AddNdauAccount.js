@@ -187,7 +187,13 @@ const AddNdauAccount = (props) => {
                             addAccounts()
                         }
                     }}
-                    onCancel={() => modelNdauFeeRef.current(false)}
+                    onCancel={() => {
+                        modelNdauFeeRef.current(false);
+                        if (addAccount) {
+                            props.navigation.goBack();
+                        }
+                    }}
+
                     isCancel={true}
                 />
             </CustomModal>

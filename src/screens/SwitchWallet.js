@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Alert, Dimensions, FlatList, StyleSheet, TouchableOpacity, View } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import { useIsFocused, useNavigation } from "@react-navigation/native";
 
 import { InfoIcon, WalletIcon } from "../assets/svgs/components";
 import Button from "../components/Button";
@@ -16,6 +16,7 @@ import AddWalletsPopup from "./components/dashboard/AddWalletsPopup";
 const SwitchWallet = () => {
   const refAddWalletSheet = useRef();
   const navigation = useNavigation();
+  const isFocused = useIsFocused();
   const { getWallets, setActiveWallet, removeWallet, getActiveWallet } = useWallet();
 
   const [refresh, setRefresh] = useState(false);
@@ -23,7 +24,7 @@ const SwitchWallet = () => {
 
   useEffect(() => {
     setWallets([...getWallets()])
-  }, [refresh])
+  }, [refresh, isFocused])
 
   const confirm = (onYes) => {
     Alert.alert(
@@ -55,9 +56,11 @@ const SwitchWallet = () => {
             <CustomText titilium body>{walletId}</CustomText>
             <CustomText titilium body2>{type || "nDau Legacy Wallet"}</CustomText>
           </View>
-          <View style={{ justifyContent: "center" }}>
-            <InfoIcon />
-          </View>
+          <TouchableOpacity onPress={() => navigation.navigate(ScreenNames.EditWallet, { item })}>
+            <View style={{ justifyContent: "center" }}>
+              <InfoIcon />
+            </View>
+          </TouchableOpacity>
         </View>
       </TouchableOpacity>
     )
