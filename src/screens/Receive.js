@@ -19,13 +19,12 @@ const Receive = (props) => {
   const { address, tokenName } = props?.route?.params ?? {};
   const modelNdauFeeRef = useRef(null)
 
-  console.log(tokenName,'tokenName---')
-
   useEffect(() => {
 
     if (tokenName === "ndau") {
       modelNdauFeeRef.current(true)
-    }else{
+    }
+    else{
       modelNdauFeeRef.current(false)
     }
 
