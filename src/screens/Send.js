@@ -47,9 +47,9 @@ const Send = (props) => {
     return item?.shortName || "Ndau";
   }
 
-  const getRemainBalance = () => {
+  const getRemainBalance = (amount) => {
     try {
-      const toShow = parseFloat(item.totalFunds - transaction.total).toFixed(3);
+      const toShow = parseFloat(item.totalFunds - (amount || transaction.total)).toFixed(3);
       return toShow < 0 ? 0 : toShow
     } catch (e) {
       return "0"
@@ -60,7 +60,7 @@ const Send = (props) => {
     return (
       <>
         <Spacer height={16} />
-        <CustomText titiliumSemiBold body>Who are you send to?</CustomText>
+        <CustomText titiliumSemiBold body>Who you are sending to?</CustomText>
         <Spacer height={10} />
         <CustomTextInput
           label={'Address'}
@@ -85,7 +85,12 @@ const Send = (props) => {
           <Button
             disabled={ndauAddress.length === 0}
             label={"Next"}
-            onPress={() => setSection(1)}
+            onPress={() => {
+              if (ndauAddress === item.address) {
+                return FlashNotification.show("You can't send funds within same account");
+              }
+              setSection(1)
+            }}
           />
         </View>
       </>
@@ -142,7 +147,8 @@ const Send = (props) => {
         <CustomTextInput
           label={getName() + ' amount'}
           value={ndauAmount}
-          placeholder={getName() + " amount"}
+          placeholder={"Enter amount"}
+          // placeholder={getName() + " amount"}
           errors={errors}
           onChangeText={(t) => {
             if (t[0] === "0" && t[1] === "0") return
@@ -165,7 +171,7 @@ const Send = (props) => {
         <View style={styles.remainngContainer}>
           <CustomText titilium style={{ flex: 1 }}>Remaining Balance</CustomText>
           <Image style={styles.icon} source={item.image} />
-          <CustomText titilium style={{ marginHorizontal: 6 }}>{getRemainBalance()}</CustomText>
+          <CustomText titilium style={{ marginHorizontal: 6 }}>{getRemainBalance(ndauAmount)}</CustomText>
         </View>
         <View style={styles.container}>
           <View style={[styles.separator, { flex: undefined, marginVertical: 20 }]} />
@@ -174,7 +180,7 @@ const Send = (props) => {
               <CustomText titiliumSemiBold h6>Fees</CustomText>
               <Spacer height={10} />
               {renderDetail({ title: "Transaction Fee", value: transaction.transactionFee })}
-              {renderDetail({ title: "SIB", value: transaction.sib })}
+              {!item?.shortName && renderDetail({ title: "SIB", value: transaction.sib })}
               {renderDetail({ title: "Total", value: parseFloat(transaction.total).toFixed(8) })}
             </View>
             <Button

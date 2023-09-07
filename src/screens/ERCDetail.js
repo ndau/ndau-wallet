@@ -50,7 +50,13 @@ const ERCDetail = (props) => {
 		<ScreenContainer headerTitle={" "} headerRight={<CopyAddressButton onPress={copyAddress} />}>
 			<View style={styles.headerContainer}>
 				<Image style={styles.icon} source={item.image} />
-				<CustomText semiBold h4 style={styles.balance}>{item?.totalFunds?.toFixed?.(4) || "0.00"}</CustomText>
+				<CustomText titiliumSemiBold h6 style={{ margin: 10, marginBottom: 0, textTransform: "capitalize" }}>{item.name}</CustomText>
+				<CustomText titilium body style={{ marginTop: 6, marginBottom: 4 }}>{"Balance"}</CustomText>
+				<View style={{ flexDirection: "row", alignItems: "center", marginBottom: 20 }}>
+					<CustomText semiBold h4>{item?.totalFunds?.toFixed?.(4) || "0.00"}</CustomText>
+					<CustomText titilium body>{` ~ $${parseFloat(item.usdAmount)?.toFixed(2) || "0"}`}</CustomText>
+				</View>
+
 
 				<View style={styles.buttonContainer}>
 					<View style={styles.row}>
@@ -67,7 +73,7 @@ const ERCDetail = (props) => {
 						}} />
 					</View>
 
-					
+
 				</View>
 			</View>
 
@@ -75,11 +81,6 @@ const ERCDetail = (props) => {
 				<Button
 					label={'View Transaction'}
 					onPress={navigateToTransaction}
-				/>
-				<Button
-					label={'Remove Account'}
-					iconLeft={<Delete />}
-					buttonContainerStyle={styles.removeButton}
 				/>
 			</View>
 		</ScreenContainer>
