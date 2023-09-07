@@ -35,8 +35,6 @@ const NDAUDetail = (props) => {
 	const { getNdauAccountDetail, removeAccount } = useWallet();
 	const { notifyForNDAU } = useTransaction();
 
-	console.log(JSON.stringify(item, null, 2), 'item-----')
-
 	const [accountInfo, setAccountInfo] = useState({
 		isLocked: false,
 		unlocksOn: "",
@@ -115,19 +113,19 @@ const NDAUDetail = (props) => {
 	const launchBuyNdauInBrowser = async () => {
 		const url = AppConfig.BUY_NDAU_URL;
 	
-		const supported = await Linking.canOpenURL(url);
+		const supported = await Linking.openURL(url);
 	
 		if (supported) {
-		  await Linking.openURL(url);
+			await Linking.openURL(url);
 		} else {
-		  Alert.alert(
-			'Error',
-			`Don't know how to open this URL: ${url}`,
-			[{text: 'OK', onPress: () => {}}],
-			{cancelable: false},
-		  );
+			Alert.alert(
+				'Error',
+				`Don't know how to open this URL: ${url}`,
+				[{ text: 'OK', onPress: () => { } }],
+				{ cancelable: false },
+			);
 		}
-	  };
+	};
 
 
 	const openLink = () => {
@@ -171,18 +169,24 @@ const NDAUDetail = (props) => {
 	const disableButton = item.totalFunds === null || item.totalFunds === undefined || parseFloat(item.totalFunds) <= 0
 	const canRecieve = accountInfo.unlocksOn == null;
 
+
+
 	return (
 		<ScreenContainer headerTitle={item.name} headerRight={canRecieve && <CopyAddressButton onPress={copyAddress} />}>
 			<ScrollView showsVerticalScrollIndicator={false}>
 				<View style={styles.headerContainer}>
 					<Image style={styles.icon} source={item.image} />
-					<CustomText semiBold h4 style={styles.balance}>{item.totalFunds || "0.00"}</CustomText>
+					<CustomText titilium body style={{ marginTop: 20, marginBottom: 4 }}>{"Balance"}</CustomText>
+					<View style={{ flexDirection: "row", alignItems: "center", marginBottom: 20 }}>
+						<CustomText semiBold h4>{`${(item.totalFunds || "0.00")}`}</CustomText>
+						<CustomText titilium body>{` ~ $${parseFloat(item.usdAmount)?.toFixed(2) || "0"}`}</CustomText>
+					</View>
 
 					<View style={styles.buttonContainer}>
 						<View style={styles.row}>
 							<IconButton disabled={accountInfo.isLocked} label="Buy" icon={<Buy />} onPress={launchBuyNdauInBrowser} />
 							<IconButton disabled={accountInfo.isLocked || disableButton} label="Send" icon={<Send />} onPress={() => customModalRef.current(true)} />
-							<IconButton disabled={!canRecieve} label="Receive" icon={<Receive />} onPress={() => props.navigation.navigate(ScreenNames.Receive, { address: item.address })} />
+							<IconButton disabled={!canRecieve} label="Receive" icon={<Receive />} onPress={() => props.navigation.navigate(ScreenNames.Receive, { address: item.address,tokenName:item.tokenName })} />
 						</View>
 						<View style={styles.row}>
 							<IconButton disabled={accountInfo.isLocked || disableButton} label="Convert" icon={<Convert />} />
@@ -342,7 +346,8 @@ const styles = StyleSheet.create({
 		alignItems: "center"
 	},
 	balance: {
-		margin: 20
+		margin: 20,
+		marginTop: 0,
 	},
 	infoContainer: {
 		width: "100%",

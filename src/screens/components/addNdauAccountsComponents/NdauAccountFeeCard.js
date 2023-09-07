@@ -8,7 +8,7 @@ import Button from '../../../components/Button'
 import ModalTextLink from '../../../components/common/ModalTextLink'
 import AppConfig from '../../../AppConfig'
 
-const NdauAccountFeeCard = ({ onUnderstand, onCancel, item }) => {
+const NdauAccountFeeCard = ({ onUnderstand, onCancel, item, isCancel }) => {
     return (
 
         <View style={styles.container}>
@@ -55,11 +55,11 @@ const NdauAccountFeeCard = ({ onUnderstand, onCancel, item }) => {
                 onPress={onUnderstand}
                 buttonContainerStyle={styles.understandBtn} />
             <Spacer height={12} />
-            <Button
+            {isCancel && <Button
 
                 label={"Cancel"}
                 onPress={onCancel}
-                buttonContainerStyle={styles.cancelBtn} />
+                buttonContainerStyle={styles.cancelBtn} />}
 
         </View>
 

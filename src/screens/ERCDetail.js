@@ -25,22 +25,23 @@ const ERCDetail = (props) => {
 		Clipboard.setString(item.address);
 	}
 
-	const launchBuyERCTokenInBrowser = async () => {
-		const url = AppConfig.BUY_ERC20_URL;
-
-		const supported = await Linking.canOpenURL(url);
-
+	const launchBuyNdauInBrowser = async () => {
+		const url = AppConfig.BUY_NDAU_URL;
+	
+		const supported = await Linking.openURL(url);
+	
 		if (supported) {
-			await Linking.openURL(url);
+		  await Linking.openURL(url);
 		} else {
-			Alert.alert(
-				'Error',
-				`Don't know how to open this URL: ${url}`,
-				[{ text: 'OK', onPress: () => { } }],
-				{ cancelable: false },
-			);
+		  Alert.alert(
+			'Error',
+			`Don't know how to open this URL: ${url}`,
+			[{text: 'OK', onPress: () => {}}],
+			{cancelable: false},
+		  );
 		}
-	};
+	  };
+
 
 	const navigateToTransaction = () => {
 		props.navigation.navigate(ScreenNames.Transactions, { item })
@@ -50,24 +51,28 @@ const ERCDetail = (props) => {
 		<ScreenContainer headerTitle={" "} headerRight={<CopyAddressButton onPress={copyAddress} />}>
 			<View style={styles.headerContainer}>
 				<Image style={styles.icon} source={item.image} />
-				<CustomText semiBold h4 style={styles.balance}>{item?.totalFunds?.toFixed?.(4) || "0.00"}</CustomText>
+				<CustomText titiliumSemiBold h6 style={{ margin: 10, marginBottom: 0, textTransform: "capitalize" }}>{item.name}</CustomText>
+				<CustomText titilium body style={{ marginTop: 6, marginBottom: 4 }}>{"Balance"}</CustomText>
+				<View style={{ flexDirection: "row", alignItems: "center", marginBottom: 20 }}>
+					<CustomText semiBold h4>{item?.totalFunds?.toFixed?.(4) || "0.00"}</CustomText>
+					<CustomText titilium body>{` ~ $${parseFloat(item.usdAmount)?.toFixed(2) || "0"}`}</CustomText>
+				</View>
+
 
 				<View style={styles.buttonContainer}>
 					<View style={styles.row}>
-						<IconButton label="Buy" icon={<Buy />} onPress={launchBuyERCTokenInBrowser} />
+						<IconButton label="Buy" icon={<Buy />} onPress={launchBuyNdauInBrowser} />
 						<IconButton disabled={disableButton} label="Send" icon={<Send />} onPress={() => props.navigation.navigate(ScreenNames.Send, { item })} />
 						<IconButton label="Receive" icon={<Receive />} onPress={() => {
-							return props.navigation.navigate(ScreenNames.Receive, { address: item.address })
+							return props.navigation.navigate(ScreenNames.Receive, { address: item?.address, tokenName: item?.name })
 						}} />
 					</View>
 					<Spacer height={12} />
 					<View style={styles.row}>
-						<IconButton label="Swap" icon={<Swap />} onPress={() => {
-							return props.navigation.navigate(ScreenNames.Swap)
-						}} />
+						<IconButton label="Swap" icon={<Swap />} onPress={launchBuyNdauInBrowser} />
 					</View>
 
-					
+
 				</View>
 			</View>
 
@@ -75,11 +80,6 @@ const ERCDetail = (props) => {
 				<Button
 					label={'View Transaction'}
 					onPress={navigateToTransaction}
-				/>
-				<Button
-					label={'Remove Account'}
-					iconLeft={<Delete />}
-					buttonContainerStyle={styles.removeButton}
 				/>
 			</View>
 		</ScreenContainer>

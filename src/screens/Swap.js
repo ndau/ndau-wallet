@@ -6,6 +6,7 @@ import {
     TextInput
 } from 'react-native'
 import React, { useRef, useState } from 'react'
+
 import ScreenContainer from '../components/Screen'
 import Spacer from '../components/Spacer'
 import CustomText from '../components/CustomText'
@@ -14,23 +15,16 @@ import { ArrowDownSVGComponent } from '../assets/svgs/components'
 import { themeColors } from '../config/colors'
 import { Swap as SwapIcon } from '../../assets/svgs/components'
 import CustomTextInput from '../components/CustomTextInput'
-
+import { ethers } from 'ethers'
+import { EthersScanAPI } from '../helpers/EthersScanAPI'
+import UserStore from "../stores/UserStore";
 
 const Swap = (props) => {
 
-    const [token1, setToken1] = useState({balance:'12.34',coinType:'ndau'});
-    const [token2, setToken2] = useState('Token B');
 
-
-    const toggleViews = () => {
-
-        const tempToken = token1;
-        setToken1(token2);
-        setToken2(tempToken);
+    const handleSwap = async () => {
 
     };
-
-
 
     return (
         <ScreenContainer headerTitle={"Swap"}>
@@ -77,7 +71,7 @@ const Swap = (props) => {
 
             <Spacer height={12} />
 
-            <TouchableOpacity onPress={toggleViews} style={styles.svgView}>
+            <TouchableOpacity onPress={handleSwap} style={styles.svgView}>
                 <SwapIcon />
             </TouchableOpacity>
 
@@ -113,9 +107,6 @@ const Swap = (props) => {
                     </View>
                 </View>
             </View>
-
-
-
 
 
         </ScreenContainer>
@@ -176,11 +167,11 @@ const styles = StyleSheet.create({
     svgView: {
         alignItems: 'center',
     },
-    inputCon:{
-         color:themeColors.white,
-         fontWeight:"bold",
-         fontSize:18,
-         
+    inputCon: {
+        color: themeColors.white,
+        fontWeight: "bold",
+        fontSize: 18,
+
     }
 
 
