@@ -83,7 +83,6 @@ export const EthersScanAPI = {
       })
       
       APICommunicationHelper.get(apiToCall).then(res => {
-        console.log('res----',res)
         if (res.message === "OK") resolve(res);
         else reject(res);
       }).catch(err => reject(err))

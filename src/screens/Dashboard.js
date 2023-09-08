@@ -1,29 +1,24 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { Dimensions, FlatList, ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
+import { Dimensions, FlatList, ScrollView, StyleSheet, View } from "react-native";
 
+import { useIsFocused } from "@react-navigation/native";
+import { ethers } from "ethers";
+import { Provider, Wallet } from "zksync-web3";
 import { images } from "../assets/images";
+import BottomSheetModal from "../components/BottomSheetModal";
 import Button from "../components/Button";
 import DashboardHeader from "../components/DashboardHeader";
 import NFT from "../components/NFT";
 import ScreenContainer from "../components/Screen";
 import Token from "../components/Token";
 import { themeColors } from "../config/colors";
-import AccountAPIHelper from "../helpers/AccountAPIHelper";
 import DataFormatHelper from "../helpers/DataFormatHelper";
 import { Converters, EthersScanAPI } from "../helpers/EthersScanAPI";
 import { useWallet } from "../hooks";
 import NdauStore from "../stores/NdauStore";
 import UserStore from "../stores/UserStore";
 import { ScreenNames } from "./ScreenNames";
-import BottomSheetModal from "../components/BottomSheetModal";
-import CustomText from "../components/CustomText";
-import { ArrowDownSVGComponent, BlockChainWalletLogoSVGComponent } from "../assets/svgs/components";
-import Spacer from "../components/Spacer";
-import { addWalletsData } from "../utils";
-import DashBoardBottomSheetCard from "./components/DashBoardBottomSheetCard";
-import { useIsFocused } from "@react-navigation/native";
 import AddWalletsPopup from "./components/dashboard/AddWalletsPopup";
-import { ethers } from "ethers";
 
 const Dashboard = ({ navigation }) => {
 
@@ -37,6 +32,26 @@ const Dashboard = ({ navigation }) => {
 	const [selected, setSelected] = useState(0);
 	const [data, setData] = useState([]);
 	const refAddWalletSheet = useRef(null)
+
+
+	// const zkSyncProvider = new Provider("https://testnet.era.zksync.dev/");
+	// const ethereumProvider = ethers.getDefaultProvider("testnet");
+	// const wallet = new Wallet("0x527ac38e4c62cb37c98bbd9d04a124caf6128ca26c21ac1fc78416d4edb1b98a", zkSyncProvider, ethereumProvider);
+
+	const zkSyncProvider = new Provider("https://testnet.era.zksync.dev");
+	const ethereumProvider = ethers.getDefaultProvider("goerli");
+	const wallet = new Wallet("0x527ac38e4c62cb37c98bbd9d04a124caf6128ca26c21ac1fc78416d4edb1b98a", zkSyncProvider, ethereumProvider);
+
+	const USDC_L2_ADDRESS = "0x1ab43093F4b3f8E5E4666d2062768ACCe67c9920";
+
+	useEffect(async () => {
+		// Get balance in Big Number
+		console.log(await wallet.getBalance(USDC_L2_ADDRESS));
+
+		// Get balance in ETH formatted
+		console.log(ethers.utils.formatEther(await wallet.getBalance()));
+
+	}, [])
 
 	const [tokens, setTokens] = useState([
 		{ shortName: "ndau", name: "NDAU", network: "nDau", totalFunds: "0", usdAmount: "0", image: images.nDau, accounts: getNDauAccounts().length },
