@@ -96,6 +96,7 @@ const Receive = (props) => {
 
           }}
           isCancel={false}
+          isReceive={true}
         />
       </CustomModal>
 

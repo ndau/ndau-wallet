@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { ScrollView, StyleSheet, View } from "react-native";
+import { Dimensions, Linking, ScrollView, StyleSheet, View } from "react-native";
 
 import CustomText from "../components/CustomText";
 import Loading from "../components/Loading";
@@ -9,9 +9,14 @@ import { useTransaction } from "../hooks";
 import moment from "moment";
 import { ethers } from "ethers";
 import DataFormatHelper from "../helpers/DataFormatHelper";
+import Spacer from "../components/Spacer";
+import Button from "../components/Button";
+import AppConfig from "../AppConfig";
+import AccountStore from '../../src/stores/AccountStore'
+
 
 const TransactionDetail = (props) => {
-	const { item } = props?.route?.params ?? {};
+	const { item, accountAddress } = props?.route?.params ?? {};
 	const paramItem = item;
 	const { getTransactionByHash, getERCTransactionDetail } = useTransaction();
 	const [transaction, setTranstion] = useState({});
@@ -40,23 +45,23 @@ const TransactionDetail = (props) => {
 		)
 	}
 
+
+	console.log(accountAddress, 'accountAddress--')
+
 	const renderERCDetail = () => {
 		return (
 			<View styles={styles.container}>
-				<CustomText titiliumSemiBold body style={{ marginVertical: 10 }}>{moment(paramItem.timestamp * 1000).format("DD  MMM, YYYY")}</CustomText>
-				{renderData("From", transaction.from)}
-				{renderData("To", transaction.to)}
-				{renderData("Value", ethers.utils.formatEther(transaction.value?._hex || "0x0"))}
-				{renderData("Gas Price", ethers.utils.formatEther(transaction.gasPrice?._hex || "0x0") + " Eth")}
-				{renderData("Max. Priority Fee Per Gas", ethers.utils.formatEther(transaction.maxPriorityFeePerGas?._hex || "0x0") + " Eth")}
-				{renderData("Max. Fee Per Gas", ethers.utils.formatEther(transaction.maxFeePerGas?._hex || "0x0") + " Eth")}
-				{renderData("Gas Limit", ethers.utils.formatEther(transaction.gasLimit?._hex || "0x0") + " Eth")}
-				{renderData("Block Hash", transaction.blockHash)}
-				{renderData("Block Number", transaction.blockNumber)}
-				{renderData("Confirmations", transaction.confirmations)}
-				{renderData("Nonce", transaction.nonce)}
-				{renderData("Data", transaction.data)}
-				{renderData("Chain Id", transaction.chainId)}
+				<Spacer height={16} />
+				{renderData("Block Number:", transaction.blockNumber)}
+				{renderData("Timestamp:", `${moment.utc(paramItem.timestamp * 1000).fromNow()} ${moment.utc(paramItem.timestamp * 1000).format("DD-MMM-YYYY hh:mm:ss A Z")}`)}
+				{renderData("From:", transaction.from)}
+				{renderData("To:", transaction.to)}
+				{renderData("Value:", ethers.utils.formatEther(transaction.value?._hex || "0x0"))}
+				<Button
+					onPress={() => launchViewTransactionDetailInBrowser(transaction.hash, "ERC")}
+					label={"Details"}
+					buttonContainerStyle={styles.detailsButton} />
+
 			</View>
 		)
 	}
@@ -71,9 +76,42 @@ const TransactionDetail = (props) => {
 				{renderData("FEE", DataFormatHelper.getNdauFromNapu(transaction.Fee) + " NDAU")}
 				{renderData("Transaction Type", transaction.TxType)}
 				{renderData("Sequence", transaction?.TxData?.sequence)}
+				<Button
+					onPress={() => launchViewTransactionDetailInBrowser(accountAddress, "Ndau")}
+					label={"Details"}
+					buttonContainerStyle={styles.detailsButton} />
 			</View>
 		)
 	}
+
+	const launchViewTransactionDetailInBrowser = async (address, type) => {
+
+		let url = '';
+
+		if (type === "ERC") {
+
+			url = `${AppConfig.VIEW_TRANSACTION_DETAIL_VIEW}/${address}`
+		}
+		if (type === "Ndau") {
+
+			url = AppConfig.calcExplorerUrl(address, "mainnet")
+		}
+
+		const supported = await Linking.openURL(url);
+
+		if (supported) {
+			await Linking.openURL(url);
+		} else {
+			Alert.alert(
+				'Error',
+				`Don't know how to open this URL: ${url}`,
+				[{ text: 'OK', onPress: () => { } }],
+				{ cancelable: false },
+			);
+		}
+	};
+
+
 
 	return (
 		<ScreenContainer headerTitle={item.addressData?.nickname}>
@@ -102,6 +140,14 @@ const styles = StyleSheet.create({
 		flexDirection: "row",
 		alignItems: "center",
 		justifyContent: "space-between"
+	},
+	detailsButton: {
+		width: Dimensions.get('window').width / 4,
+		padding: 0,
+		height: 30,
+		borderRadius: 6,
+		backgroundColor: '#A7A7A7',
+		alignSelf: 'center'
 	}
 })
 
