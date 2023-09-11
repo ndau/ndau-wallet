@@ -1,6 +1,7 @@
 import { ethers } from "ethers";
-import APICommunicationHelper from "./APICommunicationHelper"
+import * as zkSync from "zksync-web3";
 
+import APICommunicationHelper from "./APICommunicationHelper"
 import UserStore from "../stores/UserStore";
 
 export const Converters = {
@@ -25,11 +26,6 @@ export const EthersScanAPI = {
     STATS: "stats",
   },
 
-  rpcUrl: {
-    MAIN: "https://mainnet.era.zksync.io",
-    TESTNET: "https://testnet.era.zksync.dev"
-  },
-
   actions: {
     BALANCE: "balance",
     ETH_PRICE: "ethprice",
@@ -38,9 +34,9 @@ export const EthersScanAPI = {
   },
 
   contractaddress: {
-    USDC: "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
-    NPAY: "0x1ab43093F4b3f8E5E4666d2062768ACCe67c9920",
-    ETH: "0x1ab43093F4b3f8E5E4666d2062768ACCe67c9920",
+    USDC: "0x07865c6E87B9F70255377e024ace6630C1Eaa37F",
+    // USDC: "0x5425890298aed601595a70AB815c96711a31Bc65",
+    NPAY: "0xd7afcb470bcF8d07E3A4dCBa0Ec7D9f5D8C6a05a"
   },
 
   __getFormattedEndpoint: ({ module, action, params }) => {
@@ -81,23 +77,54 @@ export const EthersScanAPI = {
         action: contractaddress ? EthersScanAPI.actions.TOKEN_BALANCE : EthersScanAPI.actions.BALANCE,
         params: { address, contractaddress }
       })
-      
+
       APICommunicationHelper.get(apiToCall).then(res => {
-        console.log('res----',res)
         if (res.message === "OK") resolve(res);
         else reject(res);
       }).catch(err => reject(err))
     })
   },
+
+  getCheck: async () => {
+    try {
+
+      // Create an instance of the USDC token contract
+      const usdcContract = new ethers.Contract(
+        '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48', //usdc token address
+        new ethers.providers.getDefaultProvider('goerli')
+      );
+      console.log('new ethers.providers.getDefaultProvider', JSON.stringify(usdcContract, null, 2));
+
+      // Call the balanceOf function to get the USDC balance
+      const balance = await usdcContract.balanceOf(UserStore.getActiveWallet().ercAddress);
+
+      console.log(`USDC Balance: ${ethers.utils.formatUnits(balance, 6)}`); // Assuming 6 decimals for USDC
+    } catch (error) {
+      console.error('Error fetching USDC balance:', error);
+    }
+  }
+}
+
+export const ZkSkyncApi = {
+
+  url: "https://block-explorer-api.testnets.zksync.dev",
+
   getZksyncAddressBalance: () => {
     return new Promise((resolve, reject) => {
-      const provider = new ethers.providers.JsonRpcProvider(EthersScanAPI.rpcUrl.TESTNET);
-      new ethers.Wallet(UserStore.getActiveWallet().ercKeys.privateKey, provider).getBalance().then(res => {
-        resolve(res);
-      }).catch(err => {
-        console.log('err', JSON.stringify(err.message, null, 2));
-        reject(err);
-      })
+      const address = UserStore.getActiveWallet().ercAddress;
+      APICommunicationHelper.get(`${ZkSkyncApi.url}/address/${address}`).then(res => {
+        if (res.balances) {
+          const availabeBalances = [];
+          Object.keys(res.balances).forEach(key => {
+            const obj = res.balances[key];
+            if (obj.token.symbol === "NPAY") {
+              obj.totalFunds = ethers.utils.formatUnits(obj.balance, obj.token.decimals);
+              availabeBalances.push(obj);
+            }
+          })
+          resolve(availabeBalances);
+        }
+      }).catch(err => reject(err));
     })
   }
 }

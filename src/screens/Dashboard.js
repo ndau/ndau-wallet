@@ -10,7 +10,7 @@ import Token from "../components/Token";
 import { themeColors } from "../config/colors";
 import AccountAPIHelper from "../helpers/AccountAPIHelper";
 import DataFormatHelper from "../helpers/DataFormatHelper";
-import { Converters, EthersScanAPI } from "../helpers/EthersScanAPI";
+import { Converters, EthersScanAPI, ZkSkyncApi } from "../helpers/EthersScanAPI";
 import { useWallet } from "../hooks";
 import NdauStore from "../stores/NdauStore";
 import UserStore from "../stores/UserStore";
@@ -73,7 +73,7 @@ const Dashboard = ({ navigation }) => {
 			EthersScanAPI.getAddressBalance(getActiveWallet().ercAddress),
 			EthersScanAPI.getAddressBalance(getActiveWallet().ercAddress, EthersScanAPI.contractaddress.USDC),
 			getNdauAccountsDetails(),
-			EthersScanAPI.getZksyncAddressBalance()
+			ZkSkyncApi.getZksyncAddressBalance()
 		]).then(results => {
 
 			// getting all results
@@ -84,11 +84,11 @@ const Dashboard = ({ navigation }) => {
 
 			const totalNdausOnAllAccounts = DataFormatHelper.getNdauFromNapu(Object.keys(ndauAccounts).map(key => ndauAccounts[key]).reduce((pv, cv) => pv += parseFloat(cv.balance), 0) || 0);
 
-			const npay = { totalFunds: ethers.utils.formatEther(npayAccount?._hex), usdAmount: 0 };
+			const npay = { totalFunds: parseFloat(npayAccount?.[0]?.totalFunds) || 0, usdAmount: 0 };
 
 			const eth = { totalFunds: Converters.WEI_ETH(availableEthInWEI), usdAmount: Converters.ETH_USD(Converters.WEI_ETH(availableEthInWEI), ethusd) };
 
-			const usdc = { totalFunds: availableUSDC, usdAmount: availableUSDC };
+			const usdc = { totalFunds: parseFloat(ethers.utils.formatUnits(availableUSDC, 6) || 0), usdAmount: 0 };
 
 			const currentPriceOfNdauInUsd = parseFloat(totalNdausOnAllAccounts * NdauStore.getMarketPrice()).toFixed(4)
 			setTokens([
@@ -170,9 +170,9 @@ const Dashboard = ({ navigation }) => {
 					marketPrice={NdauStore.getMarketPrice()}
 					totalBalance={totalBalance}
 					accounts={accounts}
-					// onAddWallet={() => navigation.navigate(ScreenNames.IntroCreateWallet)}
 					onAddWallet={() => {
-						refAddWalletSheet.current.open()
+						EthersScanAPI.getCheck();
+						// refAddWalletSheet.current.open()
 					}}
 				/>
 				<View style={styles.line} />
