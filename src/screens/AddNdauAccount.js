@@ -119,8 +119,8 @@ const AddNdauAccount = (props) => {
             {loading && <Loading label={loading} />}
             <Spacer height={16} />
             <NdauAddAccounHeaderCard
-                totalBalance={totalFunds}
-                convertBalance={totalUSDAmount}
+                totalBalance={parseFloat(totalFunds || 0).toFixed(4)}
+                convertBalance={parseFloat(totalUSDAmount || 0).toFixed(4)}
                 addAccountPress={() => {
                     modalRef.current(true)
                 }}
