@@ -140,7 +140,7 @@ const AddNdauAccount = (props) => {
                     let name = account?.addressData?.nickname?.toLowerCase();
                     let address = account?.address?.toLowerCase();
                     const query = searchQuery.toLowerCase();
-                    return name.includes(query) || address.includes(query);
+                    return name?.includes(query) || address?.includes(query);
                 })}
                 ListHeaderComponent={renderCreatedAccount()}
                 renderItem={({ item, index }) => {
