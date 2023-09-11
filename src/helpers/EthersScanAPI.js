@@ -93,7 +93,6 @@ export const EthersScanAPI = {
     return new Promise((resolve, reject) => {
       const provider = new ethers.providers.JsonRpcProvider(EthersScanAPI.rpcUrl.TESTNET);
       new ethers.Wallet(UserStore.getActiveWallet().ercKeys.privateKey, provider).getBalance().then(res => {
-        console.log('ahha', JSON.stringify(res, null, 2));
         resolve(res);
       }).catch(err => {
         console.log('err', JSON.stringify(err.message, null, 2));

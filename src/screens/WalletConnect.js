@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, View, Image } from "react-native";
+import { StyleSheet, View, Image, FlatList, TouchableOpacity } from "react-native";
 
 import CustomText from "../components/CustomText";
 import Loading from "../components/Loading";
@@ -10,14 +10,20 @@ import Button from "../components/Button";
 import { themeColors } from "../config/colors";
 import { Converters, EthersScanAPI } from "../helpers/EthersScanAPI";
 import { ndauUtils } from "../utils";
+import { Delete, QRCode } from "../assets/svgs/components";
+import moment from "moment";
 
 const WalletConnect = (props) => {
   const { item } = props.route?.params ?? {};
   const {
     loading,
     proposal,
+    paired,
     connectWithURI,
-    clientInitialized
+    clientInitialized,
+    approve,
+    reject,
+    disconnect
   } = useWalletConnect();
 
   const { getActiveWallet } = useWallet();
@@ -27,12 +33,6 @@ const WalletConnect = (props) => {
     totalFunds: "",
     usdAmount: ""
   })
-
-  useEffect(() => {
-    if (clientInitialized) {
-      connectWithURI("wc:dac3c7e2fc3ca7d06d2a8e2cf613ea2377bd38805dc6090f1c06ee33b23c4a37@2?relay-protocol=irn&symKey=fb240ae78afe8ef5fd3e12850274acc67b56f10f1adb0fb195a7961a2cb3f321")
-    }
-  }, [clientInitialized])
 
   useEffect(() => {
     EthersScanAPI.getEthPriceInUSD().then(res => {
@@ -79,11 +79,17 @@ const WalletConnect = (props) => {
         <View style={styles.buttonsContainer}>
           <Button
             label={'Approve'}
+            onPress={() => approve(account.accountAddress)}
           />
           <Spacer height={10} />
           <Button
             label={'Reject'}
             buttonContainerStyle={styles.rejectButton}
+            onPress={() => {
+              reject().then(() => {
+                props.navigation.goBack();
+              });
+            }}
           />
         </View>
       </View>
@@ -100,8 +106,13 @@ const WalletConnect = (props) => {
     )
   }
 
+  const scanQR = () => {
+    connectWithURI("wc:a3297083b8127d1eb335fba62b8406fd067f3fb6810736e694a05d5fa0e183d5@2?relay-protocol=irn&symKey=625b2aee6035db595eac66074819cd39fa9b4f643ede3962a0acf1dcd0fba48d")
+  }
+
   return (
-    <ScreenContainer>
+    <ScreenContainer
+      preventBackPress={() => { reject(); props.navigation.goBack(); }}>
       {
         proposal ? renderProposal() : (
           <>
@@ -112,6 +123,38 @@ const WalletConnect = (props) => {
               <CustomText titiliumBold>WalletConnect</CustomText>
               <CustomText titilium> wallet.</CustomText>
             </View>
+            <View style={{ marginVertical: 10 }}>
+              <Button onPress={scanQR} label={'Scan  '} rightIcon={<QRCode />} buttonContainerStyle={{ flexDirection: "row" }} />
+            </View>
+            <Spacer height={20} />
+            <FlatList
+              data={paired}
+              ListHeaderComponent={(
+                <View style={{ marginVertical: 10 }}>
+                  <CustomText titiliumSemiBold h6>Connected DApps</CustomText>
+                </View>
+              )}
+              ListEmptyComponent={(
+                <View style={{ alignItems: "center", marginTop: 100 }}>
+                  <CustomText titiliumSemiBold body2>No connection yet</CustomText>
+                </View>
+              )}
+              renderItem={({ item }) => {
+                const peerMetadata = item.peer?.metadata || {};
+                return (
+                  <View style={styles.pairedItem}>
+                    <Image source={{ uri: peerMetadata?.icons?.[0] }} style={styles.peerIcon} />
+                    <View style={{ flex: 1, marginLeft: 10 }}>
+                      <CustomText titiliumSemiBold>{peerMetadata?.name}</CustomText>
+                      <CustomText titilium color={themeColors.black300}>Expiry: {moment(item.expiry * 1000).format("MMM DD, yyyy hh:mm")}</CustomText>
+                    </View>
+                    <TouchableOpacity onPress={() => disconnect(item.topic)} style={{ padding: 10 }}>
+                      <Delete color={themeColors.dangerFlashBackground} />
+                    </TouchableOpacity>
+                  </View>
+                )
+              }}
+            />
           </>
         )
       }
@@ -152,6 +195,20 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: themeColors.black300,
     borderRadius: 10
+  },
+  pairedItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    borderWidth: 1,
+    borderColor: themeColors.black300,
+    backgroundColor: themeColors.black500,
+    padding: 10,
+    marginBottom: 10,
+    borderRadius: 10
+  },
+  peerIcon: {
+    height: 50,
+    width: 50
   }
 });
 
