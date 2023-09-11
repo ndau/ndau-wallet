@@ -12,6 +12,7 @@ import { Converters, EthersScanAPI } from "../helpers/EthersScanAPI";
 import { ndauUtils } from "../utils";
 import { Delete, QRCode } from "../assets/svgs/components";
 import moment from "moment";
+import FlashNotification from "../components/common/FlashNotification";
 
 const WalletConnect = (props) => {
   const { item } = props.route?.params ?? {};
@@ -106,8 +107,9 @@ const WalletConnect = (props) => {
     )
   }
 
-  const scanQR = () => {
-    connectWithURI("wc:a3297083b8127d1eb335fba62b8406fd067f3fb6810736e694a05d5fa0e183d5@2?relay-protocol=irn&symKey=625b2aee6035db595eac66074819cd39fa9b4f643ede3962a0acf1dcd0fba48d")
+  const scanQR = (data) => {
+    if (data.substring(0, 2) !== "wc") return FlashNotification.show("Invalid QR Code");
+    connectWithURI(data)
   }
 
   return (
@@ -124,7 +126,11 @@ const WalletConnect = (props) => {
               <CustomText titilium> wallet.</CustomText>
             </View>
             <View style={{ marginVertical: 10 }}>
-              <Button onPress={scanQR} label={'Scan  '} rightIcon={<QRCode />} buttonContainerStyle={{ flexDirection: "row" }} />
+              <Button 
+                onPress={() => scanQR("wc:da41422d3ed40a89c1b3d9ca65db2b738ebb24935cc18f74be636650f8568350@2?relay-protocol=irn&symKey=102a22af392deae314f1a78dbb8bb17ff96da63a1ff3fdc7917a89bcd405af87")} 
+                label={'Scan  '} 
+                rightIcon={<QRCode />} 
+                buttonContainerStyle={{ flexDirection: "row" }} />
             </View>
             <Spacer height={20} />
             <FlatList

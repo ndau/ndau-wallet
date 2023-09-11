@@ -79,7 +79,6 @@ const useWalletConnect = () => {
     try {
       setLoading("Pairing");
       const response = await signClient.pair({ uri })
-      console.log('signClient.pairing.getAll()', JSON.stringify(signClient.pairing.getAll(), null, 2));
       setPaired(signClient?.session?.values)
       setLoading("");
     } catch (error) {
@@ -92,6 +91,8 @@ const useWalletConnect = () => {
   const disconnect = (topic: string) => {
     signClient.disconnect({ topic, reason: getSdkError("USER_DISCONNECTED") }).then(res => {
       setPaired([...paired.filter(pair => pair.topic !== topic)]);
+    }).catch(err => {
+      FlashNotification.show(err.message, true)
     });
   }
 

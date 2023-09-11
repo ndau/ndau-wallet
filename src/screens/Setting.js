@@ -6,7 +6,7 @@ import ScreenContainer from "../components/Screen";
 import { themeColors } from "../config/colors";
 import { useWallet, useWalletConnect } from "../hooks";
 import Spacer from "../components/Spacer";
-import { ArrowDownSVGComponent, ArrowRightSVGComponent, WalletIcon } from "../assets/svgs/components";
+import { ArrowDownSVGComponent, WalletConnect, VersionIcon, ContactIcon, EnvironmentIcon, LogoutIcon, WalletIcon } from "../assets/svgs/components";
 import { ScreenNames } from "./ScreenNames";
 import { useIsFocused } from "@react-navigation/native";
 
@@ -18,11 +18,11 @@ const Setting = (props) => {
 
 	const options = useMemo(() => [
 		{ id: 0, name: "Wallets", image: <WalletIcon />, onPress: () => props.navigation.navigate(ScreenNames.SwitchWallet) },
-		{ id: 1, name: "Wallet Connect", image: <WalletIcon />, onPress: () => props.navigation.navigate(ScreenNames.WalletConnect) },
-		{ id: 2, name: "Node Environment", image: <WalletIcon />, onPress: () => null },
-		{ id: 3, name: "Contact Support", image: <WalletIcon />, onPress: () => null },
-		{ id: 4, name: "4.3", image: <WalletIcon />, onPress: () => null, hideArrow: true },
-		{ id: 5, name: "Logout", image: <WalletIcon />, onPress: () => null, hideArrow: true },
+		{ id: 1, name: "Wallet Connect", image: <WalletConnect />, onPress: () => props.navigation.navigate(ScreenNames.WalletConnect) },
+		{ id: 2, name: "Node Environment", image: <EnvironmentIcon />, onPress: () => null },
+		{ id: 3, name: "Contact Support", image: <ContactIcon />, onPress: () => null },
+		{ id: 4, name: "4.3", image: <VersionIcon />, onPress: () => null, hideArrow: true },
+		{ id: 5, name: "Logout", image: <LogoutIcon />, onPress: () => null, hideArrow: true },
 	], [])
 
 	useEffect(() => {
@@ -100,7 +100,7 @@ const styles = StyleSheet.create({
 		borderRadius: 10,
 		height: 40,
 		width: 40,
-		marginRight: 6,
+		marginRight: 10,
 		justifyContent: "center",
 		alignItems: "center"
 	},
