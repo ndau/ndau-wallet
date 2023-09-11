@@ -37,6 +37,8 @@ const AddNdauAccount = (props) => {
     const increment = () => setNoOfAccounts(noOfAccounts + 1)
     const [searchQuery, setSearchQuery] = useState("");
     const [createdAccount, setAccountCreated] = useState(null);
+    const [totalFunds, setTotalFunds] = useState(paramItem.totalFunds);
+    const [totalUSDAmount, setTotalUSDAmount] = useState(paramItem.usdAmount);
 
     useEffect(() => {
         if (addAccount) {
@@ -46,7 +48,7 @@ const AddNdauAccount = (props) => {
 
     useEffect(() => {
         if (isFocused) {
-            getNdauAccountsDetails().then(() => setNDauAccounts([...getNDauAccounts()]));
+            refreshDetails();
         }
     }, [isFocused])
 
@@ -74,7 +76,7 @@ const AddNdauAccount = (props) => {
         setLoading("Creating Account")
         addAccountsInNdau(noOfAccounts).then((res) => {
             setLoading("")
-            setNDauAccounts([...getNDauAccounts()]);
+            refreshDetails();
         });
         setNoOfAccounts(1);
     };
@@ -97,14 +99,28 @@ const AddNdauAccount = (props) => {
         )
     }
 
+    const refreshDetails = () => {
+        getNdauAccountsDetails().then(() => {
+            const obj = getNDauAccounts().reduce((prev, curr) => {
+                return {
+                    totalFunds: prev.totalFunds += parseFloat(curr.totalFunds || 0),
+                    usdAmount: prev.usdAmount += parseFloat(curr.usdAmount || 0)
+                }
+            }, { totalFunds: 0, usdAmount: 0 })
+            setTotalUSDAmount(obj.usdAmount);
+            setTotalFunds(obj.totalFunds);
+            setNDauAccounts([...getNDauAccounts()])
+        });
+    }
+
 
     return (
         <ScreenContainer>
             {loading && <Loading label={loading} />}
             <Spacer height={16} />
             <NdauAddAccounHeaderCard
-                totalBalance={item.totalFunds}
-                convertBalance={item.usdAmount}
+                totalBalance={totalFunds}
+                convertBalance={totalUSDAmount}
                 addAccountPress={() => {
                     modalRef.current(true)
                 }}
@@ -172,7 +188,7 @@ const AddNdauAccount = (props) => {
                             setLoading("Creating account");
                             addAccountsInNdau().then((res) => {
                                 setLoading("")
-                                setNDauAccounts([...getNDauAccounts()]);
+                                refreshDetails();
                                 const account = getNDauAccounts().at(-1);
                                 setAccountCreated(account);
                                 showMessage(account.addressData?.nickname + " has been created");
