@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect } from "react";
 import {
   SafeAreaView,
   StatusBar,
@@ -12,7 +12,7 @@ import { useNavigation } from "@react-navigation/native";
 import { BackSVGComponent } from "../assets/svgs/components";
 import CustomText from "./CustomText";
 import Spacer from "./Spacer";
-import { Text } from "react-native-svg";
+import SettingsStore from "../stores/SettingsStore";
 
 const ScreenContainer = ({ children, style, steps, preventBackPress, tabScreen = false, headerRight, headerTitle = "" }) => {
   const navigation = useNavigation();
@@ -62,9 +62,16 @@ const ScreenContainer = ({ children, style, steps, preventBackPress, tabScreen =
     );
   }, [steps, preventBackPress, headerRight]);
 
+  useEffect(() => {
+    console.log('SettingsStore._settings', JSON.stringify(SettingsStore._settings, null, 2));
+  }, [SettingsStore._settings])
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle={"light-content"} />
+      <View style={styles.mode}>
+        <CustomText titilium>You are in Testnet Mode</CustomText>
+      </View>
       {tabScreen ? <View style={{ height: 20 }} /> : <Header />}
       <View style={[{ flex: 1 }, style, styles.fixedStyle]}>{children}</View>
     </SafeAreaView>
@@ -112,7 +119,13 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   headerTitle: {
-    
+
+  },
+  mode: {
+    padding: 5,
+    backgroundColor: themeColors.success500,
+    justifyContent: "center",
+    alignItems: "center"
   }
 });
 

@@ -13,6 +13,8 @@ import { ndauUtils } from "../utils";
 import { Delete, QRCode } from "../assets/svgs/components";
 import moment from "moment";
 import FlashNotification from "../components/common/FlashNotification";
+import ApprovalModal, { ApprovalModalHandler } from "../components/wallectConnectModals/ApprovalModal";
+import { ScreenNames } from "./ScreenNames";
 
 const WalletConnect = (props) => {
   const { item } = props.route?.params ?? {};
@@ -54,58 +56,11 @@ const WalletConnect = (props) => {
     });
   }, [])
 
-  const renderProposal = () => {
-    const {
-      params: {
-        proposer: {
-          metadata: { icons, name, description }
-        }
-      }
-    } = proposal;
-
-    return (
-      <View style={{ flex: 1 }}>
-        <View style={styles.proposalContainer}>
-          <Image style={styles.image} source={{ uri: icons[1] || icons[0] }} />
-          <CustomText titiliumBold h6 style={{ marginVertical: 20 }}>{name}</CustomText>
-          <CustomText titiliumBold caption style={{ textAlign: "center" }}>{description}</CustomText>
-        </View>
-        <View style={styles.accountsContainer}>
-          <View style={styles.account}>
-            {renderData("Account", ndauUtils.truncateAddress(account.accountAddress))}
-            {renderData("Total Eth", parseFloat(account.totalFunds || 0).toFixed(8))}
-            {renderData("USD", account.usdAmount)}
-          </View>
-        </View>
-        <View style={styles.buttonsContainer}>
-          <Button
-            label={'Approve'}
-            onPress={() => approve(account.accountAddress)}
-          />
-          <Spacer height={10} />
-          <Button
-            label={'Reject'}
-            buttonContainerStyle={styles.rejectButton}
-            onPress={() => {
-              reject().then(() => {
-                props.navigation.goBack();
-              });
-            }}
-          />
-        </View>
-      </View>
-    )
-  }
-
-  const renderData = (key, value) => {
-    if (!value) return;
-    return (
-      <View style={{ marginVertical: 5, marginBottom: 10 }}>
-        <CustomText titiliumSemiBold body style={{ marginBottom: 4 }}>{key}</CustomText>
-        <CustomText titilium color={themeColors.black200}>{value}</CustomText>
-      </View>
-    )
-  }
+  useEffect(() => {
+    if (proposal) {
+      ApprovalModalHandler.show({ data: { ...proposal, account } });
+    }
+  }, [proposal, account])
 
   const scanQR = (data) => {
     if (data.substring(0, 2) !== "wc") return FlashNotification.show("Invalid QR Code");
@@ -115,56 +70,81 @@ const WalletConnect = (props) => {
   return (
     <ScreenContainer
       preventBackPress={() => { reject(); props.navigation.goBack(); }}>
-      {
-        proposal ? renderProposal() : (
-          <>
-            <CustomText h6 titiliumBold>Scan & Connect</CustomText>
-            <Spacer height={8} />
-            <View style={styles.row}>
-              <CustomText titilium>Scan QR Code with a </CustomText>
-              <CustomText titiliumBold>WalletConnect</CustomText>
-              <CustomText titilium> wallet.</CustomText>
-            </View>
+      <>
+        <CustomText h6 titiliumBold>Scan & Connect</CustomText>
+        <Spacer height={8} />
+        <View style={styles.row}>
+          <CustomText titilium>Scan QR Code with a </CustomText>
+          <CustomText titiliumBold>WalletConnect</CustomText>
+          <CustomText titilium> wallet.</CustomText>
+        </View>
+        <View style={{ marginVertical: 10 }}>
+          <Button
+            onPress={() => {
+              props.navigation.navigate(ScreenNames.Scanner, {
+                onScan: (data) => {
+                  scanQR(data);
+                }
+              })
+            }}
+            label={'Scan  '}
+            rightIcon={<QRCode />}
+            buttonContainerStyle={{ flexDirection: "row" }} />
+        </View>
+        <Spacer height={20} />
+        <FlatList
+          data={paired}
+          ListHeaderComponent={(
             <View style={{ marginVertical: 10 }}>
-              <Button 
-                onPress={() => scanQR("wc:da41422d3ed40a89c1b3d9ca65db2b738ebb24935cc18f74be636650f8568350@2?relay-protocol=irn&symKey=102a22af392deae314f1a78dbb8bb17ff96da63a1ff3fdc7917a89bcd405af87")} 
-                label={'Scan  '} 
-                rightIcon={<QRCode />} 
-                buttonContainerStyle={{ flexDirection: "row" }} />
+              <CustomText titiliumSemiBold h6>Connected DApps</CustomText>
             </View>
-            <Spacer height={20} />
-            <FlatList
-              data={paired}
-              ListHeaderComponent={(
-                <View style={{ marginVertical: 10 }}>
-                  <CustomText titiliumSemiBold h6>Connected DApps</CustomText>
+          )}
+          ListEmptyComponent={(
+            <View style={{ alignItems: "center", marginTop: 100 }}>
+              <CustomText titiliumSemiBold body2>No connection yet</CustomText>
+            </View>
+          )}
+          renderItem={({ item }) => {
+            const address = item.namespaces['eip155'].accounts?.[0].split(':')?.[2] || "---";
+            const peerMetadata = item.peer?.metadata || {};
+            return (
+              <View style={styles.pairedItem}>
+                <Image source={{ uri: peerMetadata?.icons?.[0] }} style={styles.peerIcon} />
+                <View style={{ flex: 1, marginLeft: 10 }}>
+                  <CustomText titiliumSemiBold>{peerMetadata?.name}</CustomText>
+                  <CustomText titilium caption color={themeColors.black300}>Expiry: {moment(item.expiry * 1000).format("MMM DD, yyyy hh:mm")}</CustomText>
+                  <CustomText titiliumSemiBold color={themeColors.white} style={{ marginTop: 4 }} >{ndauUtils.truncateAddress(address)}</CustomText>
                 </View>
-              )}
-              ListEmptyComponent={(
-                <View style={{ alignItems: "center", marginTop: 100 }}>
-                  <CustomText titiliumSemiBold body2>No connection yet</CustomText>
-                </View>
-              )}
-              renderItem={({ item }) => {
-                const peerMetadata = item.peer?.metadata || {};
-                return (
-                  <View style={styles.pairedItem}>
-                    <Image source={{ uri: peerMetadata?.icons?.[0] }} style={styles.peerIcon} />
-                    <View style={{ flex: 1, marginLeft: 10 }}>
-                      <CustomText titiliumSemiBold>{peerMetadata?.name}</CustomText>
-                      <CustomText titilium color={themeColors.black300}>Expiry: {moment(item.expiry * 1000).format("MMM DD, yyyy hh:mm")}</CustomText>
-                    </View>
-                    <TouchableOpacity onPress={() => disconnect(item.topic)} style={{ padding: 10 }}>
-                      <Delete color={themeColors.dangerFlashBackground} />
-                    </TouchableOpacity>
-                  </View>
-                )
-              }}
-            />
-          </>
-        )
-      }
+                <TouchableOpacity onPress={() => disconnect(item.topic)} style={{ padding: 10 }}>
+                  <Delete color={themeColors.dangerFlashBackground} />
+                </TouchableOpacity>
+              </View>
+            )
+          }}
+        />
+      </>
       {!!loading && <Loading label={loading} />}
+      <ApprovalModal
+        onApprove={() => {
+          ApprovalModalHandler.acceptLoading(true);
+          approve(account.accountAddress).then(res => {
+            ApprovalModalHandler.acceptLoading(false);
+            ApprovalModalHandler.hide();
+          }).catch(err => {
+            ApprovalModalHandler.acceptLoading(false);
+            FlashNotification.show(err.message);
+          })
+        }}
+        onReject={() => {
+          reject().then(() => {
+            ApprovalModalHandler.rejectLoading(false);
+            ApprovalModalHandler.hide();
+          }).catch(err => {
+            ApprovalModalHandler.rejectLoading(false);
+            FlashNotification.show(err.message);
+          })
+        }}
+      />
     </ScreenContainer>
   );
 };
@@ -199,7 +179,7 @@ const styles = StyleSheet.create({
   account: {
     padding: 10,
     borderWidth: 1,
-    borderColor: themeColors.black300,
+    borderColor: themeColors.warning400,
     borderRadius: 10
   },
   pairedItem: {

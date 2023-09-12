@@ -4,7 +4,20 @@ import { SignClientTypes, SessionTypes } from '@walletconnect/types'
 import { getSdkError } from '@walletconnect/utils'
 
 import FlashNotification from '../components/common/FlashNotification';
+import { sendModalHandler } from '../components/wallectConnectModals/SendModal';
+import AppConfig from '../AppConfig';
+
 export let signClient: SignClient;
+export const EIP155_SIGNING_METHODS = {
+  PERSONAL_SIGN: 'personal_sign',
+  ETH_SIGN: 'eth_sign',
+  ETH_SIGN_TRANSACTION: 'eth_signTransaction',
+  ETH_SIGN_TYPED_DATA: 'eth_signTypedData',
+  ETH_SIGN_TYPED_DATA_V3: 'eth_signTypedData_v3',
+  ETH_SIGN_TYPED_DATA_V4: 'eth_signTypedData_v4',
+  ETH_SEND_RAW_TRANSACTION: 'eth_sendRawTransaction',
+  ETH_SEND_TRANSACTION: 'eth_sendTransaction'
+}
 
 const useWalletConnect = () => {
 
@@ -17,7 +30,7 @@ const useWalletConnect = () => {
 
   const onSessionProposal = useCallback(
     (proposal: SignClientTypes.EventArguments['session_proposal']) => {
-      console.log("Proposal", JSON.stringify(proposal, null, 2));
+      // console.log('ahha', JSON.stringify(proposal, null, 2));
       setProposal(proposal);
     },
     []
@@ -25,30 +38,33 @@ const useWalletConnect = () => {
 
   const onSessionRequest = useCallback(
     async (requestEvent: SignClientTypes.EventArguments['session_request']) => {
-      console.log('session_request', requestEvent)
       const { topic, params, verifyContext } = requestEvent
       const { request } = params
       const requestSession = signClient.session.get(topic)
-      // set the verify context so it can be displayed in the projectInfoCard
-
-      // SettingsStore.setCurrentRequestVerifyContext(verifyContext)
 
       switch (request.method) {
-
+        case EIP155_SIGNING_METHODS.ETH_SEND_TRANSACTION: return sendModalHandler.show({ data: { ...requestEvent, requestSession } })
       }
     }, []);
 
   useEffect(() => {
     createSignClient();
     return () => {
-
+      if (signClient) {
+        signClient.removeAllListeners('session_request');
+        signClient.removeAllListeners('session_proposal');
+        signClient.removeAllListeners('session_ping');
+        signClient.removeAllListeners('session_event');
+        signClient.removeAllListeners('session_update');
+        signClient.removeAllListeners('session_delete');
+      }
     }
   }, [])
 
   const createSignClient = async () => {
     setLoading("Initializing client");
     signClient = await SignClient.init({
-      projectId: "faceb005777e478fa503489e83ba8b3b",
+      projectId: AppConfig.Wallet_Connect_ApiKey,
       relayUrl: relayUrl,
       metadata: {
         name: 'NDAU Wallet',
@@ -64,6 +80,10 @@ const useWalletConnect = () => {
       if (clientId) {
         signClient.on('session_proposal', onSessionProposal)
         signClient.on('session_request', onSessionRequest)
+        signClient.on('session_ping', data => console.log('ping', data))
+        signClient.on('session_event', data => console.log('event', data))
+        signClient.on('session_update', data => console.log('update', data))
+        signClient.on('session_delete', data => setPaired(_ => _.filter(pair => pair.topic !== data.topic)))
         setClientInitialized(true);
       }
 
@@ -71,7 +91,7 @@ const useWalletConnect = () => {
     } catch (error) {
       setLoading("");
       setClientInitialized(false);
-      console.error('Failed to set WalletConnect clientId in localStorage: ', error)
+      console.error('Failed to set WalletConnect clientId', error)
     }
   }
 
@@ -134,7 +154,10 @@ const useWalletConnect = () => {
           Object.keys(requiredNamespaces).forEach(key => {
             const obj = requiredNamespaces[key];
             namespaces[key] = {
-              accounts: [`${obj.chains[0]}:${accountAddress}`],
+              accounts: [
+                `${obj.chains[0]}:${accountAddress}`,
+                `eip155:5:${accountAddress}` // for goerli supported
+              ],
               chains: obj.chains,
               methods: obj.methods,
               events: obj.events
@@ -147,6 +170,7 @@ const useWalletConnect = () => {
             namespaces
           }).then((res) => {
             setProposal(null);
+            setPaired(signClient?.session?.values)
             resolve(res);
           }).catch(err => {
             console.log('Err while approving', err.message);

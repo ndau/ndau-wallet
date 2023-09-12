@@ -38,6 +38,10 @@ import EnvironmentIcon from "./EnvironmentIcon";
 import ContactIcon from "./ContactIcon";
 import VersionIcon from "./versionIcon";
 import LogoutIcon from "./LogoutIcon";
+import Facebook from "./Facebook";
+import Reddit from "./Reddit";
+import Twitter from "./Twitter";
+import Check from "./Check";
 
 export {
   BackSVGComponent,
@@ -78,5 +82,9 @@ export {
   EnvironmentIcon,
   ContactIcon,
   VersionIcon,
-  LogoutIcon
+  LogoutIcon,
+  Facebook,
+  Reddit,
+  Twitter,
+  Check
 };

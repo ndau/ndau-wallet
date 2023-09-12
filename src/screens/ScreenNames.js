@@ -31,7 +31,8 @@ const ScreenNames = {
   TransactionDetail: "TransactionDetail",
   Scanner: "Scanner",
   EditWallet: "EditWallet",
-  WalletConnect: "WalletConnect"
+  WalletConnect: "WalletConnect",
+  Environments: "Environments"
 }
 
 export { ScreenNames }

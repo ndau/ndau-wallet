@@ -169,3 +169,38 @@ export const addWalletsData = [
     svg: <AlreadyHaveWalletSVGComponent />
   },
 ]
+
+/**
+ * Chains
+ */
+export const EIP155_MAINNET_CHAINS = {
+  'eip155:1': {
+    chainId: 1,
+    name: 'Ethereum'
+  },
+  'eip155:137': {
+    chainId: 137,
+    name: 'Polygon'
+  },
+  'eip155:324': {
+    chainId: 324,
+    name: 'zkSync Era'
+  }
+}
+
+export const EIP155_TEST_CHAINS = {
+  'eip155:5': {
+    chainId: 5,
+    name: 'Ethereum Goerli'
+  },
+  'eip155:80001': {
+    chainId: 80001,
+    name: 'Polygon Mumbai'
+  },
+  'eip155:280': {
+    chainId: 280,
+    name: 'zkSync Era Testnet'
+  }
+}
+
+export const EIP155_CHAINS = { ...EIP155_MAINNET_CHAINS, ...EIP155_TEST_CHAINS }

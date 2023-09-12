@@ -54,6 +54,8 @@ const FRESHDESK_INTEGRATION_API_KEY = 'WfxQlzgny92866U26BCxvshY2nCf8kO531Yyfdkj'
 const FRESHDESK_TICKET_ENDPOINT =
   'https://support.ndau.tech/default/freshdesk-integration'
 
+const Wallet_Connect_ApiKey = "faceb005777e478fa503489e83ba8b3b";
+
 export default {
   calcExplorerUrl,
   LOCALE,
@@ -78,5 +80,6 @@ export default {
   EAI_KNOWLEDGEBASE_URL,
   FRESHDESK_INTEGRATION_API_KEY,
   FRESHDESK_TICKET_ENDPOINT,
-  BUY_ERC20_URL
+  BUY_ERC20_URL,
+  Wallet_Connect_ApiKey
 }
