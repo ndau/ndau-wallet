@@ -62,16 +62,17 @@ const ScreenContainer = ({ children, style, steps, preventBackPress, tabScreen =
     );
   }, [steps, preventBackPress, headerRight]);
 
-  useEffect(() => {
-    console.log('SettingsStore._settings', JSON.stringify(SettingsStore._settings, null, 2));
-  }, [SettingsStore._settings])
 
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle={"light-content"} />
-      <View style={styles.mode}>
-        <CustomText titilium>You are in Testnet Mode</CustomText>
-      </View>
+      {
+        SettingsStore._settings?.applicationNetwork == "testnet" && (
+          <View style={styles.mode}>
+            <CustomText titilium>You are in Testnet Mode</CustomText>
+          </View>
+        )
+      }
       {tabScreen ? <View style={{ height: 20 }} /> : <Header />}
       <View style={[{ flex: 1 }, style, styles.fixedStyle]}>{children}</View>
     </SafeAreaView>

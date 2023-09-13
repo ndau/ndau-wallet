@@ -133,8 +133,11 @@ const Transactions = (props) => {
 	}
 
 	const handleNavigation = (item) => {
-		props.navigation.navigate(ScreenNames.TransactionDetail, { item: { ...item, isErc: !!paramItem.shortName } })
+
+
+		props.navigation.navigate(ScreenNames.TransactionDetail, { item: { ...item, isErc: !!paramItem.shortName }, accountAddress: paramItem?.address })
 	}
+
 
 	return (
 		<ScreenContainer headerTitle={item.addressData?.nickname}>
