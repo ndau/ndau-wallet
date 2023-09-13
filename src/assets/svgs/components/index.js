@@ -42,6 +42,9 @@ import Facebook from "./Facebook";
 import Reddit from "./Reddit";
 import Twitter from "./Twitter";
 import Check from "./Check";
+import NotificationDelete from "./DeleteNotification";
+import NotificationFailed from "./NotificationFailed";
+import NotificationSuccess from "./NotificationSuccess";
 
 export {
   BackSVGComponent,
@@ -86,5 +89,8 @@ export {
   Facebook,
   Reddit,
   Twitter,
-  Check
+  Check,
+  NotificationDelete,
+  NotificationFailed,
+  NotificationSuccess
 };
