@@ -13,6 +13,12 @@ export const authSetUser = () => ({
 export const ACTION_WALLET_SET_CURRENT_WALLET = "ACTION_WALLET_SET_CURRENT_WALLET";
 export const ACTION_WALLET_ADD_WALLET = "ACTION_WALLET_ADD_WALLET";
 
+
+export const ADD_NOTIFICATION = 'ADD_NOTIFICATION';
+export const CLEAR_NOTIFICATION = 'CLEAR_NOTIFICATION';
+export const UPDATE_NOTIFICATIONS = 'UPDATE_NOTIFICATIONS';
+
+
 export const setCurrentWallet = () => ({
   type: ACTION_WALLET_SET_CURRENT_WALLET,
   payload: ({})
@@ -29,3 +35,23 @@ export const addWalletDetail = ({ name, privateKey, publicKey }) => ({
   })
 });
 
+export const addNotification = (notification) => ({
+
+  type: ADD_NOTIFICATION,
+  payload: notification,
+});
+
+export const clearNotification = (id) => ({
+  type: CLEAR_NOTIFICATION,
+  payload: id,
+});
+
+
+export const updateNotifications = (notifications) => (
+
+  {
+
+    type: UPDATE_NOTIFICATIONS,
+    payload: notifications,
+  }
+);

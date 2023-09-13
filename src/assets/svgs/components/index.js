@@ -33,6 +33,9 @@ import Delete from "./Delete";
 import QRCode from "./QRCode";
 import Clock from "./Clock";
 import Exclamation from "./Exclamation";
+import NotificationDelete from "./DeleteNotification";
+import NotificationFailed from "./NotificationFailed";
+import NotificationSuccess from "./NotificationSuccess";
 
 export {
   BackSVGComponent,
@@ -68,5 +71,8 @@ export {
   Delete,
   QRCode,
   Clock,
-  Exclamation
+  Exclamation,
+  NotificationDelete,
+  NotificationFailed,
+  NotificationSuccess
 };
