@@ -41,6 +41,7 @@ import EditWallet from './screens/EditWallet';
 import WalletConnect from './screens/WalletConnect';
 import SendModal from './components/wallectConnectModals/SendModal';
 import Environments from './screens/Environments';
+import ContactSupport from './screens/components/ContactSupport';
 
 LogBox.ignoreAllLogs()
 
@@ -112,6 +113,7 @@ const MainStack = () => {
       <Stack.Screen name={ScreenNames.EditWallet} component={EditWallet} />
       <Stack.Screen name={ScreenNames.WalletConnect} component={WalletConnect} />
       <Stack.Screen name={ScreenNames.Environments} component={Environments} />
+      <Stack.Screen name={ScreenNames.ContactSupport} component={ContactSupport} />
 
     </Stack.Navigator>
   )

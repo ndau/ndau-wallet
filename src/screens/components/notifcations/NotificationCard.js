@@ -42,8 +42,6 @@ const NotificationCard = ({ item, index, onDelete }) => {
 }
 
 
-
-
 const styles = StyleSheet.create({
 
     container: {

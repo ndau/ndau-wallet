@@ -14,13 +14,17 @@ const CustomTextInput = ({
 	errors = [],
 	success = [],
 	value = undefined,
-	onBlur
+	onBlur,
+	inputStyle,
+	numberOfLines,
+	multiline,
+	autoCapitalize
 }) => {
 
 	const RenderMsg = useCallback(({ msg, isError }) => {
 		return (
 			<Animated.View style={styles.msgBox}
-				// entering={FadeInDown} exiting={FadeOutDown}
+			// entering={FadeInDown} exiting={FadeOutDown}
 			>
 				{isError ? <ErrorIcon /> : <SuccessIcon />}
 				<CustomText style={{ marginLeft: 4 }}>{msg}</CustomText>
@@ -36,10 +40,14 @@ const CustomTextInput = ({
 				maxLength={maxLength}
 				placeholder={placeholder}
 				placeholderTextColor={themeColors.fontLight}
-				style={styles.container}
+				style={[styles.container, inputStyle]}
 				onChangeText={onChangeText}
 				secureTextEntry={password}
 				onBlur={onBlur}
+				multiline={multiline}
+				numberOfLines={numberOfLines}
+				autoCapitalize={autoCapitalize}
+
 			/>
 			{errors.map(msg => <RenderMsg key={msg} msg={msg} isError />)}
 			{success.map(msg => <RenderMsg key={msg} msg={msg} />)}

@@ -20,7 +20,7 @@ const Setting = (props) => {
 		{ id: 0, name: "Wallets", image: <WalletIcon />, onPress: () => props.navigation.navigate(ScreenNames.SwitchWallet) },
 		{ id: 1, name: "Wallet Connect", image: <WalletConnect />, onPress: () => props.navigation.navigate(ScreenNames.WalletConnect) },
 		{ id: 2, name: "Node Environment", image: <EnvironmentIcon />, onPress: () => props.navigation.navigate(ScreenNames.Environments) },
-		{ id: 3, name: "Contact Support", image: <ContactIcon />, onPress: () => null },
+		{ id: 3, name: "Contact Support", image: <ContactIcon />, onPress: () => props.navigation.navigate(ScreenNames.ContactSupport) },
 		{ id: 4, name: "4.3", image: <VersionIcon />, onPress: () => null, hideArrow: true },
 		{ id: 5, name: "Logout", image: <LogoutIcon />, onPress: () => null, hideArrow: true },
 		{ separator: true },
