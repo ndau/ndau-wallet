@@ -57,7 +57,6 @@ const ContactSupport = (props) => {
 
     }
 
-
     const handleInput = (t, tag) => {
 
         setData((prevState) => {
