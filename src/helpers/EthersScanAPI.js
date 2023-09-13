@@ -3,6 +3,7 @@ import * as zkSync from "zksync-web3";
 
 import APICommunicationHelper from "./APICommunicationHelper"
 import UserStore from "../stores/UserStore";
+import SettingsStore from "../stores/SettingsStore";
 
 export const Converters = {
   WEI_ETH: (wei) => wei / Math.pow(10, 18),
@@ -34,9 +35,22 @@ export const EthersScanAPI = {
   },
 
   contractaddress: {
-    USDC: "0x07865c6E87B9F70255377e024ace6630C1Eaa37F",
-    // USDC: "0x5425890298aed601595a70AB815c96711a31Bc65",
-    NPAY: "0xd7afcb470bcF8d07E3A4dCBa0Ec7D9f5D8C6a05a"
+    mainnet: {
+      USDC: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+      MATIC: '0x7D1AfA7B718fb893dB30A3aBc0Cfc608AaCfeBB0',
+      NPAY: "0xd7afcb470bcF8d07E3A4dCBa0Ec7D9f5D8C6a05a"
+    },
+    goerli: {
+      USDC: "0xD87Ba7A50B2E7E660f678A895E4B72E7CB4CCd9C",
+      MATIC: '0x7D1AfA7B718fb893dB30A3aBc0Cfc608AaCfeBB0',
+      NPAY: "0xd7afcb470bcF8d07E3A4dCBa0Ec7D9f5D8C6a05a"
+    }
+  },
+
+  getContractAddress: () => {
+    let contracts = { ...EthersScanAPI.contractaddress.mainnet }
+    if (SettingsStore._settings.applicationNetwork === "testnet") contracts = { ...EthersScanAPI.contractaddress.goerli };
+    return contracts;
   },
 
   __getFormattedEndpoint: ({ module, action, params }) => {
@@ -87,20 +101,24 @@ export const EthersScanAPI = {
 
   getCheck: async () => {
     try {
+      const providerUrl = 'https://polygon-mumbai.g.alchemy.com/v2/Z_G5HhyiXdXZ9j0-uJ4B7SZr_oCk4xSN';
+      const userAddress = '0xF54C7538Fbdd77FAe4085a422CeAf3AcA37596Fd';
 
-      // Create an instance of the USDC token contract
-      const usdcContract = new ethers.Contract(
-        '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48', //usdc token address
-        new ethers.providers.getDefaultProvider('goerli')
-      );
-      console.log('new ethers.providers.getDefaultProvider', JSON.stringify(usdcContract, null, 2));
+      const provider = new ethers.providers.EtherscanProvider('goerli', EthersScanAPI.apiKey)
 
-      // Call the balanceOf function to get the USDC balance
-      const balance = await usdcContract.balanceOf(UserStore.getActiveWallet().ercAddress);
+      // Define the MATIC token contract ABI
+      const tokenAbi = [
+        "function balanceOf(address) view returns (uint256)",
+      ];
 
-      console.log(`USDC Balance: ${ethers.utils.formatUnits(balance, 6)}`); // Assuming 6 decimals for USDC
+      // Create an instance of the MATIC token contract
+      const maticTokenContract = new ethers.Contract(EthersScanAPI.contractaddress.USDC, tokenAbi, provider);
+      const balance = await maticTokenContract.balanceOf("0xF54C7538Fbdd77FAe4085a422CeAf3AcA37596Fd");
+      const tokenSymbol = await maticTokenContract.symbol();
+      console.log(`MATIC Balance for ${userAddress}: ${ethers.utils.formatUnits(balance, 18)} ${tokenSymbol}`);
+
     } catch (error) {
-      console.error('Error fetching USDC balance:', error);
+      console.error('Error fetching:', error);
     }
   }
 }

@@ -71,7 +71,7 @@ const Dashboard = ({ navigation }) => {
 		const { result: { ethusd } } = await EthersScanAPI.getEthPriceInUSD();
 		Promise.allSettled([
 			EthersScanAPI.getAddressBalance(getActiveWallet().ercAddress),
-			EthersScanAPI.getAddressBalance(getActiveWallet().ercAddress, EthersScanAPI.contractaddress.USDC),
+			EthersScanAPI.getAddressBalance(getActiveWallet().ercAddress, EthersScanAPI.getContractAddress().USDC),
 			getNdauAccountsDetails(),
 			ZkSkyncApi.getZksyncAddressBalance()
 		]).then(results => {
@@ -88,7 +88,7 @@ const Dashboard = ({ navigation }) => {
 
 			const eth = { totalFunds: Converters.WEI_ETH(availableEthInWEI), usdAmount: Converters.ETH_USD(Converters.WEI_ETH(availableEthInWEI), ethusd) };
 
-			const usdc = { totalFunds: parseFloat(ethers.utils.formatUnits(availableUSDC, 6) || 0), usdAmount: 0 };
+			const usdc = { totalFunds: parseFloat(ethers.utils.formatUnits(availableUSDC, 6) || 0), usdAmount: parseFloat(ethers.utils.formatUnits(availableUSDC, 6) || 0) };
 
 			const currentPriceOfNdauInUsd = parseFloat(totalNdausOnAllAccounts * NdauStore.getMarketPrice()).toFixed(4)
 			setTokens([
