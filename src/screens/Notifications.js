@@ -35,9 +35,8 @@ const Notifications = () => {
 			}
 
 		}
-
-		// Initialize dispatch
 		loadNotifications();
+
 	}, []);
 
 
@@ -67,7 +66,6 @@ const Notifications = () => {
 					<NotificationCard
 						item={item}
 						index={index}
-						// onDelete={() => handleClearNotification(item?.id)}
 						onDelete={() => {
 							setNotificationId(item?.id)
 							modelNotifyDeleteRef.current(true)
