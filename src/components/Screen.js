@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   SafeAreaView,
   StatusBar,
@@ -14,8 +14,11 @@ import CustomText from "./CustomText";
 import Spacer from "./Spacer";
 import SettingsStore from "../stores/SettingsStore";
 
-const ScreenContainer = ({ children, style, steps, preventBackPress, tabScreen = false, headerRight, headerTitle = "" }) => {
+const ScreenContainer = ({ children, style, steps, preventBackPress, tabScreen = false, headerRight, headerTitle = "", changeHandler }) => {
   const navigation = useNavigation();
+
+  const [change, setChange] = useState(false);
+  useEffect(() => setChange(!change), [changeHandler])
 
   const Header = useCallback(() => {
     if (!steps?.total && !navigation.canGoBack()) return null;

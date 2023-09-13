@@ -1,4 +1,3 @@
-import { useNavigation } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
 import { FlatList, StyleSheet, TouchableOpacity, View } from "react-native";
 
@@ -11,7 +10,6 @@ import SettingsStore from "../stores/SettingsStore";
 import ServiceDiscovery from "../api/ServiceDiscovery";
 
 const Environments = () => {
-  const navigation = useNavigation();
 
   const [env, setEnv] = useState([
     { id: 0, name: "Mainnet", selected: false },
@@ -46,7 +44,7 @@ const Environments = () => {
   }, [env])
 
   return (
-    <ScreenContainer>
+    <ScreenContainer changeHandler={env}>
       <Spacer height={14} />
       <CustomText titilium style={styles.margin}>Select which node environments would you like to use.</CustomText>
       <Spacer height={20} />
