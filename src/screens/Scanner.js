@@ -10,6 +10,13 @@ const Scanner = (props) => {
 
   const { onScan } = props?.route?.params ?? {};
 
+  useEffect(() => {
+    // setTimeout(() => {
+    //   onScan?.("wc:22bb6a1e62a5e147cf5f7dffd4de76836404a944a73f919154a570f5860c4f90@2?relay-protocol=irn&symKey=047162e439d4d66b3704310ba5450deda04d904691848e6321053d860f2ec090");
+    //   props.navigation.goBack();
+    // }, 2000);
+  }, [])
+
   return (
     <ScreenContainer>
       <QRCodeScanner

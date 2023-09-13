@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   SafeAreaView,
   StatusBar,
@@ -12,10 +12,13 @@ import { useNavigation } from "@react-navigation/native";
 import { BackSVGComponent } from "../assets/svgs/components";
 import CustomText from "./CustomText";
 import Spacer from "./Spacer";
-import { Text } from "react-native-svg";
+import SettingsStore from "../stores/SettingsStore";
 
-const ScreenContainer = ({ children, style, steps, preventBackPress, tabScreen = false, headerRight, headerTitle = "" }) => {
+const ScreenContainer = ({ children, style, steps, preventBackPress, tabScreen = false, headerRight, headerTitle = "", changeHandler }) => {
   const navigation = useNavigation();
+
+  const [change, setChange] = useState(false);
+  useEffect(() => setChange(!change), [changeHandler])
 
   const Header = useCallback(() => {
     if (!steps?.total && !navigation.canGoBack()) return null;
@@ -62,9 +65,17 @@ const ScreenContainer = ({ children, style, steps, preventBackPress, tabScreen =
     );
   }, [steps, preventBackPress, headerRight]);
 
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle={"light-content"} />
+      {
+        (SettingsStore._settings?.applicationNetwork == "testnet" || SettingsStore._settings?.applicationNetwork == "devnet") && (
+          <View style={styles.mode}>
+            <CustomText titilium>{`You are in ${SettingsStore._settings?.applicationNetwork} Mode`}</CustomText>
+          </View>
+        )
+      }
       {tabScreen ? <View style={{ height: 20 }} /> : <Header />}
       <View style={[{ flex: 1 }, style, styles.fixedStyle]}>{children}</View>
     </SafeAreaView>
@@ -112,7 +123,13 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   headerTitle: {
-    
+
+  },
+  mode: {
+    padding: 5,
+    backgroundColor: themeColors.success500,
+    justifyContent: "center",
+    alignItems: "center"
   }
 });
 

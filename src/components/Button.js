@@ -1,12 +1,12 @@
 import React from "react";
-import { StyleSheet, TouchableOpacity } from "react-native";
+import { ActivityIndicator, StyleSheet, TouchableOpacity } from "react-native";
 import { themeColors } from "../config/colors";
 import CustomText from "./CustomText";
 
-const Button = ({ label, onPress, disabled, textOnly = false, caption = false, buttonContainerStyle = {}, rightIcon, buttonTextColor = undefined, titilium = false, body2 = false, iconLeft, btnTextStyle ,buttonDisabledBG, buttonDisabledTextColor }) => {
+const Button = ({ label, onPress, disabled, textOnly = false, caption = false, buttonContainerStyle = {}, rightIcon, buttonTextColor = undefined, titilium = false, body2 = false, iconLeft, btnTextStyle, buttonDisabledBG, buttonDisabledTextColor, loading }) => {
 	return (
 		<TouchableOpacity
-			disabled={disabled}
+			disabled={loading || disabled}
 			onPress={onPress}
 			style={[
 				styles.container,
@@ -16,19 +16,25 @@ const Button = ({ label, onPress, disabled, textOnly = false, caption = false, b
 			]}
 			activeOpacity={0.8}>
 			<>
-				{iconLeft}
-				{label && (
-					<CustomText
-						button
-						semiBold
-						style={btnTextStyle}
-						caption={caption}
-						body2={body2}
-						titiliumSemiBold
-						titilium={titilium}
-						color={disabled ? buttonDisabledTextColor || themeColors.buttonDisabledText : buttonTextColor}>{label}</CustomText>
-				)}
-				{rightIcon}
+				{
+					loading ? <ActivityIndicator color={'white'} /> : (
+						<>
+							{iconLeft}
+							{label && (
+								<CustomText
+									button
+									semiBold
+									style={btnTextStyle}
+									caption={caption}
+									body2={body2}
+									titiliumSemiBold
+									titilium={titilium}
+									color={disabled ? buttonDisabledTextColor || themeColors.buttonDisabledText : buttonTextColor}>{label}</CustomText>
+							)}
+							{rightIcon}
+						</>
+					)
+				}
 			</>
 		</TouchableOpacity>
 	)

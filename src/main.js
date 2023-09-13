@@ -38,6 +38,9 @@ import Transactions from './screens/Transactions';
 import TransactionDetail from './screens/TransactionDetail';
 import Scanner from './screens/Scanner';
 import EditWallet from './screens/EditWallet';
+import WalletConnect from './screens/WalletConnect';
+import SendModal from './components/wallectConnectModals/SendModal';
+import Environments from './screens/Environments';
 
 LogBox.ignoreAllLogs()
 
@@ -99,14 +102,16 @@ const MainStack = () => {
       <Stack.Screen name={ScreenNames.AddNdauAccount} component={AddNdauAccount} />
       <Stack.Screen name={ScreenNames.Receive} component={Receive} />
       <Stack.Screen name={ScreenNames.Swap} component={Swap} />
-      
+
       <Stack.Screen name={ScreenNames.SelectNDAU} component={AddNdauAccount} />
       <Stack.Screen name={ScreenNames.LockPeriod} component={LockPeriod} />
       <Stack.Screen name={ScreenNames.EAIDestination} component={EAIDestination} />
       <Stack.Screen name={ScreenNames.Transactions} component={Transactions} />
       <Stack.Screen name={ScreenNames.TransactionDetail} component={TransactionDetail} />
-      <Stack.Screen name={ScreenNames.Scanner} component={Scanner} />
+      <Stack.Screen name={ScreenNames.Scanner} options={{ presentation: "modal", cardStyleInterpolator: CardStyleInterpolators.forFadeFromCenter }} component={Scanner} />
       <Stack.Screen name={ScreenNames.EditWallet} component={EditWallet} />
+      <Stack.Screen name={ScreenNames.WalletConnect} component={WalletConnect} />
+      <Stack.Screen name={ScreenNames.Environments} component={Environments} />
 
     </Stack.Navigator>
   )
@@ -119,6 +124,7 @@ const Main = () => {
         <MainStack />
       </NavigationContainer>
       <FlashMessage />
+      <SendModal />
     </Provider>
   );
 };

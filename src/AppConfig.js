@@ -39,7 +39,7 @@ const SPENDABLE_KNOWLEDGEBASE_URL =
   'https://ndau.io/knowledge-base/spendable/'
 const EAI_KNOWLEDGEBASE_URL =
   'https://ndau.io/knowledge-base/ecosystem-alignment-incentive-eai/'
-const BLOCKCHAIN_KNOWLEDGEBASE_URL = 
+const BLOCKCHAIN_KNOWLEDGEBASE_URL =
   'https://ndau.io/knowledge-base/what-is-market-price-and-how-is-it-recorded-on-the-ndau-blockchain/'
 const BUY_NDAU_URL = 'https://ndau.io/buy'
 
@@ -53,6 +53,10 @@ const calcExplorerUrl = (address, network) =>
 const FRESHDESK_INTEGRATION_API_KEY = 'WfxQlzgny92866U26BCxvshY2nCf8kO531Yyfdkj'
 const FRESHDESK_TICKET_ENDPOINT =
   'https://support.ndau.tech/default/freshdesk-integration'
+
+const Wallet_Connect_ApiKey = "faceb005777e478fa503489e83ba8b3b";
+
+const VIEW_TRANSACTION_DETAIL_VIEW = "https://goerli.etherscan.io/tx"
 
 export default {
   calcExplorerUrl,
@@ -78,5 +82,7 @@ export default {
   EAI_KNOWLEDGEBASE_URL,
   FRESHDESK_INTEGRATION_API_KEY,
   FRESHDESK_TICKET_ENDPOINT,
-  BUY_ERC20_URL
+  BUY_ERC20_URL,
+  Wallet_Connect_ApiKey,
+  VIEW_TRANSACTION_DETAIL_VIEW
 }

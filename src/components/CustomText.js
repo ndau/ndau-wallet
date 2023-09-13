@@ -17,6 +17,7 @@ const CustomText = ({
 
 	titilium = false,
 	titiliumSemiBold = false,
+	titiliumBold = false,
 
 	color = themeColors.font,
 	style = {}
@@ -47,6 +48,7 @@ const CustomText = ({
 		// for input text
 		...(titilium && { fontFamily: "TitiliumWeb-Regular" }),
 		...(titiliumSemiBold && { fontFamily: "TitilliumWeb-SemiBold" }),
+		...(titiliumBold && { fontFamily: "TitilliumWeb-Bold" }),
 	})
 
 	return <Text  style={[styles.text, style, getStyles()]}>{children}</Text>

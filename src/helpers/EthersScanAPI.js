@@ -21,10 +21,19 @@ export const EthersScanAPI = {
   endpoint: "https://api-goerli.etherscan.io/api?",
   // apiKey: "JT1CHNSEQUDB3XMHZ9BNQPB6Y3QKRAWSWB", // 
   apiKey: "RMY86WJ2479F3RH4UB26D17CR9MPXAR3SK",
+  alchemyApiKey: "LbVbPhgj9p_f8cND9SYyUyZUq0_L9Bp1",
 
   modules: {
     ACCOUNT: "account",
     STATS: "stats",
+  },
+
+  rpcUrl: {
+    alchemy: {
+      goerli: `https://eth-goerli.g.alchemy.com/v2/LbVbPhgj9p_f8cND9SYyUyZUq0_L9Bp1`
+    },
+    MAIN: "https://mainnet.era.zksync.io",
+    TESTNET: "https://testnet.era.zksync.dev"
   },
 
   actions: {

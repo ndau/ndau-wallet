@@ -14,12 +14,16 @@ import { useTransaction } from "../hooks";
 import UserStore from "../stores/UserStore";
 import FlashNotification from "../components/common/FlashNotification";
 import { ScreenNames } from "./ScreenNames";
+import { useDispatch } from "react-redux";
+import { addNotification } from "../redux/actions";
+import { getNotifications, saveNotifications } from "../stores/NotificationStore";
 
 const Send = (props) => {
   const { item, address } = props?.route?.params ?? {};
 
   const navigation = useNavigation();
   const { getTransactionFee, sendAmountToNdauAddress, getTransactionFeeForERC, sendERCFunds } = useTransaction();
+  const dispatch = useDispatch();
 
   const [section, setSection] = useState(0);
   const [ndauAddress, setNdauAddress] = useState("");
@@ -107,6 +111,9 @@ const Send = (props) => {
           ndauAddress,
           ndauAmount
         ).then(res => {
+
+
+
           setLoading("");
           setTransaction({
             transactionFee: res.ethPrice,
@@ -115,11 +122,12 @@ const Send = (props) => {
           });
           setSection(2);
         }).catch(err => {
+
           setLoading("");
           if (err.reason?.includes("ENS name not configured")) {
             FlashNotification.show("Address not found (" + ndauAddress + ")", true)
           } else {
-            FlashNotification.show(err.message, true)
+            FlashNotification.show(err.reason, true)
           }
         })
       } else {
@@ -132,7 +140,7 @@ const Send = (props) => {
           setTransaction(res);
           setSection(2);
         }).catch(err => {
-          FlashNotification.show(`${err.message}`, true);
+          FlashNotification.show(`${err.reason}`, true);
           setLoading("");
           console.log('error', JSON.stringify(err.message, null, 2));
         });
@@ -201,28 +209,56 @@ const Send = (props) => {
       sendERCFunds(
         ndauAddress,
         ndauAmount
-      ).then(res => {
+      ).then(async res => {
+
+
         setLoading("");
+        let Erc_notify = { id: Date.now(), message: 'ERC to ERC Account Send Transaction was successful', isBoolean: true }
+        dispatch(addNotification(Erc_notify));
+        const currentNotifications = await getNotifications()
+        // Save the updated list of notifications, including the new one
+        saveNotifications([...currentNotifications, Erc_notify]);
         navigation.goBack();
-      }).catch(err => {
+      }).catch(async err => {
+        let Erc_notify_error = { id: Date.now(), message: err?.reason, isBoolean: false }
+
+        dispatch(addNotification(Erc_notify_error));
+        const currentNotifications = await getNotifications()
+        saveNotifications([...currentNotifications, Erc_notify]);
         setLoading("");
-        FlashNotification.show(err.message, true)
+        FlashNotification.show(err.reason, true)
       })
     } else {
       sendAmountToNdauAddress(
         UserStore.getAccountDetail(item.address),
         ndauAddress,
         ndauAmount
-      ).then(resonse => {
+      ).then(async response => {
+
+        let notifyObject = { id: Date.now(), message: 'Ndau to Ndau Account Send Transaction was successful', isBoolean: response }
+        dispatch(addNotification(notifyObject));
+        const currentNotifications = await getNotifications()
+        // Save the updated list of notifications, including the new one
+        saveNotifications([...currentNotifications, notifyObject]);
+
         setLoading("");
         navigation.goBack();
-      }).catch(err => {
+
+      }).catch(async err => {
+        let notifyObjectError = { id: Date.now() - 86400000, message: err.message, isBoolean: false }
+        dispatch(addNotification(notifyObject));
+        const currentNotifications = await getNotifications()
+        // Save the updated list of notifications, including the new one
+        saveNotifications([...currentNotifications, notifyObjectError]);
+
         setLoading("")
         FlashNotification.show(`${err.message}`);
       })
     }
 
   }
+
+
 
   const renderConfirmation = () => {
 

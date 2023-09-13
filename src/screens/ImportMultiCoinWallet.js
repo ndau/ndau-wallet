@@ -105,7 +105,7 @@ const ImportMultiCoinWallet = (props) => {
       navigation.dispatch(
         CommonActions.reset({
           index: 0,
-          routes: [{ name: ScreenNames.ProtectWallet, params: { item } }],
+          routes: [{ name: ScreenNames.ProtectWallet, params: { item, isImporting: true } }],
         })
       );
     }

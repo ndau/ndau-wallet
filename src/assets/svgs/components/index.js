@@ -33,6 +33,18 @@ import Delete from "./Delete";
 import QRCode from "./QRCode";
 import Clock from "./Clock";
 import Exclamation from "./Exclamation";
+import WalletConnect from "./WalletConnect";
+import EnvironmentIcon from "./EnvironmentIcon";
+import ContactIcon from "./ContactIcon";
+import VersionIcon from "./versionIcon";
+import LogoutIcon from "./LogoutIcon";
+import Facebook from "./Facebook";
+import Reddit from "./Reddit";
+import Twitter from "./Twitter";
+import Check from "./Check";
+import NotificationDelete from "./DeleteNotification";
+import NotificationFailed from "./NotificationFailed";
+import NotificationSuccess from "./NotificationSuccess";
 
 export {
   BackSVGComponent,
@@ -68,5 +80,17 @@ export {
   Delete,
   QRCode,
   Clock,
-  Exclamation
+  Exclamation,
+  WalletConnect,
+  EnvironmentIcon,
+  ContactIcon,
+  VersionIcon,
+  LogoutIcon,
+  Facebook,
+  Reddit,
+  Twitter,
+  Check,
+  NotificationDelete,
+  NotificationFailed,
+  NotificationSuccess
 };

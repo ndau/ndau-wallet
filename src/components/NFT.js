@@ -5,10 +5,11 @@ import Animated, { FadeInDown } from "react-native-reanimated";
 import { themeColors } from "../config/colors";
 import CustomText from "./CustomText";
 
-const NFT = ({ name, image, index }) => {
+const NFT = ({ name, image, index, isLast }) => {
+
 	return (
-		<Animated.View entering={FadeInDown.delay(100 * index)} style={styles.container}>
-			<Image resizeMode="stretch" source={image} style={styles.image} />
+		<Animated.View entering={FadeInDown.delay(100 * index)} style={[styles.container, isLast && { maxWidth: "48%" }]}>
+			<Image resizeMode="stretch" source={{ uri: image }} style={styles.image} />
 			<CustomText semiBold body style={styles.name}>{name}</CustomText>
 		</Animated.View>
 	)
