@@ -67,9 +67,9 @@ const ScreenContainer = ({ children, style, steps, preventBackPress, tabScreen =
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle={"light-content"} />
       {
-        SettingsStore._settings?.applicationNetwork == "testnet" && (
+        (SettingsStore._settings?.applicationNetwork == "testnet" || SettingsStore._settings?.applicationNetwork == "devnet") && (
           <View style={styles.mode}>
-            <CustomText titilium>You are in Testnet Mode</CustomText>
+            <CustomText titilium>{`You are in ${SettingsStore._settings?.applicationNetwork} Mode`}</CustomText>
           </View>
         )
       }

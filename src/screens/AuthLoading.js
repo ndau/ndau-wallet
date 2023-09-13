@@ -46,8 +46,11 @@ const AuthLoading = ({}) => {
 
   useEffect(() => {
     DeviceStore.setOnline(true);
-    SettingsStore.useTestNet();
-    authenticating();
+    SettingsStore.getApplicationNetwork().then(() => {
+      authenticating();
+    }).catch(err => {
+      authenticating();
+    })
   }, []);
 
   return <ScreenContainer>{/* <Loading label={''} /> */}</ScreenContainer>;

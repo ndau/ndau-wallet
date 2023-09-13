@@ -8,6 +8,7 @@ import Spacer from "../components/Spacer";
 import { themeColors } from "../config/colors";
 import { Check } from "../assets/svgs/components";
 import SettingsStore from "../stores/SettingsStore";
+import ServiceDiscovery from "../api/ServiceDiscovery";
 
 const Environments = () => {
   const navigation = useNavigation();
@@ -35,6 +36,7 @@ const Environments = () => {
       if (selected.id === 0) SettingsStore.useMainNet();
       else if (selected.id === 1) SettingsStore.useTestNet();
       else if (selected.id === 2) SettingsStore.useDevNet();
+      ServiceDiscovery.invalidateCache();
     } else {
       const mode = SettingsStore._settings?.applicationNetwork || "mainnet";
       if (mode == "mainnet") handleEnv({ id: 0 });

@@ -18,6 +18,8 @@ const SendModal = ({ }) => {
 	const [fullData, setData] = useState({});
 	const [verifier, setVerifier] = useState({});
 	const [requestSession, setRequestSession] = useState({});
+	const [approving, setApproving] = useState(false);
+	const [rejecting, setRejecting] = useState(false);
 
 	useEffect(() => {
 		global.sendModal = innerFunc
@@ -60,23 +62,30 @@ const SendModal = ({ }) => {
 
 	const approve = async () => {
 		try {
+			setApproving(true);
 			const response = await approveEIP155Request(fullData)
 			await signClient.respond({ topic: fullData.topic, response });
+			setApproving(false);
 			setIsVisible(false);
 		} catch (e) {
+			setApproving(false);
 			FlashNotification.show(e.message);
 		}
 	}
 
 	const reject = () => {
+		setRejecting(true);
 		const response = rejectEIP155Request(fullData)
 		signClient.respond({
 			topic: fullData.topic,
 			response
 		}).then(res => {
+			setRejecting(false);
 			setIsVisible(false);
 		}).catch(err => {
+			setRejecting(false);
 			setIsVisible(false);
+			FlashNotification.show(err.message);
 		})
 	}
 
@@ -116,8 +125,8 @@ const SendModal = ({ }) => {
 					</View>
 				</ScrollView>
 				<View style={[styles.row, { marginBottom: 20 }]}>
-					<Button onPress={reject} label={'Reject'} buttonContainerStyle={styles.rejectButton} />
-					<Button onPress={approve} label={'Approve'} buttonContainerStyle={styles.approveButton} />
+					<Button loading={rejecting} disabled={approving} onPress={reject} label={'Reject'} buttonContainerStyle={styles.rejectButton} />
+					<Button loading={approving} disabled={rejecting} onPress={approve} label={'Approve'} buttonContainerStyle={styles.approveButton} />
 				</View>
 			</View>
 		</Modal>

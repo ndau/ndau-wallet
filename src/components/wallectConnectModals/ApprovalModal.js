@@ -84,11 +84,13 @@ const ApprovalModal = ({ onApprove, onReject }) => {
 				<View style={[styles.row, { marginBottom: 20 }]}>
 					<Button
 						loading={loading?.isRejectLoading}
+						disabled={loading?.isAcceptLoading}
 						onPress={onReject}
 						label={'Reject'}
 						buttonContainerStyle={styles.rejectButton} />
 					<Button
 						loading={loading?.isAcceptLoading}
+						disabled={loading?.isRejectLoading}
 						onPress={onApprove}
 						label={'Approve'}
 						buttonContainerStyle={styles.approveButton} />
