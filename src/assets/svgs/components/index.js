@@ -45,6 +45,9 @@ import Check from "./Check";
 import NotificationDelete from "./DeleteNotification";
 import NotificationFailed from "./NotificationFailed";
 import NotificationSuccess from "./NotificationSuccess";
+import ConvertIcon from "./ConvertSvg";
+import NpayIcon from "./NpaySvg";
+
 
 export {
   BackSVGComponent,
@@ -92,5 +95,7 @@ export {
   Check,
   NotificationDelete,
   NotificationFailed,
-  NotificationSuccess
+  NotificationSuccess,
+  ConvertIcon,
+  NpayIcon
 };

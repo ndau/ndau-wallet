@@ -112,9 +112,9 @@ const NDAUDetail = (props) => {
 
 	const launchBuyNdauInBrowser = async () => {
 		const url = AppConfig.BUY_NDAU_URL;
-	
+
 		const supported = await Linking.openURL(url);
-	
+
 		if (supported) {
 			await Linking.openURL(url);
 		} else {
@@ -186,10 +186,14 @@ const NDAUDetail = (props) => {
 						<View style={styles.row}>
 							<IconButton disabled={accountInfo.isLocked} label="Buy" icon={<Buy />} onPress={launchBuyNdauInBrowser} />
 							<IconButton disabled={accountInfo.isLocked || disableButton} label="Send" icon={<Send />} onPress={() => customModalRef.current(true)} />
-							<IconButton disabled={!canRecieve} label="Receive" icon={<Receive />} onPress={() => props.navigation.navigate(ScreenNames.Receive, { address: item.address,tokenName:item.tokenName })} />
+							<IconButton disabled={!canRecieve} label="Receive" icon={<Receive />} onPress={() => props.navigation.navigate(ScreenNames.Receive, { address: item.address, tokenName: item.tokenName })} />
 						</View>
 						<View style={styles.row}>
-							<IconButton disabled={accountInfo.isLocked || disableButton} label="Convert" icon={<Convert />} />
+							<IconButton disabled={accountInfo.isLocked || disableButton} label="Convert" icon={<Convert />} onPress={() => props.navigation.navigate(ScreenNames.ConvertNdauToNpay, {
+								totalBalance: item?.totalFunds,
+								dollorBalnce: item?.usdAmount,
+								image: item?.image
+							})} />
 							<IconButton disabled={accountInfo.isLocked || disableButton} label="Lock" icon={<Lock />} onPress={() => props.navigation.navigate(ScreenNames.LockPeriod, { item })} />
 						</View>
 					</View>

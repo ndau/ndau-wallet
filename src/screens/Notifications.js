@@ -1,21 +1,17 @@
-import React, { useRef, useState, useEffect } from "react";
-import { FlatList, Image, SectionList, StyleSheet, View } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import React, { useEffect, useRef, useState } from "react";
+import { FlatList, StyleSheet, View } from "react-native";
 
+import { useDispatch, useSelector } from "react-redux";
+import { NotificationDelete } from "../assets/svgs/components";
 import Button from "../components/Button";
 import CustomText from "../components/CustomText";
-import ScreenContainer from "../components/Screen";
-import { ScreenNames } from "./ScreenNames";
-import { themeColors } from "../config/colors";
-import { images } from "../assets/images";
-import Spacer from "../components/Spacer";
-import NotificationCard from "./components/notifcations/NotificationCard";
-import { NotificationDelete, NotificationFailed, NotificationSuccess } from "../assets/svgs/components";
-import { useDispatch, useSelector } from "react-redux";
-import { addNotification, clearNotification, markAsRead, updateNotifications } from "../redux/actions";
 import CustomModal from "../components/Modal";
-
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import ScreenContainer from "../components/Screen";
+import Spacer from "../components/Spacer";
+import { themeColors } from "../config/colors";
+import { clearNotification, updateNotifications } from "../redux/actions";
+import NotificationCard from "./components/notifcations/NotificationCard";
 import { getNotifications, saveNotifications } from "../stores/NotificationStore";
 
 
