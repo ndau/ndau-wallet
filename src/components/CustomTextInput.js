@@ -59,6 +59,7 @@ const styles = StyleSheet.create({
 	main: {
 		marginVertical: 10
 	},
+	
 	container: {
 		height: 54,
 		padding: 10,
