@@ -35,7 +35,7 @@ const loadUserData = async user => {
 
   for (const walletKey of walletKeys) {
     const wallet = user.wallets[walletKey];
-    if (wallet.type == "ERC") continue;
+    // if (wallet.type == "ERC") continue;
     const dataFound = await AccountAPIHelper.populateWalletWithAddressData(
       wallet,
     );

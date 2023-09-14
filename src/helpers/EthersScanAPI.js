@@ -4,6 +4,7 @@ import * as zkSync from "zksync-web3";
 import APICommunicationHelper from "./APICommunicationHelper"
 import UserStore from "../stores/UserStore";
 import SettingsStore from "../stores/SettingsStore";
+import FlashNotification from "../components/common/FlashNotification";
 
 export const Converters = {
   WEI_ETH: (wei) => wei / Math.pow(10, 18),
@@ -19,7 +20,6 @@ export const EthersScanAPI = {
 
   // endpoint: "https://api.etherscan.io/api?",
   endpoint: "https://api-goerli.etherscan.io/api?",
-  // apiKey: "JT1CHNSEQUDB3XMHZ9BNQPB6Y3QKRAWSWB", // 
   apiKey: "RMY86WJ2479F3RH4UB26D17CR9MPXAR3SK",
   alchemyApiKey: "LbVbPhgj9p_f8cND9SYyUyZUq0_L9Bp1",
 
@@ -50,7 +50,7 @@ export const EthersScanAPI = {
       NPAY: "0xd7afcb470bcF8d07E3A4dCBa0Ec7D9f5D8C6a05a"
     },
     goerli: {
-      USDC: "0xD87Ba7A50B2E7E660f678A895E4B72E7CB4CCd9C",
+      USDC: "0x07865c6E87B9F70255377e024ace6630C1Eaa37F",
       MATIC: '0x7D1AfA7B718fb893dB30A3aBc0Cfc608AaCfeBB0',
       NPAY: "0xd7afcb470bcF8d07E3A4dCBa0Ec7D9f5D8C6a05a"
     }
@@ -110,48 +110,126 @@ export const EthersScanAPI = {
 
   getCheck: async () => {
     try {
-      const providerUrl = 'https://polygon-mumbai.g.alchemy.com/v2/Z_G5HhyiXdXZ9j0-uJ4B7SZr_oCk4xSN';
-      const userAddress = '0xF54C7538Fbdd77FAe4085a422CeAf3AcA37596Fd';
+      const provider = new ethers.providers.EtherscanProvider(EthersScanAPI.networks.goerli, EthersScanAPI.apiKey);
+      const wallet = new ethers.Wallet(UserStore.getActiveWallet().ercKeys.privateKey, provider);
 
-      const provider = new ethers.providers.EtherscanProvider('goerli', EthersScanAPI.apiKey)
-
-      // Define the MATIC token contract ABI
-      const tokenAbi = [
-        "function balanceOf(address) view returns (uint256)",
-      ];
-
-      // Create an instance of the MATIC token contract
-      const maticTokenContract = new ethers.Contract(EthersScanAPI.contractaddress.USDC, tokenAbi, provider);
-      const balance = await maticTokenContract.balanceOf("0xF54C7538Fbdd77FAe4085a422CeAf3AcA37596Fd");
-      const tokenSymbol = await maticTokenContract.symbol();
-      console.log(`MATIC Balance for ${userAddress}: ${ethers.utils.formatUnits(balance, 18)} ${tokenSymbol}`);
-
+      wallet.sendTransaction({
+        to: "0xA74d1D5C01208F90840dddCBEF738ecd41eC7a46",
+        from: UserStore.getActiveWallet().ercAddress,
+        value: ethers.utils.formatBytes32String("10")
+      }).then((res) => {
+        console.log("res", JSON.stringify(res, null, 2));
+      });
     } catch (error) {
-      console.error('Error fetching:', error);
+      FlashNotification.show(error.reason);
+      console.log('err check', JSON.stringify(error.reason, null, 2));
+      console.log('err code', JSON.stringify(error.code, null, 2));
+      console.log('err error', JSON.stringify(error.error, null, 2));
+      console.log('err tx', error.tx);
     }
+  }
+}
+
+export const PolygonApi = {
+
+  url: "https://polygon-mumbai.g.alchemy.com/v2/Z_G5HhyiXdXZ9j0-uJ4B7SZr_oCk4xSN",
+
+  getPolygonAddressBalance: () => {
+    return new Promise((resolve, reject) => {
+      try {
+        const provider = new ethers.providers.JsonRpcProvider(PolygonApi.url);
+        const wallet = new ethers.Wallet(UserStore.getActiveWallet().ercKeys.privateKey, provider);
+
+        APICommunicationHelper.get("https://api.coingecko.com/api/v3/simple/price?ids=matic-network&vs_currencies=usd").then((res) => {
+          const usdAmount = res?.['matic-network']?.usd;
+          wallet.getBalance().then(res => {
+            resolve({
+              totalFunds: ethers.utils.formatUnits(res._hex, 18),
+              usdAmount: ((ethers.utils.formatUnits(res._hex, 18) * usdAmount) || 0)
+            })
+          }).catch(err => reject(err));
+        }).catch(err => {
+          wallet.getBalance().then(res => {
+            resolve({
+              totalFunds: ethers.utils.formatUnits(res._hex, 18),
+              usdAmount: 0
+            })
+          }).catch(err => reject(err));
+          reject(err)
+        });
+      } catch (error) {
+        FlashNotification.show(error.reason);
+        console.log('err check', JSON.stringify(error.reason, null, 2));
+        console.log('err code', JSON.stringify(error.code, null, 2));
+        console.log('err error', JSON.stringify(error.error, null, 2));
+        console.log('err tx', error.tx);
+        reject(err)
+      }
+    })
   }
 }
 
 export const ZkSkyncApi = {
 
-  url: "https://block-explorer-api.testnets.zksync.dev",
+  addresses: {
+    NPAY_L2_ADDRESS: "0xd7afcb470bcF8d07E3A4dCBa0Ec7D9f5D8C6a05a"
+  },
+
+  __getWallet: () => {
+    const PRIVATE_KEY = UserStore.getActiveWallet().ercKeys.privateKey;;
+    const zkSyncProvider = new zkSync.Provider("https://testnet.era.zksync.dev");
+    const ethereumProvider = ethers.getDefaultProvider("goerli");
+    return new zkSync.Wallet(PRIVATE_KEY, zkSyncProvider, ethereumProvider);
+  },
 
   getZksyncAddressBalance: () => {
-    return new Promise((resolve, reject) => {
-      const address = UserStore.getActiveWallet().ercAddress;
-      APICommunicationHelper.get(`${ZkSkyncApi.url}/address/${address}`).then(res => {
-        if (res.balances) {
-          const availabeBalances = [];
-          Object.keys(res.balances).forEach(key => {
-            const obj = res.balances[key];
-            if (obj.token.symbol === "NPAY") {
-              obj.totalFunds = ethers.utils.formatUnits(obj.balance, obj.token.decimals);
-              availabeBalances.push(obj);
-            }
-          })
-          resolve(availabeBalances);
-        }
-      }).catch(err => reject(err));
+    return new Promise(async (resolve, reject) => {
+      try {
+        const wallet = ZkSkyncApi.__getWallet();
+        const totalFunds = ethers.utils.formatEther((await wallet.getBalance(ZkSkyncApi.addresses.NPAY_L2_ADDRESS))._hex)
+        resolve({ totalFunds, usdAmount: 0 })
+      } catch (e) {
+        reject(e);
+      }
+    })
+  },
+
+  estimateGas: (toAddress, amount) => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const wallet = ZkSkyncApi.__getWallet();
+        wallet.estimateGas({
+          to: toAddress,
+          value: ethers.utils.parseEther(amount)._hex
+        }).then(res => {
+          console.log('estimating gas information', JSON.stringify(res, null, 2));
+          resolve(res);
+        }).catch(err => {
+          reject(err)
+        })
+      } catch (e) {
+        reject(e);
+      }
+    })
+  },
+
+  send: (toAddress, amount) => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const wallet = ZkSkyncApi.__getWallet();
+        wallet.transfer({
+          to: toAddress,
+          value: ethers.utils.parseEther(amount)._hex,
+          // token: "NPAY"
+        }).then(res => {
+          console.log('sending information', JSON.stringify(res, null, 2));
+          resolve(res);
+        }).catch(err => {
+          reject(err)
+        })
+      } catch (e) {
+        reject(e);
+      }
     })
   }
 }

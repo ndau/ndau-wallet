@@ -19,12 +19,12 @@ import BottomSheetModal from "../components/BottomSheetModal";
 import CustomText from "../components/CustomText";
 import { ArrowDownSVGComponent, BlockChainWalletLogoSVGComponent } from "../assets/svgs/components";
 import Spacer from "../components/Spacer";
-import { addWalletsData } from "../utils";
+import { addWalletsData, tokenShortName } from "../utils";
 import DashBoardBottomSheetCard from "./components/DashBoardBottomSheetCard";
 import { useIsFocused } from "@react-navigation/native";
 import AddWalletsPopup from "./components/dashboard/AddWalletsPopup";
 import { ethers } from "ethers";
-import { Alchemy } from "alchemy-sdk";
+import { Alchemy, Network } from "alchemy-sdk";
 
 const Dashboard = ({ navigation }) => {
 
@@ -40,20 +40,20 @@ const Dashboard = ({ navigation }) => {
 	const refAddWalletSheet = useRef(null)
 
 	const [tokens, setTokens] = useState([
-		{ shortName: "ndau", name: "NDAU", network: "nDau", totalFunds: "0", usdAmount: "0", image: images.nDau, accounts: getNDauAccounts().length },
-		{ shortName: "nPay", name: "NPAY (ERC20)", network: "zkSync Era", totalFunds: "0", usdAmount: "0", image: images.nPay },
-		{ shortName: "Eth", name: "ETHEREUM", network: "ethereum", totalFunds: "0", usdAmount: "0", image: images.ethereum },
-		{ shortName: "USDC", name: "USDC (ERC20)", network: "ethereum", totalFunds: "0", usdAmount: "0", image: images.USDC },
+		{ shortName: tokenShortName.NDAU, name: "NDAU", network: "nDau", totalFunds: "0", usdAmount: "0", image: images.nDau, accounts: getNDauAccounts().length },
+		{ shortName: tokenShortName.NPAY, name: "NPAY (ERC20)", network: "zkSync Era", totalFunds: "0", usdAmount: "0", image: images.nPay },
+		{ shortName: tokenShortName.ETHERERUM, name: "ETHEREUM", network: "ethereum", totalFunds: "0", usdAmount: "0", image: images.ethereum },
+		{ shortName: tokenShortName.USDC, name: "USDC (ERC20)", network: "ethereum", totalFunds: "0", usdAmount: "0", image: images.USDC },
 	]);
 
 	const [nfts, setNfts] = useState([]);
 
 	const makeToken = (type, { totalFunds, usdAmount, accounts, address }) => {
 		const tokens = {
-			0: { shortName: "ndau", name: "NDAU", network: "nDau", totalFunds: "0", usdAmount: "0", image: images.nDau, accounts: getNDauAccounts().length },
-			1: { shortName: "nPay", name: "NPAY (ERC20)", network: "zkSync Era", totalFunds: "0", usdAmount: "0", image: images.nPay },
-			2: { shortName: "Eth", name: "ETHEREUM", network: "ethereum", totalFunds: "0", usdAmount: "0", image: images.ethereum },
-			3: { shortName: "USDC", name: "USDC (ERC20)", network: "ethereum", totalFunds: "0", usdAmount: "0", image: images.USDC },
+			0: { shortName: tokenShortName.NDAU, name: "NDAU", network: "nDau", totalFunds: "0", usdAmount: "0", image: images.nDau, accounts: getNDauAccounts().length },
+			1: { shortName: tokenShortName.NPAY, name: "NPAY (ERC20)", network: "zkSync Era", totalFunds: "0", usdAmount: "0", image: images.nPay },
+			2: { shortName: tokenShortName.ETHERERUM, name: "ETHEREUM", network: "ethereum", totalFunds: "0", usdAmount: "0", image: images.ethereum },
+			3: { shortName: tokenShortName.USDC, name: "USDC (ERC20)", network: "ethereum", totalFunds: "0", usdAmount: "0", image: images.USDC },
 		}
 		return {
 			...tokens[type],
@@ -82,7 +82,7 @@ const Dashboard = ({ navigation }) => {
 
 			const totalNdausOnAllAccounts = DataFormatHelper.getNdauFromNapu(Object.keys(ndauAccounts).map(key => ndauAccounts[key]).reduce((pv, cv) => pv += parseFloat(cv.balance), 0) || 0);
 
-			const npay = { totalFunds: parseFloat(npayAccount?.[0]?.totalFunds) || 0, usdAmount: 0 };
+			const npay = { totalFunds: parseFloat(npayAccount.totalFunds), usdAmount: npayAccount.usdAmount };
 
 			const eth = { totalFunds: Converters.WEI_ETH(availableEthInWEI), usdAmount: Converters.ETH_USD(Converters.WEI_ETH(availableEthInWEI), ethusd) };
 
@@ -143,10 +143,13 @@ const Dashboard = ({ navigation }) => {
 
 	useEffect(() => {
 		if (selected === 1) {
-			const c = new Alchemy().nft;
-			c.getNftsForOwner("0xe21dc18513e3e68a52f9fcdacfd56948d43a11c6", { pageSize: 5 }).then(res => {
+			const c = new Alchemy({ apiKey: "Z_G5HhyiXdXZ9j0-uJ4B7SZr_oCk4xSN", network: Network.MATIC_MAINNET }).nft;
+			c.getNftsForOwner(getActiveWallet().ercAddress, { pageSize: 2 }).then(res => {
+				console.log('res', JSON.stringify(res, null, 2));
 				const nftsList = res.ownedNfts.map(obj => ({ name: obj.contract.name, image: obj.contract.openSea.imageUrl }));
 				setNfts(nftsList);
+			}).catch(err => {
+				console.log('err', JSON.stringify(err.message, null, 2));
 			})
 		} else {
 			setNfts([])
@@ -155,7 +158,7 @@ const Dashboard = ({ navigation }) => {
 
 	const renderItem = useCallback(({ item, index }) => {
 		if (selected == 0) return <Token {...item} index={index} onPress={() => handleNavigation(item)} />
-		else if (selected == 1) return <NFT {...item} index={index} isLast={(nfts.length - 1) === index}/>
+		else if (selected == 1) return <NFT {...item} index={index} isLast={(nfts.length - 1) === index} />
 	}, [tokens, nfts])
 
 	const handleNavigation = useCallback((item) => {
@@ -175,8 +178,7 @@ const Dashboard = ({ navigation }) => {
 					totalBalance={totalBalance}
 					accounts={accounts}
 					onAddWallet={() => {
-						EthersScanAPI.getCheck();
-						// refAddWalletSheet.current.open()
+						refAddWalletSheet.current.open()
 					}}
 				/>
 				<View style={styles.line} />

@@ -1,12 +1,12 @@
 
-import { ethers } from "ethers";
+import { Wallet, ethers } from "ethers";
 import AppConfig from "../AppConfig";
 import AccountAPIHelper from "../helpers/AccountAPIHelper";
 import DataFormatHelper from "../helpers/DataFormatHelper";
 import UserStore from "../stores/UserStore";
 import { Transaction } from "../transactions/Transaction";
 import { TransferTransaction } from "../transactions/TransferTransaction";
-import { EthersScanAPI } from "../helpers/EthersScanAPI";
+import { EthersScanAPI, ZkSkyncApi } from "../helpers/EthersScanAPI";
 import { LockTransaction } from "../transactions/LockTransaction";
 import NdauNumber from "../helpers/NdauNumber";
 import { NotifyTransaction } from "../transactions/NotifyTransaction";
@@ -14,6 +14,8 @@ import { SetRewardsDestinationTransaction } from "../transactions/SetRewardsDest
 import APIAddressHelper from "../helpers/APIAddressHelper";
 import APICommunicationHelper from "../helpers/APICommunicationHelper";
 import TransactionAPI from "../api/TransactionAPI";
+import { tokenShortName } from "../utils";
+import FlashNotification from "../components/common/FlashNotification";
 
 export default useTransaction = () => {
 
@@ -128,6 +130,65 @@ export default useTransaction = () => {
     })
   }
 
+  const getTransactionFeeForUSDC = (toAddress, ethAmount) => {
+    return new Promise(async (resolve, reject) => {
+      const provider = new ethers.providers.EtherscanProvider(EthersScanAPI.networks.goerli, EthersScanAPI.apiKey);
+      const wallet = new ethers.Wallet(UserStore.getActiveWallet().ercKeys.privateKey, provider);
+
+      const usdcAmountWei = ethers.utils.parseUnits(ethAmount, 6);
+      const usdcTokenAddress = EthersScanAPI.getContractAddress().USDC;
+
+      const usdcContract = new ethers.Contract(
+        usdcTokenAddress,
+        ['function transfer(address to, uint amount) returns (bool)'],
+        provider
+      );
+      
+      usdcContract.connect(wallet).estimateGas.transfer(toAddress, usdcAmountWei).then(res => {
+        console.log('res', JSON.stringify(res, null, 2));
+        resolve({
+          ethPrice: ethers.utils.formatEther(res._hex),
+          hex: res._hex
+        })
+      }).catch(err => {
+        reject(err)
+        console.log('err	', JSON.stringify(err, null, 2));
+      })
+    })
+  }
+
+  const sendUSDC = (toAddress, ethAmount) => {
+    return new Promise(async (resolve, reject) => {
+      const provider = new ethers.providers.EtherscanProvider(EthersScanAPI.networks.goerli, EthersScanAPI.apiKey);
+      const wallet = new ethers.Wallet(UserStore.getActiveWallet().ercKeys.privateKey, provider);
+
+      const usdcAmountWei = ethers.utils.parseUnits(ethAmount, 6);
+      const usdcTokenAddress = EthersScanAPI.getContractAddress().USDC;
+
+      const usdcContract = new ethers.Contract(
+        usdcTokenAddress,
+        ['function transfer(address to, uint amount) returns (bool)'],
+        provider
+      );
+      
+      usdcContract.connect(wallet).transfer(toAddress, usdcAmountWei).then(res => {
+        console.log('res', JSON.stringify(res, null, 2));
+        resolve(res);
+      }).catch(err => {
+        reject(err)
+        console.log('err	', JSON.stringify(err, null, 2));
+      })
+    })
+  }
+
+  const getTransactionFeeForNPAY = (toAddress, ethAmount) => {
+    return new Promise((resolve, reject) => {
+      ZkSkyncApi.estimateGas(toAddress, ethAmount)
+        .then(res => resolve(res))
+        .catch(err => reject(err));
+    })
+  }
+
   const sendERCFunds = (toAddress, ethAmount) => {
     return new Promise((resolve, reject) => {
       const provider = new ethers.providers.EtherscanProvider(EthersScanAPI.networks.goerli, EthersScanAPI.apiKey);
@@ -145,6 +206,12 @@ export default useTransaction = () => {
     })
   }
 
+  const sendNpayFunds = (toAddress, ethAmount) => {
+    return new Promise((resolve, reject) => {
+      ZkSkyncApi.send(toAddress, ethAmount).then(resolve).catch(reject);
+    })
+  }
+
   const getERCTransactionHistory = (address) => {
     return new Promise((resolve, reject) => {
       const provider = new ethers.providers.EtherscanProvider(EthersScanAPI.networks.goerli, EthersScanAPI.apiKey);
@@ -156,7 +223,7 @@ export default useTransaction = () => {
       })
     })
   }
-  
+
   const getERCTransactionDetail = (txHash) => {
     return new Promise((resolve, reject) => {
       const provider = new ethers.providers.EtherscanProvider(EthersScanAPI.networks.goerli, EthersScanAPI.apiKey);
@@ -294,11 +361,38 @@ export default useTransaction = () => {
     })
   }
 
+  const estimateGasFeeFor = (token, toAddress, amount) => {
+    return new Promise((resolve, reject) => {
+      switch (token) {
+        case tokenShortName.ETHERERUM: return getTransactionFeeForERC(toAddress, amount).then(resolve).catch(reject);
+        case tokenShortName.NPAY: return getTransactionFeeForNPAY(toAddress, amount).then(resolve).catch(reject);
+        case tokenShortName.USDC: return getTransactionFeeForUSDC(toAddress, amount).then(resolve).catch(reject);
+        default: {
+          FlashNotification.show(token + ": This token type not supported yet");
+          reject("Not supported")
+        }
+      }
+    })
+  }
+  
+  const sendFunds = (token, toAddress, amount) => {
+    return new Promise((resolve, reject) => {
+      switch (token) {
+        case tokenShortName.ETHERERUM: return sendERCFunds(toAddress, amount).then(resolve).catch(reject);
+        case tokenShortName.NPAY: return getTransactionFeeForNPAY(toAddress, amount).then(resolve).catch(reject);
+        case tokenShortName.USDC: return sendUSDC(toAddress, amount).then(resolve).catch(reject);
+        default: {
+          FlashNotification.show(token + ": This token type not supported yet");
+          reject("Not supported")
+        }
+      }
+    })
+  }
+
   return {
     getTransactionFee,
     sendAmountToNdauAddress,
     getTransactionFeeForERC,
-    sendERCFunds,
     getERCTransactionHistory,
     getNDAULockFee,
     lockNDAUAccount,
@@ -306,6 +400,14 @@ export default useTransaction = () => {
     setEAI,
     getTransactions,
     getTransactionByHash,
-    getERCTransactionDetail
+    getERCTransactionDetail,
+    getTransactionFeeForNPAY,
+    
+    sendERCFunds,
+    sendNpayFunds,
+    sendUSDC,
+    
+    sendFunds,
+    estimateGasFeeFor
   }
 }

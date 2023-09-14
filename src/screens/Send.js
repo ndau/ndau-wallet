@@ -17,12 +17,24 @@ import { ScreenNames } from "./ScreenNames";
 import { useDispatch } from "react-redux";
 import { addNotification } from "../redux/actions";
 import { getNotifications, saveNotifications } from "../stores/NotificationStore";
+import { ZkSkyncApi } from "../helpers/EthersScanAPI";
+import { ethers } from "ethers";
+import { tokenShortName } from "../utils";
 
 const Send = (props) => {
   const { item, address } = props?.route?.params ?? {};
 
   const navigation = useNavigation();
-  const { getTransactionFee, sendAmountToNdauAddress, getTransactionFeeForERC, sendERCFunds } = useTransaction();
+  const {
+    getTransactionFee,
+    sendAmountToNdauAddress,
+    getTransactionFeeForERC,
+    sendERCFunds,
+    sendNpayFunds,
+    getTransactionFeeForNPAY,
+    sendFunds,
+    estimateGasFeeFor
+  } = useTransaction();
   const dispatch = useDispatch();
 
   const [section, setSection] = useState(0);
@@ -105,15 +117,8 @@ const Send = (props) => {
 
     const getQuotes = () => {
       setLoading("Updating");
-
       if (item.shortName) {
-        getTransactionFeeForERC(
-          ndauAddress,
-          ndauAmount
-        ).then(res => {
-
-
-
+        estimateGasFeeFor(item.shortName, ndauAddress, ndauAmount).then(res => {
           setLoading("");
           setTransaction({
             transactionFee: res.ethPrice,
@@ -122,10 +127,17 @@ const Send = (props) => {
           });
           setSection(2);
         }).catch(err => {
-
+          console.log('err', JSON.stringify(err, null, 2));
           setLoading("");
           if (err.reason?.includes("ENS name not configured")) {
             FlashNotification.show("Address not found (" + ndauAddress + ")", true)
+          } else if (err.body) {
+            try {
+              const body = JSON.parse(err.body);
+              FlashNotification.show(body.error.message)
+            } catch (e) {
+              FlashNotification.show(err.reason, true)
+            }
           } else {
             FlashNotification.show(err.reason, true)
           }
@@ -206,12 +218,11 @@ const Send = (props) => {
     setLoading("Sending...");
 
     if (item.shortName) {
-      sendERCFunds(
+      sendFunds(
+        item.shortName,
         ndauAddress,
         ndauAmount
       ).then(async res => {
-
-
         setLoading("");
         let Erc_notify = { id: Date.now(), message: 'ERC to ERC Account Send Transaction was successful', isBoolean: true }
         dispatch(addNotification(Erc_notify));
@@ -221,10 +232,9 @@ const Send = (props) => {
         navigation.goBack();
       }).catch(async err => {
         let Erc_notify_error = { id: Date.now(), message: err?.reason, isBoolean: false }
-
         dispatch(addNotification(Erc_notify_error));
         const currentNotifications = await getNotifications()
-        saveNotifications([...currentNotifications, Erc_notify]);
+        saveNotifications([...currentNotifications, Erc_notify_error]);
         setLoading("");
         FlashNotification.show(err.reason, true)
       })

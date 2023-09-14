@@ -204,3 +204,10 @@ export const EIP155_TEST_CHAINS = {
 }
 
 export const EIP155_CHAINS = { ...EIP155_MAINNET_CHAINS, ...EIP155_TEST_CHAINS }
+
+export const tokenShortName = {
+  ETHERERUM: "Eth",
+  NDAU: "ndau",
+  NPAY: "nPay",
+  USDC: "USDC"
+}

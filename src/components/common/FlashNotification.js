@@ -26,6 +26,7 @@ const FlashMessage = ({ }) => {
     animValue.value = withTiming(1, { duration: 500 });
     setTimeout(() => {
       animValue.value = withTiming(0, { duration: 500 });
+      setTimeout(() => setText(""), 1000);
     }, long ? 4000 : 2000);
   }
 
@@ -33,7 +34,7 @@ const FlashMessage = ({ }) => {
     global.flashMessageRef = show
   }, [])
 
-  return (
+  return !!text && (
     <Animated.View style={[styles.container, animStyle]}>
       <CustomText titiliumSemiBold>{text}</CustomText>
     </Animated.View>

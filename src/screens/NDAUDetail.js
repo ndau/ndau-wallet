@@ -49,72 +49,75 @@ const NDAUDetail = (props) => {
 
 	useEffect(() => {
 		if (isFocused) {
-			setLoading("Please wait")
-
-			getNdauAccountDetail(item.address).then(res => {
-				const addressData = res[item.address] || {};
-
-				if (addressData.incomingRewardsFrom?.length && !addressData.incomingRewardsFromNickname) {
-					addressData.incomingRewardsFromNickname = UserStore.getAccountDetail(addressData.incomingRewardsFrom)?.addressData?.nickname
-				} else if (addressData.incomingRewardsFrom?.length == 0) {
-					addressData.incomingRewardsFromNickname = null;
-				}
-
-				if (addressData.rewardsTarget && !addressData.rewardsTargetNickname) {
-					addressData.rewardsTargetNickname = UserStore.getAccountDetail(addressData.rewardsTarget)?.addressData?.nickname
-				} else if (addressData.rewardsTarget == null) {
-					addressData.rewardsTargetNickname = null;
-				}
-
-				AccountAPI.getLockRates(UserStore.getAccountDetail(item.address)).then(lockData => {
-					const notificePeriod = addressData.lock?.noticePeriod;
-					if (notificePeriod) {
-						const obj = lockData.filter(i => i.address === notificePeriod);
-						if (obj.length) {
-							addressData.eaiValueForDisplay = obj[0].eairate
-						}
-					}
-					setAccountInfo(prev => {
-						const _ = { ...prev }
-
-						const eaiValueForDisplay = AccountAPIHelper.eaiValueForDisplay(addressData)
-						const sendingEAITo = AccountAPIHelper.sendingEAITo(addressData)
-						const receivingEAIFrom = AccountAPIHelper.receivingEAIFrom(addressData)
-						const isAccountLocked = AccountAPIHelper.isAccountLocked(addressData)
-						const accountLockedUntil = AccountAPIHelper.accountLockedUntil(addressData)
-						const weightedAverageAgeInDays = AccountAPIHelper.weightedAverageAgeInDays(addressData)
-						const lockBonusEAI = DataFormatHelper.lockBonusEAI(DateHelper.getDaysFromISODate(addressData.lock ? addressData.lock.noticePeriod : 0))
-						const baseEAI = eaiValueForDisplay - lockBonusEAI
-						let spendableNdau = 0
-						if (!isAccountLocked) spendableNdau = AccountAPIHelper.spendableNdau(addressData, true, AppConfig.NDAU_DETAIL_PRECISION)
-
-						const showAllAcctButtons = !isAccountLocked && spendableNdau > 0
-						const spendableNdauDisplayed = new NdauNumber(spendableNdau).toDetail()
-
-						_.isLocked = isAccountLocked;
-						_.unlocksOn = accountLockedUntil;
-						_.receivingEAIFrom = receivingEAIFrom;
-						_.spendableNdau = spendableNdauDisplayed;
-						_.eaiValueForDisplay = eaiValueForDisplay; // annualized inncentive
-						_.waaDays = weightedAverageAgeInDays;
-						_.baseEAI = baseEAI; // current eai based on waa
-						_.lockBonusEAI = lockBonusEAI; // lock bonus
-						_.sendingEAITo = ndauUtils.truncateAddress(sendingEAITo) // being sent to
-
-						setLoading("")
-						return _;
-					})
-				})
-
-			})
+			fetchAccount();
 		}
 	}, [isFocused])
 
+	const fetchAccount = () => {
+		setLoading("Please wait")
+
+		getNdauAccountDetail(item.address).then(res => {
+			const addressData = res[item.address] || {};
+			if (addressData.incomingRewardsFrom?.length && !addressData.incomingRewardsFromNickname) {
+				addressData.incomingRewardsFromNickname = UserStore.getAccountDetail(addressData.incomingRewardsFrom)?.addressData?.nickname
+			} else if (addressData.incomingRewardsFrom?.length == 0) {
+				addressData.incomingRewardsFromNickname = null;
+			}
+
+			if (addressData.rewardsTarget && !addressData.rewardsTargetNickname) {
+				addressData.rewardsTargetNickname = UserStore.getAccountDetail(addressData.rewardsTarget)?.addressData?.nickname
+			} else if (addressData.rewardsTarget == null) {
+				addressData.rewardsTargetNickname = null;
+			}
+
+			AccountAPI.getLockRates(UserStore.getAccountDetail(item.address)).then(lockData => {
+				const notificePeriod = addressData.lock?.noticePeriod;
+				if (notificePeriod) {
+					const obj = lockData.filter(i => i.address === notificePeriod);
+					if (obj.length) {
+						addressData.eaiValueForDisplay = obj[0].eairate
+					}
+				}
+				setAccountInfo(prev => {
+					const _ = { ...prev }
+
+					const eaiValueForDisplay = AccountAPIHelper.eaiValueForDisplay(addressData)
+					const sendingEAITo = AccountAPIHelper.sendingEAITo(addressData)
+					const receivingEAIFrom = AccountAPIHelper.receivingEAIFrom(addressData)
+					const isAccountLocked = AccountAPIHelper.isAccountLocked(addressData)
+					const accountLockedUntil = AccountAPIHelper.accountLockedUntil(addressData)
+					const weightedAverageAgeInDays = AccountAPIHelper.weightedAverageAgeInDays(addressData)
+					const lockBonusEAI = DataFormatHelper.lockBonusEAI(DateHelper.getDaysFromISODate(addressData.lock ? addressData.lock.noticePeriod : 0))
+					const baseEAI = eaiValueForDisplay - lockBonusEAI
+					let spendableNdau = 0
+					if (!isAccountLocked) spendableNdau = AccountAPIHelper.spendableNdau(addressData, true, AppConfig.NDAU_DETAIL_PRECISION)
+
+					const showAllAcctButtons = !isAccountLocked && spendableNdau > 0
+					const spendableNdauDisplayed = new NdauNumber(spendableNdau).toDetail()
+
+					_.isLocked = isAccountLocked;
+					_.unlocksOn = accountLockedUntil;
+					_.receivingEAIFrom = receivingEAIFrom;
+					_.spendableNdau = spendableNdauDisplayed;
+					_.eaiValueForDisplay = eaiValueForDisplay; // annualized inncentive
+					_.waaDays = weightedAverageAgeInDays;
+					_.baseEAI = baseEAI; // current eai based on waa
+					_.lockBonusEAI = lockBonusEAI; // lock bonus
+					_.sendingEAITo = ndauUtils.truncateAddress(sendingEAITo) // being sent to
+
+					setLoading("")
+					return _;
+				})
+			})
+
+		})
+	}
+
 	const launchBuyNdauInBrowser = async () => {
 		const url = AppConfig.BUY_NDAU_URL;
-	
+
 		const supported = await Linking.openURL(url);
-	
+
 		if (supported) {
 			await Linking.openURL(url);
 		} else {
@@ -150,6 +153,9 @@ const NDAUDetail = (props) => {
 		setLoading("Starting...")
 		notifyForNDAU(UserStore.getAccountDetail(item.address)).then(res => {
 			setLoading("")
+			setTimeout(() => {
+				fetchAccount();
+			}, 250);
 		}).catch(err => {
 			setLoading("")
 		})
@@ -186,7 +192,7 @@ const NDAUDetail = (props) => {
 						<View style={styles.row}>
 							<IconButton disabled={accountInfo.isLocked} label="Buy" icon={<Buy />} onPress={launchBuyNdauInBrowser} />
 							<IconButton disabled={accountInfo.isLocked || disableButton} label="Send" icon={<Send />} onPress={() => customModalRef.current(true)} />
-							<IconButton disabled={!canRecieve} label="Receive" icon={<Receive />} onPress={() => props.navigation.navigate(ScreenNames.Receive, { address: item.address,tokenName:item.tokenName })} />
+							<IconButton disabled={!canRecieve} label="Receive" icon={<Receive />} onPress={() => props.navigation.navigate(ScreenNames.Receive, { address: item.address, tokenName: item.tokenName })} />
 						</View>
 						<View style={styles.row}>
 							<IconButton disabled={accountInfo.isLocked || disableButton} label="Convert" icon={<Convert />} />
