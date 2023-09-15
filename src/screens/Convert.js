@@ -27,15 +27,16 @@ const ConvertNdauToNpay = (props) => {
     const [loaderValue, setLoaderValue] = useState("");
     const [exchangeRate, setExchangeRate] = useState("42013.14519");
     const modalRef = useRef(null)
+    const modalRef2 = useRef(null)
 
 
-    useEffect( async () => {
-        const response =  await axios.get(
-            `https://open.er-api.com/v6/latest/USD`
-        );
-        const usdToIdrRate = response?.data?.rates.IDR;
-        console.log(usdToIdrRate, 'us------')
-    }, [])
+    // useEffect( async () => {
+    //     const response =  await axios.get(
+    //         `https://open.er-api.com/v6/latest/USD`
+    //     );
+    //     const usdToIdrRate = response?.data?.rates.IDR;
+    //     console.log(usdToIdrRate, 'us------')
+    // }, [])
 
 
     const getRemainNdauBalance = (amount) => {
@@ -46,11 +47,11 @@ const ConvertNdauToNpay = (props) => {
             return "0"
         }
     }
-  
+
 
     const handleConvert = () => {
 
-        setLoaderValue("Converting NDAU to NPAY")
+        setLoaderValue("Updating")
 
         setTimeout(() => {
 
@@ -61,7 +62,7 @@ const ConvertNdauToNpay = (props) => {
             } else {
                 setNpayAmount("0.0");
             }
-            modalRef.current(true)
+            modalRef2.current(true)
 
         }, 2000)
 
@@ -114,6 +115,7 @@ const ConvertNdauToNpay = (props) => {
                         <TextInput style={styles.inputCon}
                             placeholderTextColor={'#fff'}
                             placeholder='0.0'
+                            keyboardType='number-pad'
                             value={parseFloat(ndauAmount)}
                             onChangeText={(t) => {
                                 if (t[0] === "0" && t[1] === "0") return
@@ -145,9 +147,9 @@ const ConvertNdauToNpay = (props) => {
 
             <Spacer height={12} />
 
-            <TouchableOpacity onPress={handleConvert} style={styles.svgView}>
+            <View style={styles.svgView}>
                 <ConvertIcon />
-            </TouchableOpacity>
+            </View>
 
             <Spacer height={12} />
 
@@ -190,6 +192,9 @@ const ConvertNdauToNpay = (props) => {
                 </View>
             </View>
 
+            <View style={styles.convertBtn}>
+                <Button label={"Convert"} onPress={handleConvert} />
+            </View>
 
             <CustomModal bridge={modalRef}>
                 <View style={styles.modal}>
@@ -199,6 +204,22 @@ const ConvertNdauToNpay = (props) => {
                     </CustomText>
                 </View>
                 <Button label={"Done"} onPress={handleDone} />
+            </CustomModal>
+            <CustomModal bridge={modalRef2}>
+                <View style={styles.modal}>
+                    <CustomText h5 semiBold>NOTE</CustomText>
+                    <Spacer height={20} />
+                    <View style={styles.divider} />
+                    <Spacer height={20} />
+                    <CustomText body>NDAU is converted to NPAY on a 1:1 basis.  All NDAU converted from this NDAU address will be sent to your NPAY address that is listed under the “Tokens” screen in this wallet app.</CustomText>
+
+                </View>
+                <View>
+                    <Button label={"I Understand"} onPress={() => modalRef2.current(false)} />
+                    <Spacer height={12} />
+                    <Button label={"Cancel"} onPress={() => modalRef2.current(false)} buttonContainerStyle={styles.cancelBtn} />
+                </View>
+
             </CustomModal>
 
         </ScreenContainer>
@@ -283,5 +304,20 @@ const styles = StyleSheet.create({
         alignItems: "center",
         marginVertical: 20,
     },
+    convertBtn: {
+        justifyContent: 'flex-end',
+        flex: 1
+    },
+    divider: {
+        height: 1,
+        width: '100%',
+        backgroundColor: 'grey',
+
+    },
+    cancelBtn: {
+        backgroundColor: "transparent",
+        borderColor: 'white',
+        borderWidth: 1
+    }
 
 })

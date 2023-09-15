@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react'
-import { StyleSheet, View } from 'react-native'
+import { Dimensions, StyleSheet, View } from 'react-native'
 import { WalletSuccessSVGComponent } from '../../assets/svgs/components'
 import Button from '../../components/Button'
 import CheckBox from '../../components/CheckBox'
@@ -11,6 +11,9 @@ import ScreenContainer from '../../components/Screen'
 import FlashNotification from '../../components/common/FlashNotification'
 import { useContactSupport } from '../../hooks'
 import LogStore from '../../stores/LogStore'
+import { themeColors } from '../../config/colors'
+import CustomTextInputArea from '../../components/TextAreaInput'
+import Spacer from '../../components/Spacer'
 
 
 
@@ -114,20 +117,24 @@ const ContactSupport = (props) => {
                 errors={data?.email?.errors}
                 autoCapitalize={'none'}
             />
-            <CustomTextInput
+
+            <Spacer height={20} />
+            <CustomTextInputArea
                 label={"Description"}
                 placeholder={"type here..."}
                 onChangeText={(t) => {
                     setDescriptionLength(t.length)
                     handleInput(t, 'description')
                 }}
-                inputStyle={styles.inputContainer}
                 multiline={true}
                 maxLength={1000}
                 errors={data?.description?.errors}
                 success={data?.description?.success}
 
             />
+
+
+
             <View style={styles.descriptionWords}>
                 <CustomText body2>{`(${descriptionWordsLength}/1000)`}</CustomText>
             </View>
@@ -175,10 +182,23 @@ export default ContactSupport
 
 const styles = StyleSheet.create({
 
+
+    textAreaContainer: {
+
+        borderWidth: 1,
+        borderRadius: 20,
+        height: 100
+
+
+    },
+
+
     inputContainer: {
         borderRadius: 16,
-        height: 180,
-        paddingTop: 10
+        height: Dimensions.get('window').height * 0.2,
+        // paddingTop: 10
+        paddingTop: 10,
+        textAlignVertical: 'top',
 
     },
     descriptionWords: {

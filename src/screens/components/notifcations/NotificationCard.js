@@ -8,7 +8,6 @@ import { NotificationDelete, NotificationFailed, NotificationSuccess } from '../
 
 const NotificationCard = ({ item, index, onDelete }) => {
 
-
     const formattedTime = (timestamp) => {
         const date = new Date(timestamp);
         const formattedTime = date.toLocaleTimeString([], {
@@ -38,6 +37,7 @@ const NotificationCard = ({ item, index, onDelete }) => {
 
             </Animated.View>
         </View>
+
     )
 }
 
