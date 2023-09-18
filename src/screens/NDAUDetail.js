@@ -139,7 +139,8 @@ const NDAUDetail = (props) => {
 	}
 
 	const navigateToTransaction = () => {
-		props.navigation.navigate(ScreenNames.Transactions, { item })
+		// props.navigation.navigate(ScreenNames.Transactions, { item })
+		launchViewTransactionDetailInBrowser()
 	}
 
 	const copyAddress = () => {
@@ -170,6 +171,26 @@ const NDAUDetail = (props) => {
 	const canRecieve = accountInfo.unlocksOn == null;
 
 
+	const launchViewTransactionDetailInBrowser = async () => {
+
+		let url = AppConfig.calcExplorerUrl(item?.address, "mainnet")
+
+		const supported = await Linking.openURL(url);
+
+		if (supported) {
+			await Linking.openURL(url);
+		} else {
+			Alert.alert(
+				'Error',
+				`Don't know how to open this URL: ${url}`,
+				[{ text: 'OK', onPress: () => { } }],
+				{ cancelable: false },
+			);
+		}
+	};
+
+
+	console.log(JSON.stringify(item, null, 2))
 
 	return (
 		<ScreenContainer headerTitle={item.name} headerRight={canRecieve && <CopyAddressButton onPress={copyAddress} />}>

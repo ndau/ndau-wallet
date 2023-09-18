@@ -1,4 +1,4 @@
-import { useNavigation } from "@react-navigation/native";
+import { useIsFocused, useNavigation } from "@react-navigation/native";
 import React, { useEffect, useRef, useState } from "react";
 import { FlatList, StyleSheet, View } from "react-native";
 
@@ -13,6 +13,9 @@ import { themeColors } from "../config/colors";
 import { clearNotification, updateNotifications } from "../redux/actions";
 import NotificationCard from "./components/notifcations/NotificationCard";
 import { getNotifications, saveNotifications } from "../stores/NotificationStore";
+import { useWallet } from "../hooks";
+import UserStore from "../stores/UserStore";
+import useNotification from "../hooks/useNotification";
 
 
 const Notifications = () => {
@@ -20,33 +23,51 @@ const Notifications = () => {
 	const navigation = useNavigation();
 	const modelNotifyDeleteRef = useRef(null)
 	const [notificationId, setNotificationId] = useState(null)
+	const { getActiveWalletId } = useWallet()
 	const notifications = useSelector(state => state.NotificationReducer.notifications);
 	const dispatch = useDispatch();
+	const isFocused = useIsFocused()
 
 	useEffect(() => {
+
 		async function loadNotifications() {
 			const storedNotifications = await getNotifications();
+
 			if (storedNotifications.length > 0) {
 				dispatch(updateNotifications(storedNotifications));
 			}
 
 		}
+
 		loadNotifications();
 
-	}, []);
+	}, [isFocused]);
 
 
 	const handleClearNotification = () => {
+
 		dispatch(clearNotification(notificationId));
 		const updatedNotifications = notifications.filter(
 			(item) => item.id !== notificationId
 		);
 
+		const filterData = filterWalletNotifications(updatedNotifications)
 		// Save the updated notifications to AsyncStorage
-		saveNotifications(updatedNotifications);
+		saveNotifications(filterData);
 		modelNotifyDeleteRef.current(false)
-
 	};
+
+	const filterWalletNotifications = (data) => {
+
+		const filterNotify = data?.filter(
+			item => item.walletId === getActiveWalletId()
+		);
+
+		return filterNotify
+	}
+
+
+	console.log(notifications)
 
 	return (
 		<ScreenContainer tabScreen>
@@ -57,7 +78,8 @@ const Notifications = () => {
 			<Spacer height={20} />
 
 			<FlatList
-				data={notifications}
+				data={filterWalletNotifications(notifications)}
+				
 				renderItem={({ item, index }) =>
 					<NotificationCard
 						item={item}

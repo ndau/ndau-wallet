@@ -81,11 +81,14 @@ const WalletConnect = (props) => {
         <View style={{ marginVertical: 10 }}>
           <Button
             onPress={() => {
-              props.navigation.navigate(ScreenNames.Scanner, {
-                onScan: (data) => {
-                  scanQR(data);
-                }
-              })
+              connectWithURI("")
+
+
+              // props.navigation.navigate(ScreenNames.Scanner, {
+              //   onScan: (data) => {
+              //     scanQR(data);
+              //   }
+              // })
             }}
             label={'Scan  '}
             rightIcon={<QRCode />}
@@ -128,6 +131,8 @@ const WalletConnect = (props) => {
         onApprove={() => {
           ApprovalModalHandler.acceptLoading(true);
           approve(account.accountAddress).then(res => {
+
+            console.log(res,'Approveres-----')
             ApprovalModalHandler.acceptLoading(false);
             ApprovalModalHandler.hide();
           }).catch(err => {

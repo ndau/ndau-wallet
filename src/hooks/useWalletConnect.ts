@@ -36,6 +36,7 @@ const useWalletConnect = () => {
     []
   )
 
+
   const onSessionRequest = useCallback(
     async (requestEvent: SignClientTypes.EventArguments['session_request']) => {
       const { topic, params, verifyContext } = requestEvent
@@ -73,6 +74,8 @@ const useWalletConnect = () => {
         icons: []
       }
     })
+
+    console.log(signClient,'connect------')
     setPaired(signClient?.session?.values)
 
     try {
@@ -99,6 +102,7 @@ const useWalletConnect = () => {
     try {
       setLoading("Pairing");
       const response = await signClient.pair({ uri })
+      console.log(response,'response----')
       setPaired(signClient?.session?.values)
       setLoading("");
     } catch (error) {

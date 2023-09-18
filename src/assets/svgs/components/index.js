@@ -47,6 +47,12 @@ import NotificationFailed from "./NotificationFailed";
 import NotificationSuccess from "./NotificationSuccess";
 import ConvertIcon from "./ConvertSvg";
 import NpayIcon from "./NpaySvg";
+import RoundNdauIcon from "./NdauRoundLogoSvg";
+import RoundNpayIcon from "./RoundNpaySvg";
+
+import RoundUsdcIcon from "./UscdRoundSvg";
+import RoundEtheriumIcon from "./RoundEtheriumSvg";
+
 
 
 export {
@@ -97,5 +103,9 @@ export {
   NotificationFailed,
   NotificationSuccess,
   ConvertIcon,
-  NpayIcon
+  NpayIcon,
+  RoundNdauIcon,
+  RoundNpayIcon,
+  RoundEtheriumIcon,
+  RoundUsdcIcon,
 };

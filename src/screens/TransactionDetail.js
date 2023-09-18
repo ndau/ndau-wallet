@@ -1,18 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { Dimensions, Linking, ScrollView, StyleSheet, View } from "react-native";
 
+import { ethers } from "ethers";
+import moment from "moment";
+import AppConfig from "../AppConfig";
+import Button from "../components/Button";
 import CustomText from "../components/CustomText";
 import Loading from "../components/Loading";
 import ScreenContainer from "../components/Screen";
-import { themeColors } from "../config/colors";
-import { useTransaction } from "../hooks";
-import moment from "moment";
-import { ethers } from "ethers";
-import DataFormatHelper from "../helpers/DataFormatHelper";
 import Spacer from "../components/Spacer";
-import Button from "../components/Button";
-import AppConfig from "../AppConfig";
-import AccountStore from '../../src/stores/AccountStore'
+import { themeColors } from "../config/colors";
+import DataFormatHelper from "../helpers/DataFormatHelper";
+import { useTransaction } from "../hooks";
 
 
 const TransactionDetail = (props) => {
@@ -45,8 +44,6 @@ const TransactionDetail = (props) => {
 		)
 	}
 
-
-	console.log(accountAddress, 'accountAddress--')
 
 	const renderERCDetail = () => {
 		return (
@@ -89,11 +86,10 @@ const TransactionDetail = (props) => {
 		let url = '';
 
 		if (type === "ERC") {
-
 			url = `${AppConfig.VIEW_TRANSACTION_DETAIL_VIEW}/${address}`
 		}
-		if (type === "Ndau") {
 
+		if (type === "Ndau") {
 			url = AppConfig.calcExplorerUrl(address, "mainnet")
 		}
 

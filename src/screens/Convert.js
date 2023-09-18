@@ -1,13 +1,11 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useRef, useState } from 'react'
 import {
     Image,
     StyleSheet,
     TextInput,
-    TouchableOpacity,
     View
 } from 'react-native'
 
-import axios from 'axios'
 import { images } from '../../assets/images'
 import { ConvertIcon, NpayIcon, WalletSuccessSVGComponent } from '../assets/svgs/components'
 import Button from '../components/Button'
@@ -40,6 +38,7 @@ const ConvertNdauToNpay = (props) => {
 
 
     const getRemainNdauBalance = (amount) => {
+        
         try {
             const toShow = parseFloat((totalBalance - amount).toFixed(3));
             return toShow < 0 ? 0 : toShow
@@ -54,7 +53,6 @@ const ConvertNdauToNpay = (props) => {
         setLoaderValue("Updating")
 
         setTimeout(() => {
-
             setLoaderValue("")
             if (exchangeRate && ndauAmount) {
                 const convertedAmount = parseFloat(ndauAmount) * exchangeRate;

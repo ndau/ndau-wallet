@@ -4,8 +4,8 @@ import Svg, { Rect, G, Path, Defs, ClipPath } from "react-native-svg";
 const NotificationDelete = (props) => (
 
   <Svg
-    width={props.width ? props.width : 25}
-    height={props.height ? props.height : 25}
+    width={props.width ? props.width : 32}
+    height={props.height ? props.height : 32}
     viewBox="0 0 48 48"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
