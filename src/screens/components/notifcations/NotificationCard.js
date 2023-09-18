@@ -56,36 +56,46 @@ const NotificationCard = ({ item, index, onDelete }) => {
     }, [])
 
 
-
-
     return (
         <View style={styles.container}>
             {item?.isBoolean ?
-                <View style={{ padding: 6 }}>
+                <View style={{ padding: item?.isBoolean ? 6 : 0 }}>
+
                     <NotificationSuccess />
 
                     <View style={styles.svg} >
                         {setWalletIcon(item?.type)}
                     </View>
-                </View> : <NotificationFailed />}
+                </View> :
+
+                <View style={styles.svgFailed} >
+                    <NotificationFailed />
+                </View>
+            }
             <Spacer width={10} />
             <Animated.View entering={FadeInDown.delay(100 * index)}>
                 <View style={styles.row}>
-                    <View>
-                        <CustomText body semiBold >{item.message}</CustomText>
-                        <Spacer height={6} />
-                        <View style={styles.row3}>
-                            <View style={styles.row2}>
-                                <CustomText body2 semiBold >{`To :  `}</CustomText>
-                                <CustomText body2 > {makeStringShort(item?.transaction?.toAddress)}</CustomText>
-                            </View>
+                    <View style={{flexDirection:'row',justifyContent:'space-between',width:'100%'}}>
+                        <View>
+                            <CustomText body semiBold >{item.message}</CustomText>
+                            <Spacer height={6} />
+                            <View style={styles.row3}>
+                                <View style={styles.row2}>
+                                    <CustomText body2 semiBold >{`To :  `}</CustomText>
+                                    <CustomText body2 > {makeStringShort(item?.transaction?.toAddress)}</CustomText>
+                                </View>
 
-                            <View style={styles.row2}>
-                                <CustomText body2 semiBold >{`From :  `}</CustomText>
-                                <CustomText body2  > {makeStringShort(item?.transaction?.fromAddress)}</CustomText>
+                                <View style={styles.row2}>
+                                    <CustomText body2 semiBold >{`From :  `}</CustomText>
+                                    <CustomText body2  > {makeStringShort(item?.transaction?.fromAddress)}</CustomText>
+                                </View>
+
+
                             </View>
-                            <Spacer height={4} />
                         </View>
+                        <TouchableOpacity activeOpacity={0.8} onPress={onDelete} style={styles.deleteSvg}>
+                            <NotificationDelete />
+                        </TouchableOpacity>
                     </View>
                     <Spacer width={14} />
 
@@ -97,9 +107,7 @@ const NotificationCard = ({ item, index, onDelete }) => {
                     <CustomText body2 semiBold >{`Date :  `}</CustomText>
                     <CustomText body2 color='#fff'>{formattedTime(item?.id)}</CustomText>
                 </View>
-                <TouchableOpacity activeOpacity={0.8} onPress={onDelete} style={styles.deleteSvg}>
-                    <NotificationDelete />
-                </TouchableOpacity>
+
 
             </Animated.View>
         </View>
@@ -113,6 +121,7 @@ const styles = StyleSheet.create({
     container: {
         flexDirection: 'row',
         marginBottom: 25,
+        justifyContent: 'center'
 
     },
 
@@ -146,10 +155,9 @@ const styles = StyleSheet.create({
         right: 4,
         top: 35
     },
+
     deleteSvg: {
-        right: 35,
-        top: 35,
-        position: 'absolute'
+alignSelf:'flex-end'
     }
 
 

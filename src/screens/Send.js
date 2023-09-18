@@ -208,34 +208,21 @@ const Send = (props) => {
       sendERCFunds(
         ndauAddress,
         ndauAmount
-      ).then( res => {
-
+      ).then(res => {
 
         setLoading("");
+
         savedNotifications(`${ndauAmount}  ERC was successfully transfered `, true, 'erc', item?.address, ndauAddress)
+
         navigation.goBack();
-        // let Erc_notify = { id: Date.now(), message: 'ERC to ERC Account Send Transaction was successful', isBoolean: true, walletId: getActiveWalletId(), transaction: { fromAddress: item?.address, toAddress: ndauAddress } }
 
 
-        // dispatch(addNotification(Erc_notify));
-        // const currentNotifications = await getNotifications()
-        // // const filterWalletNotifications = currentNotifications.filter(
-        // //   item => item.walletId === getActiveWalletId()
-        // // );
+      }).catch(err => {
 
-        // saveNotifications([...currentNotifications, Erc_notify]);
-
-      }).catch( err => {
-        // let Erc_notify_error = { id: Date.now(), message: err?.reason, isBoolean: false, walletId: getActiveWalletId(), transaction: { fromAddress: item?.address, toAddress: ndauAddress } }
-
-        // dispatch(addNotification(Erc_notify_error));
-        // const currentNotifications = await getNotifications()
-        // // const filterWalletNotifications = currentNotifications.filter(
-        // //   item => item.walletId === getActiveWalletId()
-        // // );
-        // saveNotifications([...currentNotifications, Erc_notify]);
         setLoading("");
+
         savedNotifications(err?.reason, false, 'erc', item?.address, ndauAddress)
+
         FlashNotification.show(err.reason, true)
       })
     } else {
@@ -243,36 +230,23 @@ const Send = (props) => {
         UserStore.getAccountDetail(item.address),
         ndauAddress,
         ndauAmount
-      ).then( response => {
+      ).then(response => {
 
         if (response) {
-          // let notifyObject = { id: Date.now(), message: 'Ndau to Ndau Account Send Transaction was successful', isBoolean: response, walletId: getActiveWalletId(), transaction: { fromAddress: item?.address, toAddress: ndauAddress } }
-          savedNotifications(`${ndauAmount} Ndau was successfully transfered `, response, 'ndau', item?.address, ndauAddress)
 
-          // dispatch(addNotification(notifyObject));
-          // const currentNotifications = await getNotifications()
-          // // const filterWalletNotifications = currentNotifications.filter(
-          // //   item => item.walletId === getActiveWalletId()
-          // // );
-          // saveNotifications([...currentNotifications, notifyObject]);
+          savedNotifications(`${ndauAmount} Ndau was successfully transfered `, true, 'ndau', item?.address, ndauAddress)
+
           setLoading("");
+
           navigation.goBack();
         }
-
-
 
       }).catch(err => {
 
         savedNotifications(err.message, false, 'ndau', item?.address, ndauAddress)
-        // let notifyObjectError = { id: Date.now() - 86400000, message: err.message, isBoolean: false, walletId: getActiveWalletId(), transaction: { fromAddress: item?.address, toAddress: ndauAddress } }
-        // dispatch(addNotification(notifyObject));
-        // const currentNotifications = await getNotifications()
-        // // const filterWalletNotifications = currentNotifications.filter(
-        // //   item => item.walletId === getActiveWalletId()
-        // // );
-        // saveNotifications([...currentNotifications, notifyObjectError]);
 
         setLoading("")
+
         FlashNotification.show(`${err.message}`);
       })
     }

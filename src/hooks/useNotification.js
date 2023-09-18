@@ -11,8 +11,6 @@ export default useNotification = () => {
     const { getActiveWalletId } = useWallet()
 
 
- 
-
     const savedNotifications = async (message, isResponse, type, fromAddress, toAddress) => {
 
         if (type === "erc") {

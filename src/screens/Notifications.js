@@ -16,11 +16,11 @@ import { getNotifications, saveNotifications } from "../stores/NotificationStore
 import { useWallet } from "../hooks";
 import UserStore from "../stores/UserStore";
 import useNotification from "../hooks/useNotification";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 
-const Notifications = () => {
+const Notifications = (props) => {
 
-	const navigation = useNavigation();
 	const modelNotifyDeleteRef = useRef(null)
 	const [notificationId, setNotificationId] = useState(null)
 	const { getActiveWalletId } = useWallet()
@@ -29,6 +29,7 @@ const Notifications = () => {
 	const isFocused = useIsFocused()
 
 	useEffect(() => {
+
 
 		async function loadNotifications() {
 			const storedNotifications = await getNotifications();
@@ -44,16 +45,15 @@ const Notifications = () => {
 	}, [isFocused]);
 
 
-	const handleClearNotification = () => {
+	const handleClearNotification = async () => {
 
 		dispatch(clearNotification(notificationId));
 		const updatedNotifications = notifications.filter(
 			(item) => item.id !== notificationId
 		);
 
-		const filterData = filterWalletNotifications(updatedNotifications)
-		// Save the updated notifications to AsyncStorage
-		saveNotifications(filterData);
+		console.log(JSON.stringify(updatedNotifications, null, 2), 'filter------')
+		saveNotifications(updatedNotifications);
 		modelNotifyDeleteRef.current(false)
 	};
 
@@ -66,8 +66,7 @@ const Notifications = () => {
 		return filterNotify
 	}
 
-
-	console.log(notifications)
+	console.log(JSON.stringify(notifications, null, 2), 'upadte------')
 
 	return (
 		<ScreenContainer tabScreen>
@@ -79,7 +78,7 @@ const Notifications = () => {
 
 			<FlatList
 				data={filterWalletNotifications(notifications)}
-				
+
 				renderItem={({ item, index }) =>
 					<NotificationCard
 						item={item}
