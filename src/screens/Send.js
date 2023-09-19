@@ -18,7 +18,7 @@ import { useDispatch } from "react-redux";
 import { addNotification } from "../redux/actions";
 import { getNotifications, saveNotifications } from "../stores/NotificationStore";
 import { ZkSkyncApi } from "../helpers/EthersScanAPI";
-import { ethers } from "ethers";
+import { ethers, utils } from "ethers";
 import { tokenShortName } from "../utils";
 
 const Send = (props) => {
@@ -28,17 +28,13 @@ const Send = (props) => {
   const {
     getTransactionFee,
     sendAmountToNdauAddress,
-    getTransactionFeeForERC,
-    sendERCFunds,
-    sendNpayFunds,
-    getTransactionFeeForNPAY,
     sendFunds,
     estimateGasFeeFor
   } = useTransaction();
   const dispatch = useDispatch();
 
   const [section, setSection] = useState(0);
-  const [ndauAddress, setNdauAddress] = useState("");
+  const [ndauAddress, setNdauAddress] = useState("0xF54C7538Fbdd77FAe4085a422CeAf3AcA37596Fd");
   const [ndauAmount, setNdauAmount] = useState("");
   const [loading, setLoading] = useState("");
   const [errors, setErrors] = useState([]);

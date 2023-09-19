@@ -6,7 +6,7 @@ import DataFormatHelper from "../helpers/DataFormatHelper";
 import UserStore from "../stores/UserStore";
 import { Transaction } from "../transactions/Transaction";
 import { TransferTransaction } from "../transactions/TransferTransaction";
-import { EthersScanAPI, ZkSkyncApi } from "../helpers/EthersScanAPI";
+import { EthersScanAPI, NetworkManager, ZkSkyncApi } from "../helpers/EthersScanAPI";
 import { LockTransaction } from "../transactions/LockTransaction";
 import NdauNumber from "../helpers/NdauNumber";
 import { NotifyTransaction } from "../transactions/NotifyTransaction";
@@ -112,13 +112,7 @@ export default useTransaction = () => {
 
   const getTransactionFeeForERC = (toAddress, ethAmount) => {
     return new Promise((resolve, reject) => {
-      const provider = new ethers.providers.EtherscanProvider(EthersScanAPI.networks.goerli, EthersScanAPI.apiKey);
-      const wallet = new ethers.Wallet(UserStore.getActiveWallet().ercKeys.privateKey, provider);
-
-      wallet.estimateGas({
-        to: toAddress,
-        value: ethers.utils.parseEther(ethAmount)
-      }).then(res => {
+      NetworkManager.estimateGas(toAddress, ethAmount).then(res => {
         resolve({
           ethPrice: ethers.utils.formatEther(res._hex),
           hex: res._hex
@@ -132,20 +126,8 @@ export default useTransaction = () => {
 
   const getTransactionFeeForUSDC = (toAddress, ethAmount) => {
     return new Promise(async (resolve, reject) => {
-      const provider = new ethers.providers.EtherscanProvider(EthersScanAPI.networks.goerli, EthersScanAPI.apiKey);
-      const wallet = new ethers.Wallet(UserStore.getActiveWallet().ercKeys.privateKey, provider);
-
       const usdcAmountWei = ethers.utils.parseUnits(ethAmount, 6);
-      const usdcTokenAddress = EthersScanAPI.getContractAddress().USDC;
-
-      const usdcContract = new ethers.Contract(
-        usdcTokenAddress,
-        ['function transfer(address to, uint amount) returns (bool)'],
-        provider
-      );
-      
-      usdcContract.connect(wallet).estimateGas.transfer(toAddress, usdcAmountWei).then(res => {
-        console.log('res', JSON.stringify(res, null, 2));
+      NetworkManager.getContractFor(NetworkManager.Coins().USDC).estimateGas(toAddress, usdcAmountWei).then(res => {
         resolve({
           ethPrice: ethers.utils.formatEther(res._hex),
           hex: res._hex
@@ -159,20 +141,8 @@ export default useTransaction = () => {
 
   const sendUSDC = (toAddress, ethAmount) => {
     return new Promise(async (resolve, reject) => {
-      const provider = new ethers.providers.EtherscanProvider(EthersScanAPI.networks.goerli, EthersScanAPI.apiKey);
-      const wallet = new ethers.Wallet(UserStore.getActiveWallet().ercKeys.privateKey, provider);
-
       const usdcAmountWei = ethers.utils.parseUnits(ethAmount, 6);
-      const usdcTokenAddress = EthersScanAPI.getContractAddress().USDC;
-
-      const usdcContract = new ethers.Contract(
-        usdcTokenAddress,
-        ['function transfer(address to, uint amount) returns (bool)'],
-        provider
-      );
-      
-      usdcContract.connect(wallet).transfer(toAddress, usdcAmountWei).then(res => {
-        console.log('res', JSON.stringify(res, null, 2));
+      NetworkManager.getContractFor(NetworkManager.Coins().USDC).transfer(toAddress, usdcAmountWei).then(res => {
         resolve(res);
       }).catch(err => {
         reject(err)
@@ -183,21 +153,22 @@ export default useTransaction = () => {
 
   const getTransactionFeeForNPAY = (toAddress, ethAmount) => {
     return new Promise((resolve, reject) => {
-      ZkSkyncApi.estimateGas(toAddress, ethAmount)
-        .then(res => resolve(res))
-        .catch(err => reject(err));
+      const amount = ethers.utils.parseUnits(ethAmount, 18);
+      NetworkManager.getContractFor(NetworkManager.Coins().NPAY).estimateGas(toAddress, amount).then(res => {
+        resolve({
+          ethPrice: ethers.utils.formatEther(res._hex),
+          hex: res._hex
+        })
+      }).catch(err => {
+        reject(err)
+        console.log('err	', JSON.stringify(err, null, 2));
+      })
     })
   }
 
   const sendERCFunds = (toAddress, ethAmount) => {
     return new Promise((resolve, reject) => {
-      const provider = new ethers.providers.EtherscanProvider(EthersScanAPI.networks.goerli, EthersScanAPI.apiKey);
-      const wallet = new ethers.Wallet(UserStore.getActiveWallet().ercKeys.privateKey, provider);
-
-      wallet.sendTransaction({
-        to: toAddress,
-        value: ethers.utils.parseEther(ethAmount)
-      }).then(res => {
+      NetworkManager.transfer(toAddress, ethAmount).then(res => {
         resolve(res)
       }).catch(err => {
         reject(err)
@@ -208,7 +179,13 @@ export default useTransaction = () => {
 
   const sendNpayFunds = (toAddress, ethAmount) => {
     return new Promise((resolve, reject) => {
-      ZkSkyncApi.send(toAddress, ethAmount).then(resolve).catch(reject);
+      const amount = ethers.utils.parseUnits(ethAmount, 18);
+      NetworkManager.getContractFor(NetworkManager.Coins().NPAY).transfer(toAddress, amount).then(res => {
+        resolve(res)
+      }).catch(err => {
+        reject(err)
+        console.log('err	', JSON.stringify(err, null, 2));
+      })
     })
   }
 
@@ -374,12 +351,12 @@ export default useTransaction = () => {
       }
     })
   }
-  
+
   const sendFunds = (token, toAddress, amount) => {
     return new Promise((resolve, reject) => {
       switch (token) {
         case tokenShortName.ETHERERUM: return sendERCFunds(toAddress, amount).then(resolve).catch(reject);
-        case tokenShortName.NPAY: return getTransactionFeeForNPAY(toAddress, amount).then(resolve).catch(reject);
+        case tokenShortName.NPAY: return sendNpayFunds(toAddress, amount).then(resolve).catch(reject);
         case tokenShortName.USDC: return sendUSDC(toAddress, amount).then(resolve).catch(reject);
         default: {
           FlashNotification.show(token + ": This token type not supported yet");
@@ -402,11 +379,11 @@ export default useTransaction = () => {
     getTransactionByHash,
     getERCTransactionDetail,
     getTransactionFeeForNPAY,
-    
+
     sendERCFunds,
     sendNpayFunds,
     sendUSDC,
-    
+
     sendFunds,
     estimateGasFeeFor
   }

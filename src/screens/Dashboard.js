@@ -1,42 +1,34 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { Dimensions, FlatList, ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
+import { Dimensions, FlatList, ScrollView, StyleSheet, View } from "react-native";
 
+import { useIsFocused } from "@react-navigation/native";
+import { Alchemy, Network } from "alchemy-sdk";
+import { ethers } from "ethers";
 import { images } from "../assets/images";
+import BottomSheetModal from "../components/BottomSheetModal";
 import Button from "../components/Button";
 import DashboardHeader from "../components/DashboardHeader";
 import NFT from "../components/NFT";
 import ScreenContainer from "../components/Screen";
 import Token from "../components/Token";
 import { themeColors } from "../config/colors";
-import AccountAPIHelper from "../helpers/AccountAPIHelper";
 import DataFormatHelper from "../helpers/DataFormatHelper";
-import { Converters, EthersScanAPI, ZkSkyncApi } from "../helpers/EthersScanAPI";
+import { Converters, EthersScanAPI, NetworkManager } from "../helpers/EthersScanAPI";
 import { useWallet } from "../hooks";
 import NdauStore from "../stores/NdauStore";
 import UserStore from "../stores/UserStore";
+import { tokenShortName } from "../utils";
 import { ScreenNames } from "./ScreenNames";
-import BottomSheetModal from "../components/BottomSheetModal";
-import CustomText from "../components/CustomText";
-import { ArrowDownSVGComponent, BlockChainWalletLogoSVGComponent } from "../assets/svgs/components";
-import Spacer from "../components/Spacer";
-import { addWalletsData, tokenShortName } from "../utils";
-import DashBoardBottomSheetCard from "./components/DashBoardBottomSheetCard";
-import { useIsFocused } from "@react-navigation/native";
 import AddWalletsPopup from "./components/dashboard/AddWalletsPopup";
-import { ethers } from "ethers";
-import { Alchemy, Network } from "alchemy-sdk";
 
 const Dashboard = ({ navigation }) => {
 
-	const { getNDauAccounts, addAccountsInNdau, getActiveWallet, getNdauAccountsDetails } = useWallet();
+	const { getNDauAccounts, getActiveWallet, getNdauAccountsDetails } = useWallet();
 	const isFocused = useIsFocused();
 
 	const [walletData, setWalletData] = useState({ walletName: "", type: "" });
-	const [currentPrice, setCurrentPrice] = useState(0);
 	const [totalBalance, setTotalBalance] = useState(0);
-	const [accounts, setAccounts] = useState({});
 	const [selected, setSelected] = useState(0);
-	const [data, setData] = useState([]);
 	const refAddWalletSheet = useRef(null)
 
 	const [tokens, setTokens] = useState([
@@ -68,25 +60,34 @@ const Dashboard = ({ navigation }) => {
 
 		const { result: { ethusd } } = await EthersScanAPI.getEthPriceInUSD();
 		Promise.allSettled([
-			EthersScanAPI.getAddressBalance(getActiveWallet().ercAddress),
-			EthersScanAPI.getAddressBalance(getActiveWallet().ercAddress, EthersScanAPI.getContractAddress().USDC),
+			NetworkManager.getBalance(),
+			NetworkManager.getContractFor(NetworkManager.Coins().USDC).getBalance(),
 			getNdauAccountsDetails(),
-			ZkSkyncApi.getZksyncAddressBalance()
+			NetworkManager.getContractFor(NetworkManager.Coins().NPAY).getBalance()
 		]).then(results => {
 
 			// getting all results
-			const availableEthInWEI = results[0].status === "fulfilled" ? results[0].value.result : 0;
-			const availableUSDC = results[1].status === "fulfilled" ? results[1].value.result : 0;
+			const availableEth = results[0].status === "fulfilled" ? results[0].value : 0;
+			const availableUSDC = results[1].status === "fulfilled" ? results[1].value : 0;
 			const ndauAccounts = results[2].status === "fulfilled" ? results[2].value : 0;
-			const npayAccount = results[3].status === "fulfilled" ? results[3].value : 0;
+			const availableNpay = results[3].status === "fulfilled" ? results[3].value : 0;
 
 			const totalNdausOnAllAccounts = DataFormatHelper.getNdauFromNapu(Object.keys(ndauAccounts).map(key => ndauAccounts[key]).reduce((pv, cv) => pv += parseFloat(cv.balance), 0) || 0);
 
-			const npay = { totalFunds: parseFloat(npayAccount.totalFunds), usdAmount: npayAccount.usdAmount };
+			const npay = {
+				totalFunds: parseFloat(ethers.utils.formatEther(availableNpay._hex || 0)),
+				usdAmount: parseFloat(ethers.utils.formatEther(availableNpay._hex || 0))
+			};
 
-			const eth = { totalFunds: Converters.WEI_ETH(availableEthInWEI), usdAmount: Converters.ETH_USD(Converters.WEI_ETH(availableEthInWEI), ethusd) };
+			const eth = {
+				totalFunds: parseFloat(ethers.utils.formatEther(availableEth || 0)),
+				usdAmount: Converters.ETH_USD(ethers.utils.formatEther(availableEth || 0), ethusd)
+			};
 
-			const usdc = { totalFunds: parseFloat(ethers.utils.formatUnits(availableUSDC, 6) || 0), usdAmount: parseFloat(ethers.utils.formatUnits(availableUSDC, 6) || 0) };
+			const usdc = {
+				totalFunds: parseFloat(ethers.utils.formatUnits(availableUSDC, 6) || 0),
+				usdAmount: parseFloat(ethers.utils.formatUnits(availableUSDC, 6) || 0)
+			};
 
 			const currentPriceOfNdauInUsd = parseFloat(totalNdausOnAllAccounts * NdauStore.getMarketPrice()).toFixed(4)
 			setTokens([
@@ -144,9 +145,12 @@ const Dashboard = ({ navigation }) => {
 	useEffect(() => {
 		if (selected === 1) {
 			const c = new Alchemy({ apiKey: "Z_G5HhyiXdXZ9j0-uJ4B7SZr_oCk4xSN", network: Network.MATIC_MAINNET }).nft;
-			c.getNftsForOwner(getActiveWallet().ercAddress, { pageSize: 2 }).then(res => {
+			c.getNftsForOwner(getActiveWallet().ercAddress, {}).then(res => {
 				console.log('res', JSON.stringify(res, null, 2));
-				const nftsList = res.ownedNfts.map(obj => ({ name: obj.contract.name, image: obj.contract.openSea.imageUrl }));
+				const nftsList = res.ownedNfts.map(obj => ({
+					name: obj.contract.name || obj.contract.openSea?.collectionName,
+					image: obj.contract.openSea.imageUrl || obj.media[0]?.thumbnail
+				}));
 				setNfts(nftsList);
 			}).catch(err => {
 				console.log('err', JSON.stringify(err.message, null, 2));
@@ -176,7 +180,6 @@ const Dashboard = ({ navigation }) => {
 					currentWalletName={walletData?.walletName}
 					marketPrice={NdauStore.getMarketPrice()}
 					totalBalance={totalBalance}
-					accounts={accounts}
 					onAddWallet={() => {
 						refAddWalletSheet.current.open()
 					}}
