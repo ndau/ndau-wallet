@@ -1,4 +1,4 @@
-import { useIsFocused, useNavigation } from "@react-navigation/native";
+import { useIsFocused } from "@react-navigation/native";
 import React, { useEffect, useRef, useState } from "react";
 import { FlatList, StyleSheet, View } from "react-native";
 
@@ -10,13 +10,11 @@ import CustomModal from "../components/Modal";
 import ScreenContainer from "../components/Screen";
 import Spacer from "../components/Spacer";
 import { themeColors } from "../config/colors";
-import { clearNotification, updateNotifications } from "../redux/actions";
-import NotificationCard from "./components/notifcations/NotificationCard";
-import { getNotifications, saveNotifications } from "../stores/NotificationStore";
 import { useWallet } from "../hooks";
-import UserStore from "../stores/UserStore";
 import useNotification from "../hooks/useNotification";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { updateNotifications } from "../redux/actions";
+import { getNotifications } from "../stores/NotificationStore";
+import NotificationCard from "./components/notifcations/NotificationCard";
 
 
 const Notifications = (props) => {
@@ -24,36 +22,33 @@ const Notifications = (props) => {
 	const modelNotifyDeleteRef = useRef(null)
 	const [notificationId, setNotificationId] = useState(null)
 	const { getActiveWalletId } = useWallet()
+	const { cleardNotifications } = useNotification()
 	const notifications = useSelector(state => state.NotificationReducer.notifications);
 	const dispatch = useDispatch();
 	const isFocused = useIsFocused()
 
 	useEffect(() => {
-
-
 		async function loadNotifications() {
 			const storedNotifications = await getNotifications();
 
 			if (storedNotifications.length > 0) {
 				dispatch(updateNotifications(storedNotifications));
 			}
-
 		}
-
 		loadNotifications();
-
 	}, [isFocused]);
 
 
 	const handleClearNotification = async () => {
 
-		dispatch(clearNotification(notificationId));
-		const updatedNotifications = notifications.filter(
-			(item) => item.id !== notificationId
-		);
+		// dispatch(clearNotification(notificationId));
+		// const updatedNotifications = notifications.filter(
+		// 	(item) => item.id !== notificationId
+		// );
 
-		console.log(JSON.stringify(updatedNotifications, null, 2), 'filter------')
-		saveNotifications(updatedNotifications);
+		// saveNotifications(updatedNotifications);
+
+		cleardNotifications(notificationId)
 		modelNotifyDeleteRef.current(false)
 	};
 
@@ -66,7 +61,6 @@ const Notifications = (props) => {
 		return filterNotify
 	}
 
-	console.log(JSON.stringify(notifications, null, 2), 'upadte------')
 
 	return (
 		<ScreenContainer tabScreen>

@@ -1,26 +1,16 @@
+import { format } from 'date-fns'
 import React, { useCallback } from 'react'
 import { Dimensions, StyleSheet, TouchableOpacity, View } from 'react-native'
 import Animated, { FadeInDown } from "react-native-reanimated"
+
 import { NotificationDelete, NotificationFailed, NotificationSuccess, RoundEtheriumIcon, RoundNdauIcon, RoundUsdcIcon } from '../../../assets/svgs/components'
 import CustomText from '../../../components/CustomText'
 import Spacer from '../../../components/Spacer'
-import { format } from 'date-fns'
-import { Image } from 'react-native-svg'
-import NdauLogoSVGComponent from '../../../assets/svgs/components/NdauSvg'
-import NdauAccountLogoSVGComponent from '../../../assets/svgs/components/NdauLogoSvg'
 
 const NotificationCard = ({ item, index, onDelete }) => {
 
     const formattedTime = (timestamp) => {
-        // const date = new Date(timestamp);
-        // const formattedTime = date.toLocaleTimeString([], {
-        //     hour: 'numeric',
-        //     minute: '2-digit',
-        //     hour12: true,
-        // });
         const date = new Date(timestamp);
-
-        // Format the date as a string
         const formattedDate = format(date, 'yyyy-MM-dd HH:mm a');
         return formattedDate
     }
@@ -75,9 +65,10 @@ const NotificationCard = ({ item, index, onDelete }) => {
             <Spacer width={10} />
             <Animated.View entering={FadeInDown.delay(100 * index)}>
                 <View style={styles.row}>
-                    <View style={{flexDirection:'row',justifyContent:'space-between',width:'100%'}}>
+                    <View style={styles.main}>
+
                         <View>
-                            <CustomText body semiBold >{item.message}</CustomText>
+                            <CustomText body semiBold style={styles.message}>{item.message}</CustomText>
                             <Spacer height={6} />
                             <View style={styles.row3}>
                                 <View style={styles.row2}>
@@ -89,15 +80,15 @@ const NotificationCard = ({ item, index, onDelete }) => {
                                     <CustomText body2 semiBold >{`From :  `}</CustomText>
                                     <CustomText body2  > {makeStringShort(item?.transaction?.fromAddress)}</CustomText>
                                 </View>
-
-
                             </View>
                         </View>
+
                         <TouchableOpacity activeOpacity={0.8} onPress={onDelete} style={styles.deleteSvg}>
                             <NotificationDelete />
                         </TouchableOpacity>
+
                     </View>
-                    <Spacer width={14} />
+
 
                 </View>
                 <Spacer height={6} />
@@ -124,13 +115,18 @@ const styles = StyleSheet.create({
         justifyContent: 'center'
 
     },
+    main: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        width: '100%'
+    },
 
     column: {
         alignItems: 'center',
     },
 
     message: {
-        width: 250
+        width: Dimensions.get('window').width / 1.4
     },
 
     row: {
@@ -157,8 +153,8 @@ const styles = StyleSheet.create({
     },
 
     deleteSvg: {
-alignSelf:'flex-end'
-    }
+        alignSelf: 'flex-end'
+    },
 
 
 })

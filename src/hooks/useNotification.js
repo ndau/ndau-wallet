@@ -1,14 +1,16 @@
-import { useDispatch } from "react-redux";
-import { addNotification, } from "../redux/actions";
+import { useDispatch, useSelector } from "react-redux";
+import { addNotification, clearNotification, } from "../redux/actions";
 import { getNotifications, saveNotifications } from "../stores/NotificationStore";
 import useWallet from "./useWallet";
 import { RoundEtheriumIcon, RoundNdauIcon, RoundNpayIcon, RoundUsdcIcon } from "../assets/svgs/components";
+import isDate from "date-fns/fp/isDate";
 
 
 export default useNotification = () => {
 
     const dispatch = useDispatch()
     const { getActiveWalletId } = useWallet()
+    const notifications = useSelector(state => state.NotificationReducer.notifications);
 
 
     const savedNotifications = async (message, isResponse, type, fromAddress, toAddress) => {
@@ -44,9 +46,22 @@ export default useNotification = () => {
 
     }
 
+
+    const cleardNotifications = (id) => {
+
+        dispatch(clearNotification(id));
+
+        const updatedNotifications = notifications.filter(
+            (item) => item.id !== id
+        );
+
+        saveNotifications(updatedNotifications);
+    }
+
+
     return {
         savedNotifications,
-
+        cleardNotifications
     }
 
 
