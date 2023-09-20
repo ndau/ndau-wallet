@@ -2,15 +2,17 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import { ActivityIndicator, Dimensions, FlatList, RefreshControl, ScrollView, StyleSheet, View } from "react-native";
 
 import { useIsFocused } from "@react-navigation/native";
-import { Alchemy, Network } from "alchemy-sdk";
 import { ethers } from "ethers";
+import OrderAPI from "../api/OrderAPI";
 import { images } from "../assets/images";
 import BottomSheetModal from "../components/BottomSheetModal";
 import Button from "../components/Button";
+import CustomText from "../components/CustomText";
 import DashboardHeader from "../components/DashboardHeader";
 import NFT from "../components/NFT";
 import ScreenContainer from "../components/Screen";
 import Token from "../components/Token";
+import FlashNotification from "../components/common/FlashNotification";
 import { themeColors } from "../config/colors";
 import DataFormatHelper from "../helpers/DataFormatHelper";
 import { Converters, EthersScanAPI, NetworkManager } from "../helpers/EthersScanAPI";
@@ -20,9 +22,6 @@ import UserStore from "../stores/UserStore";
 import { tokenShortName } from "../utils";
 import { ScreenNames } from "./ScreenNames";
 import AddWalletsPopup from "./components/dashboard/AddWalletsPopup";
-import OrderAPI from "../api/OrderAPI";
-import CustomText from "../components/CustomText";
-import FlashNotification from "../components/common/FlashNotification";
 
 const Dashboard = ({ navigation }) => {
 

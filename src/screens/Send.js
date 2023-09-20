@@ -116,7 +116,6 @@ const Send = (props) => {
           });
           setSection(2);
         }).catch(err => {
-          console.log('err', JSON.stringify(err, null, 2));
           setLoading("");
           if (err.reason?.includes("ENS name not configured")) {
             FlashNotification.show("Address not found (" + ndauAddress + ")", true)
@@ -128,7 +127,7 @@ const Send = (props) => {
               FlashNotification.show(err.reason, true)
             }
           } else {
-            FlashNotification.show(err.reason, true)
+            FlashNotification.show(err.message, true)
           }
         })
       } else {

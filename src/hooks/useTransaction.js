@@ -338,12 +338,40 @@ export default useTransaction = () => {
     })
   }
 
+  const getEthBalanceForTransaction = (env) => {
+    return new Promise((resolve, reject) => {
+      NetworkManager.getBalance(env).then(res => {
+        const eth = parseFloat(ethers.utils.formatEther(res._hex));
+        if (eth <= 0) reject(new Error("Don't have Ethereum for processing"))
+        else resolve();
+      })
+    })
+  }
+
   const estimateGasFeeFor = (token, toAddress, amount) => {
     return new Promise((resolve, reject) => {
       switch (token) {
-        case tokenShortName.ETHERERUM: return getTransactionFeeForERC(toAddress, amount).then(resolve).catch(reject);
-        case tokenShortName.NPAY: return getTransactionFeeForNPAY(toAddress, amount).then(resolve).catch(reject);
-        case tokenShortName.USDC: return getTransactionFeeForUSDC(toAddress, amount).then(resolve).catch(reject);
+        case tokenShortName.ETHERERUM: {
+          return getEthBalanceForTransaction()
+            .then(() => {
+              getTransactionFeeForERC(toAddress, amount).then(resolve).catch(reject)
+            })
+            .catch(reject);
+        }
+        case tokenShortName.USDC: {
+          return getEthBalanceForTransaction()
+            .then(() => {
+              getTransactionFeeForUSDC(toAddress, amount).then(resolve).catch(reject)
+            })
+            .catch(reject);
+        }
+        case tokenShortName.NPAY: {
+          return getEthBalanceForTransaction(NetworkManager.getEnv().zkSyncEra)
+            .then(() => {
+              getTransactionFeeForNPAY(toAddress, amount).then(resolve).catch(reject);
+            })
+            .catch(reject);
+        }
         default: {
           FlashNotification.show(token + ": This token type not supported yet");
           reject("Not supported")

@@ -88,8 +88,8 @@ export const NetworkManager = {
         NPAY: "0xd7afcb470bcF8d07E3A4dCBa0Ec7D9f5D8C6a05a"
       },
       L2: {
-        USDC: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
-        MATIC: '0x7D1AfA7B718fb893dB30A3aBc0Cfc608AaCfeBB0',
+        USDC: "0x3355df6d4c9c3035724fd0e3914de96a5a83aaf4",
+        MATIC: '0x0000000000000000000000000000000000001010',
         NPAY: "0xd7afcb470bcF8d07E3A4dCBa0Ec7D9f5D8C6a05a"
       }
     },
@@ -127,8 +127,8 @@ export const NetworkManager = {
     return env === "testnet" || env === "devnet";
   },
 
-  __getDefaultWalletSetting: () => {
-    const provider = new ethers.providers.JsonRpcProvider(NetworkManager.getEnv().eth);
+  __getDefaultWalletSetting: (networkEnv) => {
+    const provider = new ethers.providers.JsonRpcProvider(networkEnv || NetworkManager.getEnv().eth);
     const wallet = new ethers.Wallet(UserStore.getActiveWallet().ercKeys.privateKey, provider);
     return wallet;
   },
@@ -159,22 +159,22 @@ export const NetworkManager = {
       { ...NetworkManager.__contractAddresses.Mainnet }
   },
 
-  getBalance: () => {
+  getBalance: (networkEnv) => {
     return new Promise((resolve, reject) => {
-      NetworkManager.__getDefaultWalletSetting().getBalance().then(resolve).catch(reject)
+      NetworkManager.__getDefaultWalletSetting(networkEnv).getBalance().then(resolve).catch(reject)
     })
   },
-  estimateGas: (toAddress, amount) => {
+  estimateGas: (toAddress, amount, networkEnv) => {
     return new Promise((resolve, reject) => {
-      NetworkManager.__getDefaultWalletSetting().estimateGas({
+      NetworkManager.__getDefaultWalletSetting(networkEnv).estimateGas({
         to: toAddress,
         value: ethers.utils.parseEther(amount)
       }).then(resolve).catch(reject);
     })
   },
-  transfer: (toAddress, amount) => {
+  transfer: (toAddress, amount, networkEnv) => {
     return new Promise((resolve, reject) => {
-      NetworkManager.__getDefaultWalletSetting().sendTransaction({
+      NetworkManager.__getDefaultWalletSetting(networkEnv).sendTransaction({
         to: toAddress,
         value: ethers.utils.parseEther(amount)
       }).then(resolve).catch(reject);

@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { FlatList, StyleSheet, TouchableOpacity, View } from "react-native";
+import { useIsFocused } from "@react-navigation/native";
 
 import CustomText from "../components/CustomText";
 import ScreenContainer from "../components/Screen";
@@ -8,7 +9,6 @@ import { useWallet, useWalletConnect } from "../hooks";
 import Spacer from "../components/Spacer";
 import { ArrowDownSVGComponent, WalletConnect, VersionIcon, ContactIcon, EnvironmentIcon, LogoutIcon, WalletIcon, Twitter, Facebook, Reddit } from "../assets/svgs/components";
 import { ScreenNames } from "./ScreenNames";
-import { useIsFocused } from "@react-navigation/native";
 
 const Setting = (props) => {
 
