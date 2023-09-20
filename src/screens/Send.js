@@ -17,9 +17,6 @@ import { ScreenNames } from "./ScreenNames";
 import { useDispatch } from "react-redux";
 import { addNotification } from "../redux/actions";
 import { getNotifications, saveNotifications } from "../stores/NotificationStore";
-import { ZkSkyncApi } from "../helpers/EthersScanAPI";
-import { ethers, utils } from "ethers";
-import { tokenShortName } from "../utils";
 
 const Send = (props) => {
   const { item, address } = props?.route?.params ?? {};
@@ -34,7 +31,7 @@ const Send = (props) => {
   const dispatch = useDispatch();
 
   const [section, setSection] = useState(0);
-  const [ndauAddress, setNdauAddress] = useState("0xF54C7538Fbdd77FAe4085a422CeAf3AcA37596Fd");
+  const [ndauAddress, setNdauAddress] = useState("");
   const [ndauAmount, setNdauAmount] = useState("");
   const [loading, setLoading] = useState("");
   const [errors, setErrors] = useState([]);

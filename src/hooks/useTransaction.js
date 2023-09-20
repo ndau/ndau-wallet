@@ -1,12 +1,12 @@
 
-import { Wallet, ethers } from "ethers";
+import { ethers } from "ethers";
 import AppConfig from "../AppConfig";
 import AccountAPIHelper from "../helpers/AccountAPIHelper";
 import DataFormatHelper from "../helpers/DataFormatHelper";
 import UserStore from "../stores/UserStore";
 import { Transaction } from "../transactions/Transaction";
 import { TransferTransaction } from "../transactions/TransferTransaction";
-import { EthersScanAPI, NetworkManager, ZkSkyncApi } from "../helpers/EthersScanAPI";
+import { EthersScanAPI, NetworkManager } from "../helpers/EthersScanAPI";
 import { LockTransaction } from "../transactions/LockTransaction";
 import NdauNumber from "../helpers/NdauNumber";
 import { NotifyTransaction } from "../transactions/NotifyTransaction";

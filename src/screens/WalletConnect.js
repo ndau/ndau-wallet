@@ -8,13 +8,14 @@ import Spacer from "../components/Spacer";
 import { useWallet, useWalletConnect } from "../hooks";
 import Button from "../components/Button";
 import { themeColors } from "../config/colors";
-import { Converters, EthersScanAPI } from "../helpers/EthersScanAPI";
+import { Converters, EthersScanAPI, NetworkManager } from "../helpers/EthersScanAPI";
 import { ndauUtils } from "../utils";
 import { Delete, QRCode } from "../assets/svgs/components";
 import moment from "moment";
 import FlashNotification from "../components/common/FlashNotification";
 import ApprovalModal, { ApprovalModalHandler } from "../components/wallectConnectModals/ApprovalModal";
 import { ScreenNames } from "./ScreenNames";
+import { ethers } from "ethers";
 
 const WalletConnect = (props) => {
   const { item } = props.route?.params ?? {};
@@ -41,16 +42,14 @@ const WalletConnect = (props) => {
     EthersScanAPI.getEthPriceInUSD().then(res => {
       if (res.message === "OK") {
         const { result: { ethusd } } = res;
-        EthersScanAPI.getAddressBalance(getActiveWallet().ercAddress).then(res => {
-          if (res.message === "OK") {
-            const { result } = res;
-            const eth = {
-              accountAddress: getActiveWallet().ercAddress,
-              totalFunds: Converters.WEI_ETH(result),
-              usdAmount: Converters.ETH_USD(Converters.WEI_ETH(result), ethusd)
-            };
-            setAccount(eth);
-          }
+        NetworkManager.getBalance().then(res => {
+          const eth = {
+            accountAddress: getActiveWallet().ercAddress,
+            totalFunds: parseFloat(ethers.utils.formatEther(res || 0)),
+            usdAmount: Converters.ETH_USD(ethers.utils.formatEther(res || 0), ethusd)
+          };
+          setAccount(eth);
+
         })
       }
     });
