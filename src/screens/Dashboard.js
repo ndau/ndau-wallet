@@ -261,21 +261,15 @@ const Dashboard = ({ navigation }) => {
 				height={Dimensions.get('window').height * 0.55}
 			>
 				<AddWalletsPopup
-
 					onClose={() => {
 						refAddWalletSheet.current.close()
 					}}
 					onItemClick={(index) => {
-
 						if (index == 0) navigation.navigate(ScreenNames.ImportWallet, { forCreation: true })
-
 						else if (index == 1) navigation.navigate(ScreenNames.CreateWallet, { isAlreadyWallet: true })
-
 						refAddWalletSheet.current.close();
-
 					}}
 				/>
-
 			</BottomSheetModal>
 
 

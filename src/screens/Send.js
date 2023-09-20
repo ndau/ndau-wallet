@@ -1,26 +1,24 @@
 import { useNavigation } from "@react-navigation/native";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Image, StyleSheet, View } from "react-native";
 
 import { QRCode } from "../assets/svgs/components";
 import Button from "../components/Button";
 import CustomText from "../components/CustomText";
 import CustomTextInput from "../components/CustomTextInput";
+import Loading from "../components/Loading";
 import ScreenContainer from "../components/Screen";
 import Spacer from "../components/Spacer";
-import { themeColors } from "../config/colors";
-import Loading from "../components/Loading";
-import { useTransaction } from "../hooks";
-import UserStore from "../stores/UserStore";
 import FlashNotification from "../components/common/FlashNotification";
+import { themeColors } from "../config/colors";
+import { useTransaction } from "../hooks";
+import useNotification from "../hooks/useNotification";
+import UserStore from "../stores/UserStore";
 import { ScreenNames } from "./ScreenNames";
-import { useDispatch } from "react-redux";
-import { addNotification } from "../redux/actions";
-import { getNotifications, saveNotifications } from "../stores/NotificationStore";
 
 const Send = (props) => {
-  const { item, address } = props?.route?.params ?? {};
-
+  const { item } = props?.route?.params ?? {};
+  const { savedNotifications } = useNotification()
   const navigation = useNavigation();
   const {
     getTransactionFee,
@@ -28,8 +26,6 @@ const Send = (props) => {
     sendFunds,
     estimateGasFeeFor
   } = useTransaction();
-  const dispatch = useDispatch();
-
   const [section, setSection] = useState(0);
   const [ndauAddress, setNdauAddress] = useState("");
   const [ndauAmount, setNdauAmount] = useState("");
@@ -215,20 +211,13 @@ const Send = (props) => {
         item.shortName,
         ndauAddress,
         ndauAmount
-      ).then(async res => {
+      ).then(res => {
         setLoading("");
-        let Erc_notify = { id: Date.now(), message: 'ERC to ERC Account Send Transaction was successful', isBoolean: true }
-        dispatch(addNotification(Erc_notify));
-        const currentNotifications = await getNotifications()
-        // Save the updated list of notifications, including the new one
-        saveNotifications([...currentNotifications, Erc_notify]);
+        savedNotifications(`${ndauAmount} ${item?.shortName?.toUpperCase()} was successfully transfered `, true, item?.shortName, item?.address, ndauAddress)
         navigation.goBack();
-      }).catch(async err => {
-        let Erc_notify_error = { id: Date.now(), message: err?.reason, isBoolean: false }
-        dispatch(addNotification(Erc_notify_error));
-        const currentNotifications = await getNotifications()
-        saveNotifications([...currentNotifications, Erc_notify_error]);
+      }).catch(err => {
         setLoading("");
+        savedNotifications(err?.reason, false, item?.shortName, item?.address, ndauAddress)
         FlashNotification.show(err.reason, true)
       })
     } else {
@@ -236,32 +225,19 @@ const Send = (props) => {
         UserStore.getAccountDetail(item.address),
         ndauAddress,
         ndauAmount
-      ).then(async response => {
-
-        let notifyObject = { id: Date.now(), message: 'Ndau to Ndau Account Send Transaction was successful', isBoolean: response }
-        dispatch(addNotification(notifyObject));
-        const currentNotifications = await getNotifications()
-        // Save the updated list of notifications, including the new one
-        saveNotifications([...currentNotifications, notifyObject]);
-
+      ).then(response => {
+        savedNotifications(`${ndauAmount} NDAU was successfully transfered `, true, 'ndau', item?.address, ndauAddress)
         setLoading("");
         navigation.goBack();
-
-      }).catch(async err => {
-        let notifyObjectError = { id: Date.now() - 86400000, message: err.message, isBoolean: false }
-        dispatch(addNotification(notifyObject));
-        const currentNotifications = await getNotifications()
-        // Save the updated list of notifications, including the new one
-        saveNotifications([...currentNotifications, notifyObjectError]);
-
+      }).catch(err => {
+        savedNotifications(err.message, false, 'ndau', item?.address, ndauAddress)
         setLoading("")
         FlashNotification.show(`${err.message}`);
       })
+
     }
 
   }
-
-
 
   const renderConfirmation = () => {
 
@@ -340,7 +316,6 @@ const Send = (props) => {
     if (section > 0) setSection(_ => _ -= 1);
     else navigation.goBack()
   }
-
 
   return (
     <ScreenContainer headerTitle="Send" preventBackPress={() => handleBack()}>

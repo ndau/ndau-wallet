@@ -1,59 +1,52 @@
-import React, { useRef, useState, useEffect } from "react";
-import { FlatList, Image, SectionList, StyleSheet, View } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import { useIsFocused } from "@react-navigation/native";
+import React, { useEffect, useRef, useState } from "react";
+import { FlatList, StyleSheet, View } from "react-native";
 
+import { useDispatch, useSelector } from "react-redux";
+import { NotificationDelete } from "../assets/svgs/components";
 import Button from "../components/Button";
 import CustomText from "../components/CustomText";
-import ScreenContainer from "../components/Screen";
-import { ScreenNames } from "./ScreenNames";
-import { themeColors } from "../config/colors";
-import { images } from "../assets/images";
-import Spacer from "../components/Spacer";
-import NotificationCard from "./components/notifcations/NotificationCard";
-import { NotificationDelete, NotificationFailed, NotificationSuccess } from "../assets/svgs/components";
-import { useDispatch, useSelector } from "react-redux";
-import { addNotification, clearNotification, markAsRead, updateNotifications } from "../redux/actions";
 import CustomModal from "../components/Modal";
+import ScreenContainer from "../components/Screen";
+import Spacer from "../components/Spacer";
+import { themeColors } from "../config/colors";
+import useNotification from "../hooks/useNotification";
+import { updateNotifications } from "../redux/actions";
+import { getNotifications } from "../stores/NotificationStore";
+import NotificationCard from "./components/notifcations/NotificationCard";
 
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { getNotifications, saveNotifications } from "../stores/NotificationStore";
 
+const Notifications = (props) => {
 
-const Notifications = () => {
-
-	const navigation = useNavigation();
 	const modelNotifyDeleteRef = useRef(null)
 	const [notificationId, setNotificationId] = useState(null)
+	const { deleteNotifications, filterWalletNotifications } = useNotification()
 	const notifications = useSelector(state => state.NotificationReducer.notifications);
 	const dispatch = useDispatch();
+	const isFocused = useIsFocused()
 
 	useEffect(() => {
 		async function loadNotifications() {
 			const storedNotifications = await getNotifications();
+
 			if (storedNotifications.length > 0) {
 				dispatch(updateNotifications(storedNotifications));
 			}
-
 		}
 		loadNotifications();
 
-	}, []);
+		return () => { }
+	}, [isFocused]);
 
 
-	const handleClearNotification = () => {
-		dispatch(clearNotification(notificationId));
-		const updatedNotifications = notifications.filter(
-			(item) => item.id !== notificationId
-		);
-
-		// Save the updated notifications to AsyncStorage
-		saveNotifications(updatedNotifications);
+	const handleDeleteNotification = async () => {
+		deleteNotifications(notificationId)
 		modelNotifyDeleteRef.current(false)
-
 	};
-
+	
 	return (
 		<ScreenContainer tabScreen>
+
 			<View style={styles.textContainer}>
 				<CustomText h6 semiBold style={styles.text1}>Notifications</CustomText>
 			</View>
@@ -61,7 +54,7 @@ const Notifications = () => {
 			<Spacer height={20} />
 
 			<FlatList
-				data={notifications}
+				data={filterWalletNotifications(notifications)}
 				renderItem={({ item, index }) =>
 					<NotificationCard
 						item={item}
@@ -70,15 +63,12 @@ const Notifications = () => {
 							setNotificationId(item?.id)
 							modelNotifyDeleteRef.current(true)
 						}}
-
 					/>}
 				keyExtractor={(item, index) => index.toString()}
-
 			/>
 
 			<CustomModal bridge={modelNotifyDeleteRef}>
 				<View style={styles.modelContainer}>
-
 					<NotificationDelete height={40} width={40} />
 					<Spacer height={25} />
 					<CustomText body semiBold style={styles.alertMessage}>Are you sure want to delete</CustomText>
@@ -92,15 +82,11 @@ const Notifications = () => {
 						<Spacer width={6} />
 						<Button
 							label={'Delete'}
-							onPress={() => {
-								handleClearNotification()
-
-							}}
+							onPress={handleDeleteNotification}
 							buttonContainerStyle={styles.btnDelete}
 						/>
 					</View>
 				</View>
-
 			</CustomModal>
 
 		</ScreenContainer>
@@ -135,8 +121,6 @@ const styles = StyleSheet.create({
 	modelContainer: {
 		justifyContent: 'center',
 		alignItems: 'center',
-
-
 	},
 	btnsRow: {
 		flexDirection: 'row',

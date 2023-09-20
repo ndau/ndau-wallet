@@ -31,7 +31,6 @@ import SwitchWallet from './screens/SwitchWallet';
 import Send from './screens/Send';
 import AddNdauAccount from './screens/AddNdauAccount';
 import Receive from './screens/Receive';
-import Swap from './screens/Swap';
 import LockPeriod from './screens/LockPeriod';
 import EAIDestination from './screens/EAIDestination';
 import Transactions from './screens/Transactions';
@@ -44,6 +43,7 @@ import Environments from './screens/Environments';
 import ContactSupport from './screens/components/ContactSupport';
 import NFTList from './screens/NFTList';
 import NFTDetail from './screens/NFTDetail';
+import ConvertNdauToNpay from './screens/Convert';
 
 LogBox.ignoreAllLogs()
 
@@ -104,7 +104,7 @@ const MainStack = () => {
       <Stack.Screen name={ScreenNames.Send} component={Send} />
       <Stack.Screen name={ScreenNames.AddNdauAccount} component={AddNdauAccount} />
       <Stack.Screen name={ScreenNames.Receive} component={Receive} />
-      <Stack.Screen name={ScreenNames.Swap} component={Swap} />
+      <Stack.Screen name={ScreenNames.ConvertNdauToNpay} component={ConvertNdauToNpay} />
 
       <Stack.Screen name={ScreenNames.SelectNDAU} component={AddNdauAccount} />
       <Stack.Screen name={ScreenNames.LockPeriod} component={LockPeriod} />

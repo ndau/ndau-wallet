@@ -142,7 +142,8 @@ const NDAUDetail = (props) => {
 	}
 
 	const navigateToTransaction = () => {
-		props.navigation.navigate(ScreenNames.Transactions, { item })
+		// props.navigation.navigate(ScreenNames.Transactions, { item })
+		launchViewTransactionDetailInBrowser()
 	}
 
 	const copyAddress = () => {
@@ -176,6 +177,26 @@ const NDAUDetail = (props) => {
 	const canRecieve = accountInfo.unlocksOn == null;
 
 
+	const launchViewTransactionDetailInBrowser = async () => {
+
+		let url = AppConfig.calcExplorerUrl(item?.address, "mainnet")
+
+		const supported = await Linking.openURL(url);
+
+		if (supported) {
+			await Linking.openURL(url);
+		} else {
+			Alert.alert(
+				'Error',
+				`Don't know how to open this URL: ${url}`,
+				[{ text: 'OK', onPress: () => { } }],
+				{ cancelable: false },
+			);
+		}
+	};
+
+
+	console.log(JSON.stringify(item, null, 2))
 
 	return (
 		<ScreenContainer headerTitle={item.name} headerRight={canRecieve && <CopyAddressButton onPress={copyAddress} />}>
@@ -195,7 +216,11 @@ const NDAUDetail = (props) => {
 							<IconButton disabled={!canRecieve} label="Receive" icon={<Receive />} onPress={() => props.navigation.navigate(ScreenNames.Receive, { address: item.address, tokenName: item.tokenName })} />
 						</View>
 						<View style={styles.row}>
-							<IconButton disabled={accountInfo.isLocked || disableButton} label="Convert" icon={<Convert />} />
+							<IconButton disabled={accountInfo.isLocked || disableButton} label="Convert" icon={<Convert />} onPress={() => props.navigation.navigate(ScreenNames.ConvertNdauToNpay, {
+								totalBalance: item?.totalFunds,
+								dollorBalnce: item?.usdAmount,
+								image: item?.image
+							})} />
 							<IconButton disabled={accountInfo.isLocked || disableButton} label="Lock" icon={<Lock />} onPress={() => props.navigation.navigate(ScreenNames.LockPeriod, { item })} />
 						</View>
 					</View>

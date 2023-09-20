@@ -18,7 +18,8 @@ const CustomTextInput = ({
 	inputStyle,
 	numberOfLines,
 	multiline,
-	autoCapitalize
+	autoCapitalize,
+	inputMainCon
 }) => {
 
 	const RenderMsg = useCallback(({ msg, isError }) => {
@@ -34,7 +35,7 @@ const CustomTextInput = ({
 
 	return (
 		<View style={styles.main}>
-			<CustomText body titilium>{label}</CustomText>
+			{label&&<CustomText body titilium>{label}</CustomText>}
 			<TextInput
 				value={value}
 				maxLength={maxLength}

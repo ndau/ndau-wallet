@@ -27,6 +27,9 @@ export default useWallet = () => {
   const getWallets = () => {
     return UserStore.getWallets()
   }
+  const getActiveWalletId = () => {
+    return UserStore.getActiveWalletId()
+  }
 
   const addAccountsInNdau = (numbersOfAccount = 1) => {
     return new Promise((resolve, reject) => {
@@ -50,6 +53,7 @@ export default useWallet = () => {
   const getActiveWallet = () => {
     return UserStore.getActiveWallet();
   }
+
 
   const addLegacyWallet = async (user) => {
     if (!user) {
@@ -266,6 +270,7 @@ export default useWallet = () => {
     getNdauAccountDetail,
     removeWallet,
     removeAccount,
-    changeWalletName
+    changeWalletName,
+    getActiveWalletId
   }
 }

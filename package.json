@@ -25,6 +25,7 @@
     "axios": "^1.4.0",
     "base-64": "^1.0.0",
     "crypto-js": "^4.1.1",
+    "date-fns": "^2.30.0",
     "ethers": "5",
     "events": "^3.3.0",
     "fastestsmallesttextencoderdecoder": "^1.0.22",

@@ -1,18 +1,19 @@
-import { View, Text, StyleSheet } from 'react-native'
 import React, { useRef, useState } from 'react'
-import ScreenContainer from '../../components/Screen'
-import CustomTextInput from '../../components/CustomTextInput'
-import CustomText from '../../components/CustomText'
-import CheckBox from '../../components/CheckBox'
+import { Dimensions, StyleSheet, View } from 'react-native'
+
+import { WalletSuccessSVGComponent } from '../../assets/svgs/components'
 import Button from '../../components/Button'
-import LogStore from '../../stores/LogStore'
-import { useContactSupport } from '../../hooks'
-import FlashNotification from '../../components/common/FlashNotification'
+import CheckBox from '../../components/CheckBox'
+import CustomText from '../../components/CustomText'
+import CustomTextInput from '../../components/CustomTextInput'
 import Loading from '../../components/Loading'
 import CustomModal from '../../components/Modal'
-import { WalletSuccessSVGComponent } from '../../assets/svgs/components'
-
-
+import ScreenContainer from '../../components/Screen'
+import Spacer from '../../components/Spacer'
+import CustomTextInputArea from '../../components/TextAreaInput'
+import FlashNotification from '../../components/common/FlashNotification'
+import { useContactSupport } from '../../hooks'
+import LogStore from '../../stores/LogStore'
 
 const ContactSupport = (props) => {
 
@@ -23,7 +24,6 @@ const ContactSupport = (props) => {
     const modalRef = useRef(null)
 
     const [data, setData] = useState({
-
         email: {
             value: "",
             errors: [],
@@ -32,9 +32,7 @@ const ContactSupport = (props) => {
             value: "",
             errors: [],
             success: []
-
         },
-
     });
 
     const isValidated =
@@ -54,7 +52,6 @@ const ContactSupport = (props) => {
             FlashNotification.show(`${error?.response?.data?.description}: ${error?.response?.data?.errors[0]?.message}`)
 
         })
-
     }
 
     const handleInput = (t, tag) => {
@@ -86,7 +83,6 @@ const ContactSupport = (props) => {
                     valueToSet.success = ["Looks Good"]
                 }
             }
-
             return {
                 ...prevState,
                 [tag]: valueToSet,
@@ -95,7 +91,6 @@ const ContactSupport = (props) => {
     };
 
     const handleDone = () => {
-
         modalRef.current(false)
         props.navigation.goBack()
     }
@@ -114,24 +109,24 @@ const ContactSupport = (props) => {
                 errors={data?.email?.errors}
                 autoCapitalize={'none'}
             />
-            <CustomTextInput
+
+            <Spacer height={20} />
+            <CustomTextInputArea
                 label={"Description"}
                 placeholder={"type here..."}
                 onChangeText={(t) => {
                     setDescriptionLength(t.length)
                     handleInput(t, 'description')
                 }}
-                inputStyle={styles.inputContainer}
                 multiline={true}
                 maxLength={1000}
                 errors={data?.description?.errors}
                 success={data?.description?.success}
-
             />
+
             <View style={styles.descriptionWords}>
                 <CustomText body2>{`(${descriptionWordsLength}/1000)`}</CustomText>
             </View>
-
 
             <View style={styles.checkBoxView}>
                 <CheckBox
@@ -143,8 +138,6 @@ const ContactSupport = (props) => {
 
                     }}
                 />
-
-
                 <CustomText body style={{ paddingLeft: 12 }}>
                     The attached data does NOT contain any private keys and contains NO secret information (e.g., your wallet password or recovery phrase). The data contains basic state information about your wallet and accounts, and is by default, included in your support request to help us debug any issues you might be having with your wallet app.
                 </CustomText>
@@ -166,7 +159,6 @@ const ContactSupport = (props) => {
                 <Button label={"Done"} onPress={handleDone} />
             </CustomModal>
 
-
         </ScreenContainer>
     )
 }
@@ -175,16 +167,20 @@ export default ContactSupport
 
 const styles = StyleSheet.create({
 
+    textAreaContainer: {
+        borderWidth: 1,
+        borderRadius: 20,
+        height: 100
+    },
     inputContainer: {
         borderRadius: 16,
-        height: 180,
-        paddingTop: 10
-
+        height: Dimensions.get('window').height * 0.2,
+        paddingTop: 10,
+        textAlignVertical: 'top',
     },
     descriptionWords: {
         alignItems: 'flex-end'
     },
-
     checkBoxView: {
 
         alignItems: 'flex-start',
