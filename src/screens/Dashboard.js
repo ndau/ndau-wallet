@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { Dimensions, FlatList, ScrollView, StyleSheet, View } from "react-native";
+import { ActivityIndicator, Dimensions, FlatList, RefreshControl, ScrollView, StyleSheet, View } from "react-native";
 
 import { useIsFocused } from "@react-navigation/native";
 import { Alchemy, Network } from "alchemy-sdk";
@@ -20,12 +20,15 @@ import UserStore from "../stores/UserStore";
 import { tokenShortName } from "../utils";
 import { ScreenNames } from "./ScreenNames";
 import AddWalletsPopup from "./components/dashboard/AddWalletsPopup";
+import OrderAPI from "../api/OrderAPI";
+import CustomText from "../components/CustomText";
 
 const Dashboard = ({ navigation }) => {
 
 	const { getNDauAccounts, getActiveWallet, getNdauAccountsDetails } = useWallet();
 	const isFocused = useIsFocused();
 
+	const [mainRefreshing, setMainRefreshing] = useState(false);
 	const [walletData, setWalletData] = useState({ walletName: "", type: "" });
 	const [totalBalance, setTotalBalance] = useState(0);
 	const [selected, setSelected] = useState(0);
@@ -96,8 +99,10 @@ const Dashboard = ({ navigation }) => {
 				makeToken(2, { totalFunds: eth.totalFunds, address: getActiveWallet().ercAddress, usdAmount: eth.usdAmount }),
 				makeToken(3, { totalFunds: usdc.totalFunds, address: getActiveWallet().ercAddress, usdAmount: usdc.usdAmount }),
 			])
-
-		}).catch(err => { })
+			setMainRefreshing(false);
+		}).catch(err => {
+			setMainRefreshing(false);
+		})
 
 	}
 
@@ -105,14 +110,17 @@ const Dashboard = ({ navigation }) => {
 		getNdauAccountsDetails().then(ndauAccounts => {
 			const totalNdausOnAllAccounts = DataFormatHelper.getNdauFromNapu(Object.keys(ndauAccounts).map(key => ndauAccounts[key]).reduce((pv, cv) => pv += parseFloat(cv.balance), 0) || 0);
 			const currentPriceOfNdauInUsd = parseFloat(totalNdausOnAllAccounts * NdauStore.getMarketPrice()).toFixed(4)
+			setMainRefreshing(false);
 			setTokens([
 				makeToken(0, { totalFunds: totalNdausOnAllAccounts, accounts: getNDauAccounts().length, usdAmount: currentPriceOfNdauInUsd })
 			])
 		})
 	}
 
-	useEffect(() => {
-		if (isFocused) {
+	const refreshData = () => {
+		OrderAPI.getMarketPrice().then(res => {
+			NdauStore.setMarketPrice(res)
+
 			if (getActiveWallet().type) {
 				setTokens([
 					makeToken(0, { totalFunds: "l", accounts: getNDauAccounts().length, usdAmount: "l" }),
@@ -132,7 +140,11 @@ const Dashboard = ({ navigation }) => {
 				walletName: UserStore.getActiveWallet().walletId,
 				type: UserStore.getActiveWallet().type
 			})
-		}
+		})
+	}
+
+	useEffect(() => {
+		if (isFocused) refreshData();
 	}, [isFocused])
 
 	useEffect(() => {
@@ -175,7 +187,20 @@ const Dashboard = ({ navigation }) => {
 
 	return (
 		<ScreenContainer tabScreen>
-			<ScrollView showsVerticalScrollIndicator={false}>
+			<ScrollView
+				refreshControl={
+					<RefreshControl
+						style={{ justifyContent: "center", alignItems: "center" }}
+						refreshing={mainRefreshing}
+						onRefresh={() => {
+							setMainRefreshing(true);
+							refreshData();
+						}}
+					>
+						<ActivityIndicator />
+					</RefreshControl>
+				}
+				showsVerticalScrollIndicator={false}>
 				<DashboardHeader
 					currentWalletName={walletData?.walletName}
 					marketPrice={NdauStore.getMarketPrice()}
