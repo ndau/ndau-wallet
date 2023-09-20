@@ -32,7 +32,8 @@ const ScreenNames = {
   Scanner: "Scanner",
   EditWallet: "EditWallet",
   WalletConnect: "WalletConnect",
-  Environments: "Environments"
+  Environments: "Environments",
+  ContactSupport: "ContactSupport",
 }
 
 export { ScreenNames }
