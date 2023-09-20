@@ -1,11 +1,8 @@
 import { useDispatch, useSelector } from "react-redux";
 import { addNotification, clearNotification, } from "../redux/actions";
 import { getNotifications, saveNotifications } from "../stores/NotificationStore";
-import useWallet from "./useWallet";
-import { RoundEtheriumIcon, RoundNdauIcon, RoundNpayIcon, RoundUsdcIcon } from "../assets/svgs/components";
-import isDate from "date-fns/fp/isDate";
 import { tokenShortName } from "../utils";
-
+import useWallet from "./useWallet";
 
 export default useNotification = () => {
 
@@ -14,29 +11,33 @@ export default useNotification = () => {
     const notifications = useSelector(state => state.NotificationReducer.notifications);
 
     const savedNotifications = async (message, isResponse, type, fromAddress, toAddress) => {
+
         if (type === tokenShortName.ETHERERUM) {
-            let erc_notify = { id: Date.now(), message: message, isBoolean: isResponse, walletId: getActiveWalletId(), transaction: { fromAddress: fromAddress, toAddress: toAddress }, type: type }
-            dispatch(addNotification(erc_notify));
+            let obj = notificationsObject(message, isResponse, type, fromAddress, toAddress)
+            dispatch(addNotification(obj));
             const currentNotifications = await getNotifications()
-            saveNotifications([...currentNotifications, erc_notify]);
+            saveNotifications([...currentNotifications, obj]);
         } else if (type === tokenShortName.NDAU) {
-            let notifyObject = { id: Date.now(), message: message, isBoolean: isResponse, walletId: getActiveWalletId(), transaction: { fromAddress: fromAddress, toAddress: toAddress }, type: type }
-            dispatch(addNotification(notifyObject));
+            let obj = notificationsObject(message, isResponse, type, fromAddress, toAddress)
+            dispatch(addNotification(obj));
             const currentNotifications = await getNotifications()
-            saveNotifications([...currentNotifications, notifyObject]);
-
+            saveNotifications([...currentNotifications, obj]);
         } else if (type === tokenShortName.USDC) {
-            let usdc_notify = { id: Date.now(), message: message, isBoolean: isResponse, walletId: getActiveWalletId(), transaction: { fromAddress: fromAddress, toAddress: toAddress }, type: type }
-            dispatch(addNotification(usdc_notify));
+            let obj = notificationsObject(message, isResponse, type, fromAddress, toAddress)
+            dispatch(addNotification(obj));
             const currentNotifications = await getNotifications()
-            saveNotifications([...currentNotifications, usdc_notify]);
-
+            saveNotifications([...currentNotifications, obj]);
         } else if (type === tokenShortName.NPAY) {
-            let nPay_notify = { id: Date.now(), message: message, isBoolean: isResponse, walletId: getActiveWalletId(), transaction: { fromAddress: fromAddress, toAddress: toAddress }, type: type }
-            dispatch(addNotification(nPay_notify));
+            let obj = notificationsObject(message, isResponse, type, fromAddress, toAddress)
+            dispatch(addNotification(obj));
             const currentNotifications = await getNotifications()
-            saveNotifications([...currentNotifications, nPay_notify]);
+            saveNotifications([...currentNotifications, obj]);
         }
+    }
+
+    const notificationsObject = (message, isResponse, type, fromAddress, toAddress) => {
+        let object = { id: Date.now(), message: message, isBoolean: isResponse, walletId: getActiveWalletId(), transaction: { fromAddress: fromAddress, toAddress: toAddress }, type: type }
+        return object
     }
 
     const deleteNotifications = (id) => {
@@ -59,6 +60,4 @@ export default useNotification = () => {
         deleteNotifications,
         filterWalletNotifications
     }
-
-
 }

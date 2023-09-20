@@ -20,7 +20,7 @@ const Notifications = (props) => {
 
 	const modelNotifyDeleteRef = useRef(null)
 	const [notificationId, setNotificationId] = useState(null)
-	const { deleteNotifications,filterWalletNotifications } = useNotification()
+	const { deleteNotifications, filterWalletNotifications } = useNotification()
 	const notifications = useSelector(state => state.NotificationReducer.notifications);
 	const dispatch = useDispatch();
 	const isFocused = useIsFocused()
@@ -43,7 +43,7 @@ const Notifications = (props) => {
 		deleteNotifications(notificationId)
 		modelNotifyDeleteRef.current(false)
 	};
-
+	
 	return (
 		<ScreenContainer tabScreen>
 
@@ -121,8 +121,6 @@ const styles = StyleSheet.create({
 	modelContainer: {
 		justifyContent: 'center',
 		alignItems: 'center',
-
-
 	},
 	btnsRow: {
 		flexDirection: 'row',

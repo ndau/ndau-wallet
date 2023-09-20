@@ -1,26 +1,23 @@
 import { useNavigation } from "@react-navigation/native";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Image, StyleSheet, View } from "react-native";
 
 import { QRCode } from "../assets/svgs/components";
 import Button from "../components/Button";
 import CustomText from "../components/CustomText";
 import CustomTextInput from "../components/CustomTextInput";
+import Loading from "../components/Loading";
 import ScreenContainer from "../components/Screen";
 import Spacer from "../components/Spacer";
-import { themeColors } from "../config/colors";
-import Loading from "../components/Loading";
-import { useTransaction, useWallet } from "../hooks";
-import UserStore from "../stores/UserStore";
 import FlashNotification from "../components/common/FlashNotification";
-import { ScreenNames } from "./ScreenNames";
-import { useDispatch } from "react-redux";
-import { addNotification } from "../redux/actions";
-import { getNotifications, saveNotifications } from "../stores/NotificationStore";
+import { themeColors } from "../config/colors";
+import { useTransaction } from "../hooks";
 import useNotification from "../hooks/useNotification";
+import UserStore from "../stores/UserStore";
+import { ScreenNames } from "./ScreenNames";
 
 const Send = (props) => {
-  const { item, address } = props?.route?.params ?? {};
+  const { item } = props?.route?.params ?? {};
   const { savedNotifications } = useNotification()
   const navigation = useNavigation();
   const {
@@ -29,8 +26,6 @@ const Send = (props) => {
     sendFunds,
     estimateGasFeeFor
   } = useTransaction();
-  const dispatch = useDispatch();
-  const { getActiveWalletId } = useWallet()
   const [section, setSection] = useState(0);
   const [ndauAddress, setNdauAddress] = useState("");
   const [ndauAmount, setNdauAmount] = useState("");
@@ -244,8 +239,6 @@ const Send = (props) => {
 
   }
 
-
-
   const renderConfirmation = () => {
 
     return (
@@ -323,8 +316,6 @@ const Send = (props) => {
     if (section > 0) setSection(_ => _ -= 1);
     else navigation.goBack()
   }
-
-  console.log(item.address)
 
   return (
     <ScreenContainer headerTitle="Send" preventBackPress={() => handleBack()}>

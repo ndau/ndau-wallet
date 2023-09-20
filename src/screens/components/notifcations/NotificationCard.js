@@ -17,12 +17,9 @@ const NotificationCard = ({ item, index, onDelete }) => {
     }
 
     const makeStringShort = (val) => {
-
         if (val.length > 0) {
-
-            const prefix = val?.slice(0, 4);
-            const suffix = val?.slice(-4);
-
+            let prefix = val?.slice(0, 4);
+            let suffix = val?.slice(-4);
             return `${prefix}....${suffix}`;
         }
     }
@@ -49,15 +46,12 @@ const NotificationCard = ({ item, index, onDelete }) => {
         <View style={styles.container}>
             {item?.isBoolean ?
                 <View style={{ padding: item?.isBoolean ? 6 : 0 }}>
-
                     <NotificationSuccess />
-
                     <View style={styles.svg} >
                         {setWalletIcon(item?.type)}
                     </View>
-
-                </View> :
-
+                </View>
+                :
                 <View style={styles.svgFailed} >
                     <NotificationFailed />
                 </View>
@@ -66,7 +60,6 @@ const NotificationCard = ({ item, index, onDelete }) => {
             <Spacer width={10} />
 
             <Animated.View entering={FadeInDown.delay(100 * index)}>
-
                 <View style={styles.row}>
                     <View style={styles.main}>
 
@@ -89,7 +82,6 @@ const NotificationCard = ({ item, index, onDelete }) => {
                         <TouchableOpacity activeOpacity={0.8} onPress={onDelete} style={styles.deleteSvg}>
                             <NotificationDelete />
                         </TouchableOpacity>
-
                     </View>
                 </View>
 
@@ -99,13 +91,12 @@ const NotificationCard = ({ item, index, onDelete }) => {
                     <CustomText body2 semiBold >{`Date :  `}</CustomText>
                     <CustomText body2 color='#fff'>{formattedTime(item?.id)}</CustomText>
                 </View>
-
             </Animated.View>
+
         </View>
 
     )
 }
-
 
 const styles = StyleSheet.create({
 
@@ -113,27 +104,22 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         marginBottom: 25,
         justifyContent: 'center'
-
     },
     main: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         width: '100%'
     },
-
     column: {
         alignItems: 'center',
     },
-
     message: {
         width: Dimensions.get('window').width / 1.4
     },
-
     row: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         paddingRight: 20,
-
         width: Dimensions.get('window').width / 1.24
     },
     row2: {
@@ -145,19 +131,14 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         paddingRight: 16
     },
-
     svg: {
         position: 'absolute',
         right: 4,
         top: 35
     },
-
     deleteSvg: {
         alignSelf: 'flex-end'
     },
-
-
 })
-
 
 export default NotificationCard

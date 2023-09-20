@@ -280,9 +280,7 @@ export default useTransaction = () => {
   const notifyForNDAU = (account) => {
     return new Promise(async (resolve, reject) => {
       try {
-
         const wallet = UserStore.getActiveWallet();
-
         Object.assign(NotifyTransaction.prototype, Transaction)
         const notifyTransaction = new NotifyTransaction(
           wallet,
@@ -379,11 +377,9 @@ export default useTransaction = () => {
     getTransactionByHash,
     getERCTransactionDetail,
     getTransactionFeeForNPAY,
-
     sendERCFunds,
     sendNpayFunds,
     sendUSDC,
-
     sendFunds,
     estimateGasFeeFor
   }
