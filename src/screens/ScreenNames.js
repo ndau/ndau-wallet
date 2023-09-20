@@ -23,7 +23,7 @@ const ScreenNames = {
   Send: "Send",
   AddNdauAccount: "AddNdauAccount",
   Receive: "Receive",
-  Swap: "Swap",
+  ConvertNdauToNpay: "ConvertNdauToNpay",
   LockPeriod: "LockPeriod",
   EAIDestination: "EAIDestination",
   SelectNDAU: "SelectNDAU",
