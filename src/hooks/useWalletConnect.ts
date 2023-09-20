@@ -22,7 +22,6 @@ export const EIP155_SIGNING_METHODS = {
 const useWalletConnect = () => {
 
   const relayUrl = "wss://relay.walletconnect.com";
-
   const [paired, setPaired] = useState<SessionTypes.Struct[]>([]);
   const [clientInitialized, setClientInitialized] = useState<boolean>();
   const [loading, setLoading] = useState<string | null>(null);
@@ -30,12 +29,10 @@ const useWalletConnect = () => {
 
   const onSessionProposal = useCallback(
     (proposal: SignClientTypes.EventArguments['session_proposal']) => {
-      // console.log('ahha', JSON.stringify(proposal, null, 2));
       setProposal(proposal);
     },
     []
   )
-
 
   const onSessionRequest = useCallback(
     async (requestEvent: SignClientTypes.EventArguments['session_request']) => {
@@ -75,7 +72,6 @@ const useWalletConnect = () => {
       }
     })
 
-    console.log(signClient,'connect------')
     setPaired(signClient?.session?.values)
 
     try {
@@ -102,7 +98,6 @@ const useWalletConnect = () => {
     try {
       setLoading("Pairing");
       const response = await signClient.pair({ uri })
-      console.log(response,'response----')
       setPaired(signClient?.session?.values)
       setLoading("");
     } catch (error) {

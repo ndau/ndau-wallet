@@ -65,6 +65,7 @@ const Notifications = (props) => {
 						}}
 					/>}
 				keyExtractor={(item, index) => index.toString()}
+				contentContainerStyle={styles.list}
 			/>
 
 			<CustomModal bridge={modelNotifyDeleteRef}>
@@ -141,6 +142,9 @@ const styles = StyleSheet.create({
 		flex: 1,
 		height: 44,
 		backgroundColor: 'red',
+	},
+	list:{
+		paddingBottom:120
 	}
 })
 

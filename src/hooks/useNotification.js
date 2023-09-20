@@ -11,24 +11,20 @@ export default useNotification = () => {
     const notifications = useSelector(state => state.NotificationReducer.notifications);
 
     const savedNotifications = async (message, isResponse, type, fromAddress, toAddress) => {
-
+        let obj = notificationsObject(message, isResponse, type, fromAddress, toAddress)
         if (type === tokenShortName.ETHERERUM) {
-            let obj = notificationsObject(message, isResponse, type, fromAddress, toAddress)
             dispatch(addNotification(obj));
             const currentNotifications = await getNotifications()
             saveNotifications([...currentNotifications, obj]);
         } else if (type === tokenShortName.NDAU) {
-            let obj = notificationsObject(message, isResponse, type, fromAddress, toAddress)
             dispatch(addNotification(obj));
             const currentNotifications = await getNotifications()
             saveNotifications([...currentNotifications, obj]);
         } else if (type === tokenShortName.USDC) {
-            let obj = notificationsObject(message, isResponse, type, fromAddress, toAddress)
-            dispatch(addNotification(obj));
+            dispatch(addNotification(obj))
             const currentNotifications = await getNotifications()
             saveNotifications([...currentNotifications, obj]);
         } else if (type === tokenShortName.NPAY) {
-            let obj = notificationsObject(message, isResponse, type, fromAddress, toAddress)
             dispatch(addNotification(obj));
             const currentNotifications = await getNotifications()
             saveNotifications([...currentNotifications, obj]);

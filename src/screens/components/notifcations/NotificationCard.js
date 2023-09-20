@@ -38,7 +38,7 @@ const NotificationCard = ({ item, index, onDelete }) => {
         else if (type === tokenShortName.USDC) {
             return <RoundUsdcIcon />
         }
-
+        
     }, [])
 
 
