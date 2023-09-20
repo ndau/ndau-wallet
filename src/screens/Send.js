@@ -209,20 +209,12 @@ const Send = (props) => {
         ndauAddress,
         ndauAmount
       ).then(res => {
-
         setLoading("");
-
         savedNotifications(`${ndauAmount}  ERC was successfully transfered `, true, 'erc', item?.address, ndauAddress)
-
         navigation.goBack();
-
-
       }).catch(err => {
-
         setLoading("");
-
         savedNotifications(err?.reason, false, 'erc', item?.address, ndauAddress)
-
         FlashNotification.show(err.reason, true)
       })
     } else {
@@ -231,22 +223,15 @@ const Send = (props) => {
         ndauAddress,
         ndauAmount
       ).then(response => {
-
         if (response) {
-
           savedNotifications(`${ndauAmount} Ndau was successfully transfered `, true, 'ndau', item?.address, ndauAddress)
-
           setLoading("");
-
           navigation.goBack();
         }
 
       }).catch(err => {
-
         savedNotifications(err.message, false, 'ndau', item?.address, ndauAddress)
-
         setLoading("")
-
         FlashNotification.show(`${err.message}`);
       })
     }

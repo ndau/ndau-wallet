@@ -10,7 +10,6 @@ import CustomModal from "../components/Modal";
 import ScreenContainer from "../components/Screen";
 import Spacer from "../components/Spacer";
 import { themeColors } from "../config/colors";
-import { useWallet } from "../hooks";
 import useNotification from "../hooks/useNotification";
 import { updateNotifications } from "../redux/actions";
 import { getNotifications } from "../stores/NotificationStore";
@@ -21,8 +20,7 @@ const Notifications = (props) => {
 
 	const modelNotifyDeleteRef = useRef(null)
 	const [notificationId, setNotificationId] = useState(null)
-	const { getActiveWalletId } = useWallet()
-	const { cleardNotifications } = useNotification()
+	const { deleteNotifications,filterWalletNotifications } = useNotification()
 	const notifications = useSelector(state => state.NotificationReducer.notifications);
 	const dispatch = useDispatch();
 	const isFocused = useIsFocused()
@@ -36,34 +34,19 @@ const Notifications = (props) => {
 			}
 		}
 		loadNotifications();
+
+		return () => { }
 	}, [isFocused]);
 
 
-	const handleClearNotification = async () => {
-
-		// dispatch(clearNotification(notificationId));
-		// const updatedNotifications = notifications.filter(
-		// 	(item) => item.id !== notificationId
-		// );
-
-		// saveNotifications(updatedNotifications);
-
-		cleardNotifications(notificationId)
+	const handleDeleteNotification = async () => {
+		deleteNotifications(notificationId)
 		modelNotifyDeleteRef.current(false)
 	};
 
-	const filterWalletNotifications = (data) => {
-
-		const filterNotify = data?.filter(
-			item => item.walletId === getActiveWalletId()
-		);
-
-		return filterNotify
-	}
-
-
 	return (
 		<ScreenContainer tabScreen>
+
 			<View style={styles.textContainer}>
 				<CustomText h6 semiBold style={styles.text1}>Notifications</CustomText>
 			</View>
@@ -72,7 +55,6 @@ const Notifications = (props) => {
 
 			<FlatList
 				data={filterWalletNotifications(notifications)}
-
 				renderItem={({ item, index }) =>
 					<NotificationCard
 						item={item}
@@ -81,15 +63,12 @@ const Notifications = (props) => {
 							setNotificationId(item?.id)
 							modelNotifyDeleteRef.current(true)
 						}}
-
 					/>}
 				keyExtractor={(item, index) => index.toString()}
-
 			/>
 
 			<CustomModal bridge={modelNotifyDeleteRef}>
 				<View style={styles.modelContainer}>
-
 					<NotificationDelete height={40} width={40} />
 					<Spacer height={25} />
 					<CustomText body semiBold style={styles.alertMessage}>Are you sure want to delete</CustomText>
@@ -103,15 +82,11 @@ const Notifications = (props) => {
 						<Spacer width={6} />
 						<Button
 							label={'Delete'}
-							onPress={() => {
-								handleClearNotification()
-
-							}}
+							onPress={handleDeleteNotification}
 							buttonContainerStyle={styles.btnDelete}
 						/>
 					</View>
 				</View>
-
 			</CustomModal>
 
 		</ScreenContainer>

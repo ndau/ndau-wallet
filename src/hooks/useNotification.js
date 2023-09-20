@@ -14,25 +14,16 @@ export default useNotification = () => {
 
 
     const savedNotifications = async (message, isResponse, type, fromAddress, toAddress) => {
-
         if (type === "erc") {
-
             let Erc_notify = { id: Date.now(), message: message, isBoolean: isResponse, walletId: getActiveWalletId(), transaction: { fromAddress: fromAddress, toAddress: toAddress }, type: type }
-
             dispatch(addNotification(Erc_notify));
-
             const currentNotifications = await getNotifications()
-
             saveNotifications([...currentNotifications, Erc_notify]);
         }
         else if (type === 'ndau') {
-
             let notifyObject = { id: Date.now(), message: message, isBoolean: isResponse, walletId: getActiveWalletId(), transaction: { fromAddress: fromAddress, toAddress: toAddress }, type: type }
-
             dispatch(addNotification(notifyObject));
-
             const currentNotifications = await getNotifications()
-
             saveNotifications([...currentNotifications, notifyObject]);
 
         } else if (type === 'usdc') {
@@ -46,22 +37,25 @@ export default useNotification = () => {
 
     }
 
-
-    const cleardNotifications = (id) => {
-
+    const deleteNotifications = (id) => {
         dispatch(clearNotification(id));
-
         const updatedNotifications = notifications.filter(
             (item) => item.id !== id
         );
-
         saveNotifications(updatedNotifications);
     }
 
+    const filterWalletNotifications = (data) => {
+		const filterNotify = data?.filter(
+			item => item.walletId === getActiveWalletId()
+		);
+		return filterNotify
+	}
 
     return {
         savedNotifications,
-        cleardNotifications
+        deleteNotifications,
+        filterWalletNotifications
     }
 
 

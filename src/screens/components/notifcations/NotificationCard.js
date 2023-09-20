@@ -24,8 +24,6 @@ const NotificationCard = ({ item, index, onDelete }) => {
 
             return `${prefix}....${suffix}`;
         }
-
-
     }
 
     const setWalletIcon = useCallback((type) => {
@@ -56,14 +54,18 @@ const NotificationCard = ({ item, index, onDelete }) => {
                     <View style={styles.svg} >
                         {setWalletIcon(item?.type)}
                     </View>
+
                 </View> :
 
                 <View style={styles.svgFailed} >
                     <NotificationFailed />
                 </View>
             }
+
             <Spacer width={10} />
+
             <Animated.View entering={FadeInDown.delay(100 * index)}>
+
                 <View style={styles.row}>
                     <View style={styles.main}>
 
@@ -88,17 +90,14 @@ const NotificationCard = ({ item, index, onDelete }) => {
                         </TouchableOpacity>
 
                     </View>
-
-
                 </View>
-                <Spacer height={6} />
 
+                <Spacer height={6} />
 
                 <View style={styles.row2}>
                     <CustomText body2 semiBold >{`Date :  `}</CustomText>
                     <CustomText body2 color='#fff'>{formattedTime(item?.id)}</CustomText>
                 </View>
-
 
             </Animated.View>
         </View>
