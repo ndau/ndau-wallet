@@ -20,7 +20,8 @@ const CustomText = ({
 	titiliumBold = false,
 
 	color = themeColors.font,
-	style = {}
+	style = {},
+	numberOfLines
 }) => {
 
 	const getStyles = () => ({
@@ -51,7 +52,7 @@ const CustomText = ({
 		...(titiliumBold && { fontFamily: "TitilliumWeb-Bold" }),
 	})
 
-	return <Text  style={[styles.text, style, getStyles()]}>{children}</Text>
+	return <Text numberOfLines={numberOfLines} style={[styles.text, style, getStyles()]}>{children}</Text>
 }
 
 const styles = StyleSheet.create({

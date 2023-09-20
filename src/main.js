@@ -42,6 +42,8 @@ import WalletConnect from './screens/WalletConnect';
 import SendModal from './components/wallectConnectModals/SendModal';
 import Environments from './screens/Environments';
 import ContactSupport from './screens/components/ContactSupport';
+import NFTList from './screens/NFTList';
+import NFTDetail from './screens/NFTDetail';
 
 LogBox.ignoreAllLogs()
 
@@ -114,6 +116,8 @@ const MainStack = () => {
       <Stack.Screen name={ScreenNames.WalletConnect} component={WalletConnect} />
       <Stack.Screen name={ScreenNames.Environments} component={Environments} />
       <Stack.Screen name={ScreenNames.ContactSupport} component={ContactSupport} />
+      <Stack.Screen name={ScreenNames.NFTList} component={NFTList} />
+      <Stack.Screen name={ScreenNames.NFTDetail} component={NFTDetail} />
 
     </Stack.Navigator>
   )

@@ -14,7 +14,7 @@ import Token from "../components/Token";
 import { themeColors } from "../config/colors";
 import DataFormatHelper from "../helpers/DataFormatHelper";
 import { Converters, EthersScanAPI, NetworkManager } from "../helpers/EthersScanAPI";
-import { useWallet } from "../hooks";
+import { useNFTS, useWallet } from "../hooks";
 import NdauStore from "../stores/NdauStore";
 import UserStore from "../stores/UserStore";
 import { tokenShortName } from "../utils";
@@ -22,15 +22,18 @@ import { ScreenNames } from "./ScreenNames";
 import AddWalletsPopup from "./components/dashboard/AddWalletsPopup";
 import OrderAPI from "../api/OrderAPI";
 import CustomText from "../components/CustomText";
+import FlashNotification from "../components/common/FlashNotification";
 
 const Dashboard = ({ navigation }) => {
 
 	const { getNDauAccounts, getActiveWallet, getNdauAccountsDetails } = useWallet();
+	const { getCollections } = useNFTS();
 	const isFocused = useIsFocused();
 
 	const [mainRefreshing, setMainRefreshing] = useState(false);
 	const [walletData, setWalletData] = useState({ walletName: "", type: "" });
 	const [totalBalance, setTotalBalance] = useState(0);
+	const [nftLoading, setNFTLoading] = useState(false);
 	const [selected, setSelected] = useState(0);
 	const refAddWalletSheet = useRef(null)
 
@@ -120,6 +123,7 @@ const Dashboard = ({ navigation }) => {
 	const refreshData = () => {
 		OrderAPI.getMarketPrice().then(res => {
 			NdauStore.setMarketPrice(res)
+			if (selected == 1) setSelected(0);
 
 			if (getActiveWallet().type) {
 				setTokens([
@@ -135,11 +139,10 @@ const Dashboard = ({ navigation }) => {
 				])
 				loadOnlyNDAUBalances()
 			}
-
-			setWalletData({
-				walletName: UserStore.getActiveWallet().walletId,
-				type: UserStore.getActiveWallet().type
-			})
+		})
+		setWalletData({
+			walletName: UserStore.getActiveWallet().walletId,
+			type: UserStore.getActiveWallet().type
 		})
 	}
 
@@ -156,15 +159,13 @@ const Dashboard = ({ navigation }) => {
 
 	useEffect(() => {
 		if (selected === 1) {
-			const c = new Alchemy({ apiKey: "Z_G5HhyiXdXZ9j0-uJ4B7SZr_oCk4xSN", network: Network.MATIC_MAINNET }).nft;
-			c.getNftsForOwner(getActiveWallet().ercAddress, {}).then(res => {
-				console.log('res', JSON.stringify(res, null, 2));
-				const nftsList = res.ownedNfts.map(obj => ({
-					name: obj.contract.name || obj.contract.openSea?.collectionName,
-					image: obj.contract.openSea.imageUrl || obj.media[0]?.thumbnail
-				}));
+			setNFTLoading(true);
+			getCollections().then(nftsList => {
+				setNFTLoading(false);
 				setNfts(nftsList);
 			}).catch(err => {
+				setNFTLoading(false);
+				FlashNotification.show("NFT: " + err.message)
 				console.log('err', JSON.stringify(err.message, null, 2));
 			})
 		} else {
@@ -174,7 +175,7 @@ const Dashboard = ({ navigation }) => {
 
 	const renderItem = useCallback(({ item, index }) => {
 		if (selected == 0) return <Token {...item} index={index} onPress={() => handleNavigation(item)} />
-		else if (selected == 1) return <NFT {...item} index={index} isLast={(nfts.length - 1) === index} />
+		else if (selected == 1) return <NFT {...item} index={index} isLast={(nfts.length - 1) === index} onPress={() => navigation.navigate(ScreenNames.NFTList, { item })} />
 	}, [tokens, nfts])
 
 	const handleNavigation = useCallback((item) => {
@@ -182,23 +183,18 @@ const Dashboard = ({ navigation }) => {
 		else navigation.navigate(ScreenNames.ERCDetail, { item });
 	}, [])
 
-
-
-
 	return (
 		<ScreenContainer tabScreen>
 			<ScrollView
 				refreshControl={
 					<RefreshControl
-						style={{ justifyContent: "center", alignItems: "center" }}
+						tintColor={themeColors.white}
 						refreshing={mainRefreshing}
 						onRefresh={() => {
 							setMainRefreshing(true);
 							refreshData();
 						}}
-					>
-						<ActivityIndicator />
-					</RefreshControl>
+					/>
 				}
 				showsVerticalScrollIndicator={false}>
 				<DashboardHeader
@@ -242,6 +238,11 @@ const Dashboard = ({ navigation }) => {
 							scrollEnabled={false}
 							data={nfts}
 							numColumns={2}
+							ListEmptyComponent={nftLoading && nfts.length === 0 ? <ActivityIndicator /> : (
+								<View style={styles.emptyNFT}>
+									<CustomText color={themeColors.black300} titiliumBold>No NFT found in this account</CustomText>
+								</View>
+							)}
 							renderItem={renderItem}
 							keyExtractor={(item, index) => index.toString()}
 						/>
@@ -331,8 +332,11 @@ const styles = StyleSheet.create({
 	unSelect: {
 		backgroundColor: themeColors.white
 	},
-
-
+	emptyNFT: {
+		justifyContent: "center",
+		alignItems: "center",
+		marginTop: 20
+	}
 })
 
 export default Dashboard;

@@ -191,7 +191,8 @@ export default useTransaction = () => {
 
   const getERCTransactionHistory = (address) => {
     return new Promise((resolve, reject) => {
-      const provider = new ethers.providers.EtherscanProvider(EthersScanAPI.networks.goerli, EthersScanAPI.apiKey);
+      const network = NetworkManager.__isTestnet() ? EthersScanAPI.networks.goerli : EthersScanAPI.networks.MAIN;
+      const provider = new ethers.providers.EtherscanProvider(network, EthersScanAPI.apiKey);
       provider.getHistory(address).then(res => {
         resolve(res)
       }).catch(err => {
@@ -203,7 +204,8 @@ export default useTransaction = () => {
 
   const getERCTransactionDetail = (txHash) => {
     return new Promise((resolve, reject) => {
-      const provider = new ethers.providers.EtherscanProvider(EthersScanAPI.networks.goerli, EthersScanAPI.apiKey);
+      const network = NetworkManager.__isTestnet() ? EthersScanAPI.networks.goerli : EthersScanAPI.networks.MAIN;
+      const provider = new ethers.providers.EtherscanProvider(network, EthersScanAPI.apiKey);
       provider.getTransaction(txHash).then(res => {
         resolve(res)
       }).catch(err => {

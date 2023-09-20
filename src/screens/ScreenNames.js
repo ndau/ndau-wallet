@@ -34,6 +34,8 @@ const ScreenNames = {
   WalletConnect: "WalletConnect",
   Environments: "Environments",
   ContactSupport: "ContactSupport",
+  NFTList: "NFTList",
+  NFTDetail: "NFTDetail"
 }
 
 export { ScreenNames }
