@@ -68,7 +68,6 @@ const Dashboard = ({ navigation }) => {
 
 	const loadBalances = async () => {
 
-		const { result: { ethusd } } = await EthersScanAPI.getEthPriceInUSD();
 		Promise.allSettled([
 			NetworkManager.getBalance(),
 			NetworkManager.getContractFor(NetworkManager.Coins().USDC).getBalance(),
@@ -94,10 +93,10 @@ const Dashboard = ({ navigation }) => {
 			const totalNdausOnAllAccounts = DataFormatHelper.getNdauFromNapu(Object.keys(ndauAccounts).map(key => ndauAccounts[key]).reduce((pv, cv) => pv += parseFloat(cv.balance), 0) || 0);
 
 			const npay = getFormattedToken(availableNpay);
-			const eth = getFormattedToken(availableEth, 18, ethusd);
+			const eth = getFormattedToken(availableEth, 18, prices?.['ethereum']?.usd || 1);
 			const usdc = getFormattedToken(availableUSDC, 6)
 			const matic = getFormattedToken(availableMatic, 18, prices?.['matic-network']?.usd || 1);
-			const zkEth = getFormattedToken(availableZKEthMatic, 18, ethusd);
+			const zkEth = getFormattedToken(availableZKEthMatic, 18, prices?.['ethereum']?.usd || 1);
 			const zkUSDC = getFormattedToken(availableZKEthUSDC);
 
 			const currentPriceOfNdauInUsd = parseFloat(totalNdausOnAllAccounts * NdauStore.getMarketPrice()).toFixed(4)
@@ -112,6 +111,7 @@ const Dashboard = ({ navigation }) => {
 			])
 			setMainRefreshing(false);
 		}).catch(err => {
+			FlashNotification.show(err.message, true)
 			setMainRefreshing(false);
 		})
 
@@ -131,25 +131,24 @@ const Dashboard = ({ navigation }) => {
 	const refreshData = () => {
 		OrderAPI.getMarketPrice().then(res => {
 			NdauStore.setMarketPrice(res)
-
-			if (getActiveWallet().type) {
-				setTokens([
-					makeToken(0, { totalFunds: "l", accounts: getNDauAccounts().length, usdAmount: "l" }),
-					makeToken(4, { totalFunds: "l", usdAmount: "l" }),
-					makeToken(1, { totalFunds: "l", usdAmount: "l" }),
-					// makeToken(5, { totalFunds: "l", usdAmount: "l" }),
-					makeToken(2, { totalFunds: "l", usdAmount: "l" }),
-					makeToken(3, { totalFunds: "l", usdAmount: "l" }),
-					makeToken(6, { totalFunds: "l", usdAmount: "l" }),
-				])
-				loadBalances();
-			} else {
-				setTokens([
-					makeToken(0, { totalFunds: "l", accounts: getNDauAccounts().length, address: "", usdAmount: "l" })
-				])
-				loadOnlyNDAUBalances()
-			}
 		})
+		if (getActiveWallet().type) {
+			setTokens([
+				makeToken(0, { totalFunds: "l", accounts: getNDauAccounts().length, usdAmount: "l" }),
+				makeToken(4, { totalFunds: "l", usdAmount: "l" }),
+				makeToken(1, { totalFunds: "l", usdAmount: "l" }),
+				// makeToken(5, { totalFunds: "l", usdAmount: "l" }),
+				makeToken(2, { totalFunds: "l", usdAmount: "l" }),
+				makeToken(3, { totalFunds: "l", usdAmount: "l" }),
+				makeToken(6, { totalFunds: "l", usdAmount: "l" }),
+			])
+			loadBalances();
+		} else {
+			setTokens([
+				makeToken(0, { totalFunds: "l", accounts: getNDauAccounts().length, address: "", usdAmount: "l" })
+			])
+			loadOnlyNDAUBalances()
+		}
 		setWalletData({
 			walletName: UserStore.getActiveWallet().walletId,
 			type: UserStore.getActiveWallet().type

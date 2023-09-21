@@ -143,6 +143,13 @@ class UserStore {
     }
     return this._user[0];
   }
+
+  logout() {
+    this.activeWalletId = [];
+    this.activeWallet = [];
+    this._user = []
+    this._password = []
+  }
 }
 
 const instance = new UserStore()

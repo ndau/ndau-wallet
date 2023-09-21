@@ -16,7 +16,7 @@ import { ScreenNames } from "./ScreenNames";
 import FlashNotification from "../components/common/FlashNotification";
 
 const Login = (props) => {
-  const { user, mode, recoveryPhraseString } = props.route.params ?? {};
+  const { user, mode, recoveryPhraseString, from } = props.route.params ?? {};
 
   const called = useRef(false);
   const pinRef = useRef();
@@ -24,6 +24,7 @@ const Login = (props) => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    if (from) return;
     new RNBiometrics()
       .simplePrompt({ promptMessage: "Authenticate" })
       .then((res) => {
