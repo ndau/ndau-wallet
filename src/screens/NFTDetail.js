@@ -1,12 +1,10 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React from "react";
 import { Image, ScrollView, StyleSheet, View } from "react-native";
 
-import Loading from "../components/Loading";
+import CustomText from "../components/CustomText";
 import ScreenContainer from "../components/Screen";
 import Spacer from "../components/Spacer";
 import { themeColors } from "../config/colors";
-import { useNFTS } from "../hooks";
-import CustomText from "../components/CustomText";
 
 const NFTDetail = (props) => {
   const { item } = props.route?.params ?? {};
@@ -34,6 +32,7 @@ const NFTDetail = (props) => {
         <Spacer height={10} />
         {renderKeyValue("Token Id", item.tokenId)}
         {renderKeyValue("Token Type", item.tokenType)}
+        {renderKeyValue("Network", item.network)}
         <CustomText style={{ marginTop: 20 }}>{item.description}</CustomText>
       </ScrollView>
     </ScreenContainer>
@@ -44,8 +43,9 @@ const styles = StyleSheet.create({
   icon: {
     borderWidth: 1,
     borderRadius: 10,
-    height: 300,
-    width: "100%"
+    height: 320,
+    width: "100%",
+    backgroundColor: themeColors.black50
   },
   keyValueContainer: {
     flexDirection: "row",

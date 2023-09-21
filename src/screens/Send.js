@@ -54,7 +54,7 @@ const Send = (props) => {
 
   const getRemainBalance = (amount) => {
     try {
-      const toShow = parseFloat(item.totalFunds - (amount || transaction.total)).toFixed(3);
+      const toShow = parseFloat(item.totalFunds - (amount || transaction.total)).toFixed(9);
       return toShow < 0 ? 0 : toShow
     } catch (e) {
       return "0"

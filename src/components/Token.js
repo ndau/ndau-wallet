@@ -47,7 +47,8 @@ const styles = StyleSheet.create({
 	},
 	image: {
 		width: 80,
-		height: 80
+		height: 80,
+		borderRadius: 20
 	},
 	row: {
 		flex: 1,

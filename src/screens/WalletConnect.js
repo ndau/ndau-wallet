@@ -80,14 +80,11 @@ const WalletConnect = (props) => {
         <View style={{ marginVertical: 10 }}>
           <Button
             onPress={() => {
-              connectWithURI("")
-
-
-              // props.navigation.navigate(ScreenNames.Scanner, {
-              //   onScan: (data) => {
-              //     scanQR(data);
-              //   }
-              // })
+              props.navigation.navigate(ScreenNames.Scanner, {
+                onScan: (data) => {
+                  scanQR(data);
+                }
+              })
             }}
             label={'Scan  '}
             rightIcon={<QRCode />}
@@ -113,7 +110,7 @@ const WalletConnect = (props) => {
               <View style={styles.pairedItem}>
                 <Image source={{ uri: peerMetadata?.icons?.[0] }} style={styles.peerIcon} />
                 <View style={{ flex: 1, marginLeft: 10 }}>
-                  <CustomText titiliumSemiBold>{peerMetadata?.name}</CustomText>
+                  <CustomText titiliumSemiBold numberOfLines={1}>{peerMetadata?.name}</CustomText>
                   <CustomText titilium caption color={themeColors.black300}>Expiry: {moment(item.expiry * 1000).format("MMM DD, yyyy hh:mm")}</CustomText>
                   <CustomText titiliumSemiBold color={themeColors.white} style={{ marginTop: 4 }} >{ndauUtils.truncateAddress(address)}</CustomText>
                 </View>

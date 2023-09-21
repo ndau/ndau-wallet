@@ -65,6 +65,23 @@ export const EthersScanAPI = {
 
 }
 
+export const CoinGecko = {
+
+  __coinIdsToFetch: [
+    "matic-network",
+    "ethereum"
+  ],
+
+  getPrices: () => {
+    return new Promise((resolve, reject) => {
+      const apiToCall = `https://api.coingecko.com/api/v3/simple/price?ids=${CoinGecko.__coinIdsToFetch.join(',')}&vs_currencies=usd`
+      APICommunicationHelper.get(apiToCall).then(res => {
+        resolve(res);
+      }).catch(err => reject(err))
+    })
+  }
+}
+
 export const NetworkManager = {
 
   __urls: {
@@ -89,7 +106,6 @@ export const NetworkManager = {
       },
       L2: {
         USDC: "0x3355df6d4c9c3035724fd0e3914de96a5a83aaf4",
-        MATIC: '0x0000000000000000000000000000000000001010',
         NPAY: "0xd7afcb470bcF8d07E3A4dCBa0Ec7D9f5D8C6a05a"
       }
     },
@@ -100,8 +116,7 @@ export const NetworkManager = {
         NPAY: "0xd7afcb470bcF8d07E3A4dCBa0Ec7D9f5D8C6a05a"
       },
       L2: {
-        USDC: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
-        MATIC: '0x7D1AfA7B718fb893dB30A3aBc0Cfc608AaCfeBB0',
+        USDC: "0x0faF6df7054946141266420b43783387A78d82A9",
         NPAY: "0xd7afcb470bcF8d07E3A4dCBa0Ec7D9f5D8C6a05a"
       }
     },
@@ -112,12 +127,16 @@ export const NetworkManager = {
       contractAddress: NetworkManager.contractsResolver().L1.USDC,
       network: NetworkManager.getEnv().eth
     },
+    ZK_USDC: {
+      contractAddress: NetworkManager.contractsResolver().L2.USDC,
+      network: NetworkManager.getEnv().zkSyncEra
+    },
     NPAY: {
       contractAddress: NetworkManager.contractsResolver().L2.NPAY,
       network: NetworkManager.getEnv().zkSyncEra
     },
     Matic: {
-      contractAddress: NetworkManager.contractsResolver().L2.MATIC,
+      contractAddress: NetworkManager.contractsResolver().L1.MATIC,
       network: NetworkManager.getEnv().polygon
     }
   }),

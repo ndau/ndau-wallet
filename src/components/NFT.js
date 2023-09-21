@@ -3,6 +3,7 @@ import { Image, StyleSheet, TouchableOpacity } from "react-native";
 import Animated, { FadeInDown } from "react-native-reanimated";
 
 import CustomText from "./CustomText";
+import { themeColors } from "../config/colors";
 
 const NFT = ({ name, image, index, isLast, onPress }) => {
 
@@ -26,7 +27,8 @@ const styles = StyleSheet.create({
 	image: {
 		width: "100%",
 		height: 180,
-		borderRadius: 20
+		borderRadius: 20,
+		backgroundColor: themeColors.black50
 	},
 	name: {
 		marginLeft: 10,

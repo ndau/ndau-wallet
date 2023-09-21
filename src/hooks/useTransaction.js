@@ -110,9 +110,9 @@ export default useTransaction = () => {
     })
   }
 
-  const getTransactionFeeForERC = (toAddress, ethAmount) => {
+  const getTransactionFeeForERC = (toAddress, ethAmount, env) => {
     return new Promise((resolve, reject) => {
-      NetworkManager.estimateGas(toAddress, ethAmount).then(res => {
+      NetworkManager.estimateGas(toAddress, ethAmount, env).then(res => {
         resolve({
           ethPrice: ethers.utils.formatEther(res._hex),
           hex: res._hex
@@ -128,6 +128,20 @@ export default useTransaction = () => {
     return new Promise(async (resolve, reject) => {
       const usdcAmountWei = ethers.utils.parseUnits(ethAmount, 6);
       NetworkManager.getContractFor(NetworkManager.Coins().USDC).estimateGas(toAddress, usdcAmountWei).then(res => {
+        resolve({
+          ethPrice: ethers.utils.formatEther(res._hex),
+          hex: res._hex
+        })
+      }).catch(err => {
+        reject(err)
+        console.log('err	', JSON.stringify(err, null, 2));
+      })
+    })
+  }
+  
+  const getTransactionFeeForMatic = (toAddress, ethAmount) => {
+    return new Promise(async (resolve, reject) => {
+      NetworkManager.estimateGas(toAddress, ethAmount, NetworkManager.getEnv().polygon).then(res => {
         resolve({
           ethPrice: ethers.utils.formatEther(res._hex),
           hex: res._hex
@@ -166,9 +180,9 @@ export default useTransaction = () => {
     })
   }
 
-  const sendERCFunds = (toAddress, ethAmount) => {
+  const sendERCFunds = (toAddress, ethAmount, env) => {
     return new Promise((resolve, reject) => {
-      NetworkManager.transfer(toAddress, ethAmount).then(res => {
+      NetworkManager.transfer(toAddress, ethAmount, env).then(res => {
         resolve(res)
       }).catch(err => {
         reject(err)
@@ -181,6 +195,17 @@ export default useTransaction = () => {
     return new Promise((resolve, reject) => {
       const amount = ethers.utils.parseUnits(ethAmount, 18);
       NetworkManager.getContractFor(NetworkManager.Coins().NPAY).transfer(toAddress, amount).then(res => {
+        resolve(res)
+      }).catch(err => {
+        reject(err)
+        console.log('err	', JSON.stringify(err, null, 2));
+      })
+    })
+  }
+
+  const sendMaticFunds = (toAddress, ethAmount) => {
+    return new Promise((resolve, reject) => {
+      NetworkManager.transfer(toAddress, ethAmount, NetworkManager.getEnv().polygon).then(res => {
         resolve(res)
       }).catch(err => {
         reject(err)
@@ -372,10 +397,17 @@ export default useTransaction = () => {
             })
             .catch(reject);
         }
-        default: {
-          FlashNotification.show(token + ": This token type not supported yet");
-          reject("Not supported")
+        case tokenShortName.ZK_ETH: {
+          return getEthBalanceForTransaction(NetworkManager.getEnv().zkSyncEra)
+            .then(() => {
+              getTransactionFeeForERC(toAddress, amount, NetworkManager.getEnv().zkSyncEra).then(resolve).catch(reject);
+            })
+            .catch(reject);
         }
+        case tokenShortName.MATIC: {
+          return getTransactionFeeForMatic(toAddress, amount).then(resolve).catch(reject);
+        }
+        default: reject(new Error(token + ": This token type not supported yet"))
       }
     })
   }
@@ -384,8 +416,10 @@ export default useTransaction = () => {
     return new Promise((resolve, reject) => {
       switch (token) {
         case tokenShortName.ETHERERUM: return sendERCFunds(toAddress, amount).then(resolve).catch(reject);
+        case tokenShortName.ZK_ETH: return sendERCFunds(toAddress, amount, NetworkManager.getEnv().zkSyncEra).then(resolve).catch(reject);
         case tokenShortName.NPAY: return sendNpayFunds(toAddress, amount).then(resolve).catch(reject);
         case tokenShortName.USDC: return sendUSDC(toAddress, amount).then(resolve).catch(reject);
+        case tokenShortName.MATIC: return sendMaticFunds(toAddress, amount).then(resolve).catch(reject);
         default: {
           FlashNotification.show(token + ": This token type not supported yet");
           reject("Not supported")

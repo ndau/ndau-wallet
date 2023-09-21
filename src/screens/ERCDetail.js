@@ -17,7 +17,6 @@ import AppConfig from "../AppConfig";
 const ERCDetail = (props) => {
 	const { item } = props?.route?.params ?? {};
 
-	const { getERCTransactionHistory } = useTransaction();
 
 	const disableButton = item.totalFunds === null || item.totalFunds === undefined || parseFloat(item.totalFunds) <= 0
 
@@ -54,7 +53,7 @@ const ERCDetail = (props) => {
 				<CustomText titiliumSemiBold h6 style={{ margin: 10, marginBottom: 0, textTransform: "capitalize" }}>{item.name}</CustomText>
 				<CustomText titilium body style={{ marginTop: 6, marginBottom: 4 }}>{"Balance"}</CustomText>
 				<View style={{ flexDirection: "row", alignItems: "center", marginBottom: 20 }}>
-					<CustomText semiBold h4>{item?.totalFunds?.toFixed?.(4) || "0.00"}</CustomText>
+					<CustomText semiBold h4>{item?.totalFunds || "0.00"}</CustomText>
 					<CustomText titilium body>{` ~ $${parseFloat(item.usdAmount || 0)?.toFixed(2) || "0"}`}</CustomText>
 				</View>
 
