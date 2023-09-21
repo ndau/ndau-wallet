@@ -41,10 +41,10 @@ const getNodeAddress = async type => {
 }
 
 const getBlockchainServiceNodeURL = async () => {
-  LogStore.log(`Blockchain Service Discovery URL: ${AWS_S3_SERVICE_JSON}`)
-
+  
   try {
     if (moment().diff(blockchainCache.lastChecked) > CACHE_TTL) {
+      LogStore.log(`Blockchain Service Discovery URL: ${AWS_S3_SERVICE_JSON}`)
       const response = await APICommunicationHelper.get(AWS_S3_SERVICE_JSON)
       blockchainCache.nodes = await _parseServicesForNodes(response)
       blockchainCache.lastChecked = moment()

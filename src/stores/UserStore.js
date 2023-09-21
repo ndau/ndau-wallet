@@ -88,8 +88,9 @@ class UserStore {
   setNdauAccounts(data) {
     const currentWalletId = this.getActiveWalletId();
     const currentWallet = this._user[0].wallets[currentWalletId];
-    if (data) {
-      Object.keys(data).forEach(key => {
+    const dataKeys = Object.keys(data);
+    if (dataKeys.length) {
+      dataKeys.forEach(key => {
         const totalFunds = DataFormatHelper.getNdauFromNapu(data[key].balance, 4);
         const usdAmount = totalFunds * NdauStore.getMarketPrice();
 
@@ -102,8 +103,19 @@ class UserStore {
         accounts[key].usdAmount = usdAmount;
         currentWallet.accounts = accounts;
       })
-      this._user[0].wallets[currentWalletId] = currentWallet;
+    } else {
+      Object.keys(currentWallet.accounts).forEach(account => {
+        const singleAccount = currentWallet.accounts[account];
+        singleAccount.addressData = {
+          ...singleAccount.addressData,
+          balance: 0
+        };
+        singleAccount.totalFunds = "0";
+        singleAccount.usdAmount = 0;
+        currentWallet.accounts[account] = singleAccount;
+      })
     }
+    this._user[0].wallets[currentWalletId] = currentWallet;
     return currentWallet;
   }
 

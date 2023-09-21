@@ -8,6 +8,8 @@ import { themeColors } from "../config/colors";
 import { Check } from "../assets/svgs/components";
 import SettingsStore from "../stores/SettingsStore";
 import ServiceDiscovery from "../api/ServiceDiscovery";
+import FlashNotification from "../components/common/FlashNotification";
+import Loading from "../components/Loading";
 
 const Environments = () => {
 
@@ -16,6 +18,8 @@ const Environments = () => {
     { id: 1, name: "Testnet", selected: false },
     { id: 2, name: "Devnet", selected: false }
   ])
+
+  const [loading, setLoading] = useState("");
 
   const handleEnv = (item) => {
     setEnv(_ => {
@@ -28,13 +32,46 @@ const Environments = () => {
     })
   }
 
+  const handleEnvPress = (loadingText = "Connecting with blockchain nodes") => {
+    return new Promise((resolve, reject) => {
+      setLoading(loadingText);
+      ServiceDiscovery.invalidateCache();
+      ServiceDiscovery.getNodeAddress().then(res => {
+        setLoading("");
+        resolve(res);
+      }).catch(err => {
+        setLoading("");
+        FlashNotification.show(err.message, true);
+        reject(err);
+      })
+    })
+  }
+
   useEffect(() => {
     const selected = env.filter(e => e.selected)[0];
     if (selected) {
-      if (selected.id === 0) SettingsStore.useMainNet();
-      else if (selected.id === 1) SettingsStore.useTestNet();
-      else if (selected.id === 2) SettingsStore.useDevNet();
-      ServiceDiscovery.invalidateCache();
+      if (selected.id === 0) {
+        SettingsStore.useMainNet();
+        handleEnvPress().catch(err => {
+
+        });
+      } else if (selected.id === 1) {
+        SettingsStore.useTestNet();
+        handleEnvPress().catch(err => {
+          SettingsStore.useMainNet();
+          handleEnvPress("Reverting back to Mainnet").then(res => {
+            handleEnv({ id: 0 });
+          });
+        });
+      } else if (selected.id === 2) {
+        SettingsStore.useDevNet();
+        handleEnvPress().catch(err => {
+          SettingsStore.useMainNet();
+          handleEnvPress("Reverting back to Mainnet").then(res => {
+            handleEnv({ id: 0 });
+          });
+        });
+      }
     } else {
       const mode = SettingsStore._settings?.applicationNetwork || "mainnet";
       if (mode == "mainnet") handleEnv({ id: 0 });
@@ -52,9 +89,9 @@ const Environments = () => {
         <FlatList
           data={env}
           keyExtractor={(i, _) => _.toString()}
-          renderItem={({ item }) => {
+          renderItem={({ item, index }) => {
             return (
-              <TouchableOpacity activeOpacity={0.8} onPress={() => handleEnv(item)}>
+              <TouchableOpacity disabled={env[index].selected && item.id === env[index].id} activeOpacity={0.8} onPress={() => handleEnv(item)}>
                 <View style={[styles.item, item.selected && styles.selected]}>
                   <CustomText titilium body style={[{ flex: 1 }]}>{item.name}</CustomText>
                   {item.selected && <Check />}
@@ -64,6 +101,7 @@ const Environments = () => {
           }}
         />
       </View>
+      {!!loading && <Loading label={loading} />}
     </ScreenContainer>
   );
 };
