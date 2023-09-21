@@ -43,15 +43,13 @@ const Notifications = (props) => {
 		deleteNotifications(notificationId)
 		modelNotifyDeleteRef.current(false)
 	};
-	
+
 	return (
 		<ScreenContainer tabScreen>
 
 			<View style={styles.textContainer}>
 				<CustomText h6 semiBold style={styles.text1}>Notifications</CustomText>
 			</View>
-
-			<Spacer height={20} />
 
 			<FlatList
 				data={filterWalletNotifications(notifications)}
@@ -143,8 +141,8 @@ const styles = StyleSheet.create({
 		height: 44,
 		backgroundColor: 'red',
 	},
-	list:{
-		paddingBottom:120
+	list: {
+		paddingBottom: 120
 	}
 })
 
