@@ -45,7 +45,6 @@ const NotificationCard = ({ item, index, onDelete }) => {
         }
     }, [])
 
-
     return (
         <View style={styles.container}>
             {item?.isBoolean ?
