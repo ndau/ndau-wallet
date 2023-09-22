@@ -17,6 +17,8 @@ const images = {
   USDC: require('./USDC.png'),
   ndauAccountImage: require('./ndauAccount.png'),
   matic: require('./matic.png'),
+  linkedin: require('./linkedin.png'),
+  youtube: require('./youtube.png')
 }
 
 export { images };

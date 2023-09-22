@@ -147,7 +147,16 @@ const AddNdauAccount = (props) => {
                     if (createdAccount?.address === item.address) return null;
                     return <AccountItemCard
                         key={index}
-                        disabled={paramItem.address === item.address}
+                        disabled={
+                            paramItem.address === item.address || 
+                            (
+                                !!onSelectAccount && 
+                                    (
+                                        !!item.addressData?.lock?.unlocksOn || 
+                                        !!item.addressData.rewardsTarget
+                                    )
+                            )
+                        }
                         item={item}
                         index={index}
                         onItemClick={(val) => {

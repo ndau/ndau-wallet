@@ -195,9 +195,6 @@ const NDAUDetail = (props) => {
 		}
 	};
 
-
-	console.log(JSON.stringify(item, null, 2))
-
 	return (
 		<ScreenContainer headerTitle={item.name} headerRight={canRecieve && <CopyAddressButton onPress={copyAddress} />}>
 			<ScrollView showsVerticalScrollIndicator={false}>

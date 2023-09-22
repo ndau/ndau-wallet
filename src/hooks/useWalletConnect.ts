@@ -75,7 +75,6 @@ const useWalletConnect = () => {
       }
     })
 
-    console.log(signClient,'connect------')
     setPaired(signClient?.session?.values)
 
     try {

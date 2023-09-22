@@ -58,6 +58,12 @@ const Wallet_Connect_ApiKey = "faceb005777e478fa503489e83ba8b3b";
 
 const VIEW_TRANSACTION_DETAIL_VIEW = "https://goerli.etherscan.io/tx"
 
+const SOCIAL_LINKS = {
+  twitter: "https://twitter.com/ndaucollective",
+  linkedin: "https://www.linkedin.com/company/oneiro-inc",
+  youtube: "https://www.youtube.com/channel/UCwyd6n3vAvjwDCx38u7ZF2A"
+}
+
 export default {
   calcExplorerUrl,
   LOCALE,
@@ -84,5 +90,6 @@ export default {
   FRESHDESK_TICKET_ENDPOINT,
   BUY_ERC20_URL,
   Wallet_Connect_ApiKey,
-  VIEW_TRANSACTION_DETAIL_VIEW
+  VIEW_TRANSACTION_DETAIL_VIEW,
+  SOCIAL_LINKS
 }
