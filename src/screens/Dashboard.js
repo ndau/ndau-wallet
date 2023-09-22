@@ -120,7 +120,6 @@ const Dashboard = ({ navigation }) => {
 	const refreshData = () => {
 		OrderAPI.getMarketPrice().then(res => {
 			NdauStore.setMarketPrice(res)
-
 			if (getActiveWallet().type) {
 				setTokens([
 					makeToken(0, { totalFunds: "l", accounts: getNDauAccounts().length, usdAmount: "l" }),
@@ -135,7 +134,6 @@ const Dashboard = ({ navigation }) => {
 				])
 				loadOnlyNDAUBalances()
 			}
-
 			setWalletData({
 				walletName: UserStore.getActiveWallet().walletId,
 				type: UserStore.getActiveWallet().type

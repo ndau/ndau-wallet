@@ -65,7 +65,6 @@ const NotificationCard = ({ item, index, onDelete }) => {
                                     <CustomText body2 titiliumBold >{`To :`}</CustomText>
                                     <CustomText body2 titilium> {makeStringShort(item?.transaction?.toAddress)}</CustomText>
                                 </View>
-
                                 <View style={styles.row2}>
                                     <CustomText body2 titiliumBold >{`From :`}</CustomText>
                                     <CustomText body2 titilium> {makeStringShort(item?.transaction?.fromAddress)}</CustomText>

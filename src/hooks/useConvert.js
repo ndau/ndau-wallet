@@ -47,7 +47,7 @@ export default useConvert = () => {
                     name: 'ndau-wallet',
                     version: '1.0',
                     chainId: networkChainId,
-                    verifyingContract: NetworkManager.__contractAddresses
+                    // verifyingContract: NetworkManager.__contractAddresses
                 },
                 message: convertData,
             }
@@ -73,11 +73,11 @@ export default useConvert = () => {
             try {
                 const getData = getTypedMessage(data)
                 const signature = await wallet.signMessage(getData);     // Sign the message
-                const recoveredAddress = ethers.utils.verifyMessage(getData, signature);
+                const recoveredAddress = ethers.utils.verifyMessage(getData, signature); // recovered the message
 
-                let result={
-                    signedData:signature,
-                    recoveredAddress:recoveredAddress
+                let result = {
+                    signedData: signature,
+                    recoveredAddress: recoveredAddress
                 }
                 resolve(result)
 

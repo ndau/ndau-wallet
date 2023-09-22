@@ -6,6 +6,7 @@ import {
     View
 } from 'react-native'
 
+
 import { images } from '../../assets/images'
 import { ConvertIcon, NpayIcon, WalletSuccessSVGComponent } from '../assets/svgs/components'
 import Button from '../components/Button'
@@ -27,24 +28,20 @@ const ConvertNdauToNpay = (props) => {
     const [ndauAmount, setNdauAmount] = useState("");
     const [npayAmount, setNpayAmount] = useState("0.0");
     const [loaderValue, setLoaderValue] = useState("");
-    const [exchangeRate, setExchangeRate] = useState("42013.14519");
     const modalRef = useRef(null)
     const modalRef2 = useRef(null)
     const { sigedErcWallet, getRecoverdAddress } = useConvert()
     const { getActiveWallet } = useWallet()
 
 
-
     const getRemainNdauBalance = (amount) => {
         try {
             const toShow = parseFloat((totalBalance - amount).toFixed(3));
             return toShow < 0 ? 0 : toShow
-            
         } catch (e) {
             return "0"
         }
     }
-
 
     const handleConvert = () => {
         setLoaderValue("Signing")
@@ -55,7 +52,6 @@ const ConvertNdauToNpay = (props) => {
             npay_adddress: getActiveWallet().ercAddress,
             nonce: '1'
         }
-
         console.log(payload, 'payload---')
         sigedErcWallet(payload).then((res) => {
             setLoaderValue("")
@@ -83,9 +79,6 @@ const ConvertNdauToNpay = (props) => {
     const handleDone = () => {
         modalRef.current(false)
     }
-
-
-
 
     return (
         <ScreenContainer headerTitle={"Convert"}>
@@ -190,7 +183,7 @@ const ConvertNdauToNpay = (props) => {
             </View>
 
             <View style={styles.convertBtn}>
-                <Button label={"Convert"} onPress={handleConvert} disabled={ndauAmount.length === 0 || totalBalance===0}/>
+                <Button label={"Convert"} onPress={handleConvert} disabled={ndauAmount.length === 0 || totalBalance === 0} />
             </View>
 
             <CustomModal bridge={modalRef}>
