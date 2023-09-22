@@ -178,11 +178,8 @@ const NDAUDetail = (props) => {
 
 
 	const launchViewTransactionDetailInBrowser = async () => {
-
 		let url = AppConfig.calcExplorerUrl(item?.address, "mainnet")
-
 		const supported = await Linking.openURL(url);
-
 		if (supported) {
 			await Linking.openURL(url);
 		} else {
@@ -194,9 +191,6 @@ const NDAUDetail = (props) => {
 			);
 		}
 	};
-
-
-	console.log(JSON.stringify(item, null, 2))
 
 	return (
 		<ScreenContainer headerTitle={item.name} headerRight={canRecieve && <CopyAddressButton onPress={copyAddress} />}>
@@ -219,7 +213,8 @@ const NDAUDetail = (props) => {
 							<IconButton disabled={accountInfo.isLocked || disableButton} label="Convert" icon={<Convert />} onPress={() => props.navigation.navigate(ScreenNames.ConvertNdauToNpay, {
 								totalBalance: item?.totalFunds,
 								dollorBalnce: item?.usdAmount,
-								image: item?.image
+								image: item?.image,
+								ndauAddress: item?.address
 							})} />
 							<IconButton disabled={accountInfo.isLocked || disableButton} label="Lock" icon={<Lock />} onPress={() => props.navigation.navigate(ScreenNames.LockPeriod, { item })} />
 						</View>
