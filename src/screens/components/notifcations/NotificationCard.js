@@ -1,12 +1,13 @@
 import { format } from 'date-fns'
 import React, { useCallback } from 'react'
-import { Dimensions, StyleSheet, TouchableOpacity, View } from 'react-native'
+import { Dimensions, StyleSheet, TouchableOpacity, View, Image } from 'react-native'
 import Animated, { FadeInDown } from "react-native-reanimated"
 
-import { NotificationDelete, NotificationFailed, NotificationSuccess, RoundEtheriumIcon, RoundNdauIcon, RoundNpayIcon, RoundUsdcIcon } from '../../../assets/svgs/components'
+import { NotificationDelete, NotificationFailed, NotificationSuccess, RoundEtheriumIcon, RoundMaticIcon, RoundNdauIcon, RoundNpayIcon, RoundUsdcIcon } from '../../../assets/svgs/components'
 import CustomText from '../../../components/CustomText'
 import Spacer from '../../../components/Spacer'
 import { tokenShortName } from '../../../utils'
+import { images } from '../../../../assets/images'
 
 const NotificationCard = ({ item, index, onDelete }) => {
 
@@ -36,6 +37,11 @@ const NotificationCard = ({ item, index, onDelete }) => {
         }
         else if (type === tokenShortName.USDC) {
             return <RoundUsdcIcon />
+        }
+        else if (type === tokenShortName.MATIC) {
+            return <View style={styles.maticImgCon}>
+                <Image style={styles.maticImg} source={images.polygonIconImage} />
+            </View>
         }
     }, [])
 
@@ -128,6 +134,14 @@ const styles = StyleSheet.create({
     deleteSvg: {
         alignSelf: 'flex-end'
     },
+    maticImgCon: {
+        width: 20,
+        height: 20
+    },
+    maticImg: {
+        width: 20,
+        height: 20
+    }
 })
 
 export default NotificationCard

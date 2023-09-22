@@ -53,8 +53,6 @@ import RoundNpayIcon from "./RoundNpaySvg";
 import RoundUsdcIcon from "./UscdRoundSvg";
 import RoundEtheriumIcon from "./RoundEtheriumSvg";
 
-
-
 export {
   BackSVGComponent,
   Tick,
@@ -108,4 +106,5 @@ export {
   RoundNpayIcon,
   RoundEtheriumIcon,
   RoundUsdcIcon,
+
 };
