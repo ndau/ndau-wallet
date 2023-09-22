@@ -99,8 +99,7 @@ const styles = StyleSheet.create({
 		alignItems: "center"
 	},
 	textContainer: {
-		paddingVertical: 10,
-		marginBottom: 20
+		paddingVertical: 10
 	},
 	text1: {
 		width: 200,

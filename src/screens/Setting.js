@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { FlatList, StyleSheet, TouchableOpacity, View } from "react-native";
+import { FlatList, Image, Linking, StyleSheet, TouchableOpacity, View } from "react-native";
 import { CommonActions, useIsFocused } from "@react-navigation/native";
 import { getVersion } from "react-native-device-info";
 
@@ -11,6 +11,8 @@ import UserStore from "../stores/UserStore";
 import Spacer from "../components/Spacer";
 import { ArrowDownSVGComponent, WalletConnect, VersionIcon, ContactIcon, EnvironmentIcon, LogoutIcon, WalletIcon, Twitter, Facebook, Reddit } from "../assets/svgs/components";
 import { ScreenNames } from "./ScreenNames";
+import { images } from "../assets/images";
+import AppConfig from "../AppConfig";
 
 const Setting = (props) => {
 
@@ -26,10 +28,14 @@ const Setting = (props) => {
 		{ id: 4, name: getVersion(), image: <VersionIcon />, onPress: () => null, hideArrow: true },
 		{ id: 5, name: "Logout", image: <LogoutIcon />, onPress: () => handleLogout(), hideArrow: true },
 		{ separator: true },
-		{ id: 6, name: "Twitter", image: <Twitter />, onPress: () => null, hideArrow: true },
-		{ id: 7, name: "Facebook", image: <Facebook />, onPress: () => null, hideArrow: true },
-		{ id: 8, name: "Reddit", image: <Reddit />, onPress: () => null, hideArrow: true },
+		{ id: 6, name: "Twitter", image: <Twitter />, onPress: () => openLink(AppConfig.SOCIAL_LINKS.twitter), hideArrow: true },
+		{ id: 7, name: "Linkedin", image: <Image source={images.linkedin} style={styles.image} />, onPress: () => openLink(AppConfig.SOCIAL_LINKS.linkedin), hideArrow: true },
+		{ id: 8, name: "Youtube", image: <Image source={images.youtube} style={[styles.image, { backgroundColor: undefined }]} />, onPress: () => openLink(AppConfig.SOCIAL_LINKS.youtube), hideArrow: true },
 	], [])
+
+	const openLink = (url) => {
+		Linking.openURL(url)
+	}
 
 	const handleLogout = () => {
 		UserStore.logout();
@@ -62,7 +68,7 @@ const Setting = (props) => {
 						return (
 							<TouchableOpacity activeOpacity={0.8} onPress={item.onPress}>
 								<View style={styles.optionItem}>
-									<View style={styles.iconContainer}>
+									<View style={[styles.iconContainer, item.name === "Youtube" && { backgroundColor: undefined }]}>
 										{item.image}
 									</View>
 									<CustomText style={{ flex: 1 }} titilium>{item.name}</CustomText>
@@ -129,6 +135,12 @@ const styles = StyleSheet.create({
 		marginBottom: 15,
 		borderBottomWidth: 1,
 		borderBottomColor: themeColors.black300
+	},
+	image: {
+		height: "100%",
+		width: "100%",
+		backgroundColor: themeColors.white,
+		borderRadius: 10
 	}
 })
 

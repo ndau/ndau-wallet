@@ -8,7 +8,7 @@ export default useNotification = () => {
 
     const dispatch = useDispatch()
     const { getActiveWalletId } = useWallet()
-    const notifications = useSelector(state => state.NotificationReducer.notifications);
+    const notifications = useSelector(state => state.NotificationReducer.notifications)
 
     const savedNotifications = async (message, isResponse, type, fromAddress, toAddress) => {
         let obj = notificationsObject(message, isResponse, type, fromAddress, toAddress)
@@ -25,6 +25,10 @@ export default useNotification = () => {
             const currentNotifications = await getNotifications()
             saveNotifications([...currentNotifications, obj]);
         } else if (type === tokenShortName.NPAY) {
+            dispatch(addNotification(obj));
+            const currentNotifications = await getNotifications()
+            saveNotifications([...currentNotifications, obj]);
+        } else if (type === tokenShortName.MATIC) {
             dispatch(addNotification(obj));
             const currentNotifications = await getNotifications()
             saveNotifications([...currentNotifications, obj]);

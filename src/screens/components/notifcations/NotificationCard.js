@@ -60,7 +60,7 @@ const NotificationCard = ({ item, index, onDelete }) => {
                 </View>
             }
             <Spacer width={10} />
-            <Animated.View entering={FadeInDown.delay(100 * index)}>
+            <Animated.View style={{ flex: 1 }} entering={FadeInDown.delay(100 * index)}>
                 <View style={styles.row}>
                     <View style={styles.main}>
                         <View>
@@ -108,13 +108,13 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     message: {
-        width: Dimensions.get('window').width / 1.4
+        // width: Dimensions.get('window').width / 1.4
     },
     row: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         paddingRight: 20,
-        width: Dimensions.get('window').width / 1.24
+        // width: Dimensions.get('window').width / 1.24
     },
     row2: {
         flexDirection: 'row',
