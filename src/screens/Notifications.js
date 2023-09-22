@@ -43,15 +43,13 @@ const Notifications = (props) => {
 		deleteNotifications(notificationId)
 		modelNotifyDeleteRef.current(false)
 	};
-	
+
 	return (
 		<ScreenContainer tabScreen>
 
 			<View style={styles.textContainer}>
 				<CustomText h6 semiBold style={styles.text1}>Notifications</CustomText>
 			</View>
-
-			<Spacer height={20} />
 
 			<FlatList
 				data={filterWalletNotifications(notifications)}
@@ -65,6 +63,7 @@ const Notifications = (props) => {
 						}}
 					/>}
 				keyExtractor={(item, index) => index.toString()}
+				contentContainerStyle={styles.list}
 			/>
 
 			<CustomModal bridge={modelNotifyDeleteRef}>
@@ -141,6 +140,9 @@ const styles = StyleSheet.create({
 		flex: 1,
 		height: 44,
 		backgroundColor: 'red',
+	},
+	list: {
+		paddingBottom: 120
 	}
 })
 

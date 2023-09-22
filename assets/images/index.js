@@ -16,6 +16,7 @@ const images = {
   nPay: require('./nPay.png'),
   USDC: require('./USDC.png'),
   ndauAccountImage: require('./ndauAccount.png'),
+  polygonIconImage: require('./polygonIcon.png'),
 }
 
 export { images };

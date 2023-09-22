@@ -1,12 +1,13 @@
 import { format } from 'date-fns'
 import React, { useCallback } from 'react'
-import { Dimensions, StyleSheet, TouchableOpacity, View } from 'react-native'
+import { Dimensions, StyleSheet, TouchableOpacity, View, Image } from 'react-native'
 import Animated, { FadeInDown } from "react-native-reanimated"
 
-import { NotificationDelete, NotificationFailed, NotificationSuccess, RoundEtheriumIcon, RoundNdauIcon, RoundNpayIcon, RoundUsdcIcon } from '../../../assets/svgs/components'
+import { NotificationDelete, NotificationFailed, NotificationSuccess, RoundEtheriumIcon, RoundMaticIcon, RoundNdauIcon, RoundNpayIcon, RoundUsdcIcon } from '../../../assets/svgs/components'
 import CustomText from '../../../components/CustomText'
 import Spacer from '../../../components/Spacer'
 import { tokenShortName } from '../../../utils'
+import { images } from '../../../../assets/images'
 
 const NotificationCard = ({ item, index, onDelete }) => {
 
@@ -25,7 +26,6 @@ const NotificationCard = ({ item, index, onDelete }) => {
     }
 
     const setWalletIcon = useCallback((type) => {
-
         if (type === tokenShortName.NDAU) {
             return <RoundNdauIcon />
         }
@@ -38,14 +38,18 @@ const NotificationCard = ({ item, index, onDelete }) => {
         else if (type === tokenShortName.USDC) {
             return <RoundUsdcIcon />
         }
-
+        else if (type === tokenShortName.MATIC) {
+            return <View style={styles.maticImgCon}>
+                <Image style={styles.maticImg} source={images.polygonIconImage} />
+            </View>
+        }
     }, [])
 
 
     return (
         <View style={styles.container}>
             {item?.isBoolean ?
-                <View style={{ padding: item?.isBoolean ? 6 : 0 }}>
+                <View>
                     <NotificationSuccess />
                     <View style={styles.svg} >
                         {setWalletIcon(item?.type)}
@@ -56,45 +60,34 @@ const NotificationCard = ({ item, index, onDelete }) => {
                     <NotificationFailed />
                 </View>
             }
-
             <Spacer width={10} />
-
             <Animated.View entering={FadeInDown.delay(100 * index)}>
                 <View style={styles.row}>
                     <View style={styles.main}>
-
                         <View>
-                            <CustomText body semiBold style={styles.message}>{item.message}</CustomText>
-                            <Spacer height={6} />
+                            <CustomText body titiliumBold style={styles.message}>{item.message}</CustomText>
                             <View style={styles.row3}>
                                 <View style={styles.row2}>
-                                    <CustomText body2 semiBold >{`To :  `}</CustomText>
-                                    <CustomText body2 > {makeStringShort(item?.transaction?.toAddress)}</CustomText>
+                                    <CustomText body2 titiliumBold >{`To :`}</CustomText>
+                                    <CustomText body2 titilium> {makeStringShort(item?.transaction?.toAddress)}</CustomText>
                                 </View>
-
                                 <View style={styles.row2}>
-                                    <CustomText body2 semiBold >{`From :  `}</CustomText>
-                                    <CustomText body2  > {makeStringShort(item?.transaction?.fromAddress)}</CustomText>
+                                    <CustomText body2 titiliumBold >{`From :`}</CustomText>
+                                    <CustomText body2 titilium> {makeStringShort(item?.transaction?.fromAddress)}</CustomText>
                                 </View>
                             </View>
                         </View>
-
                         <TouchableOpacity activeOpacity={0.8} onPress={onDelete} style={styles.deleteSvg}>
                             <NotificationDelete />
                         </TouchableOpacity>
                     </View>
                 </View>
-
-                <Spacer height={6} />
-
                 <View style={styles.row2}>
-                    <CustomText body2 semiBold >{`Date :  `}</CustomText>
-                    <CustomText body2 color='#fff'>{formattedTime(item?.id)}</CustomText>
+                    <CustomText body2 titiliumBold >{`Date :  `}</CustomText>
+                    <CustomText body2 titilium>{formattedTime(item?.id)}</CustomText>
                 </View>
             </Animated.View>
-
         </View>
-
     )
 }
 
@@ -103,12 +96,14 @@ const styles = StyleSheet.create({
     container: {
         flexDirection: 'row',
         marginBottom: 25,
-        justifyContent: 'center'
+        justifyContent: 'center',
+        alignItems: 'center'
     },
     main: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        width: '100%'
+        width: '100%',
+        alignItems: 'center'
     },
     column: {
         alignItems: 'center',
@@ -133,12 +128,20 @@ const styles = StyleSheet.create({
     },
     svg: {
         position: 'absolute',
-        right: 4,
-        top: 35
+        right: -2,
+        top: 25
     },
     deleteSvg: {
         alignSelf: 'flex-end'
     },
+    maticImgCon: {
+        width: 20,
+        height: 20
+    },
+    maticImg: {
+        width: 20,
+        height: 20
+    }
 })
 
 export default NotificationCard

@@ -262,7 +262,6 @@ const Dashboard = ({ navigation }) => {
 					)
 				}
 
-
 				<View style={styles.height} />
 			</ScrollView>
 

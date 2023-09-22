@@ -6,6 +6,7 @@ import {
     View
 } from 'react-native'
 
+
 import { images } from '../../assets/images'
 import { ConvertIcon, NpayIcon, WalletSuccessSVGComponent } from '../assets/svgs/components'
 import Button from '../components/Button'
@@ -15,30 +16,25 @@ import CustomModal from '../components/Modal'
 import ScreenContainer from '../components/Screen'
 import Spacer from '../components/Spacer'
 import { themeColors } from '../config/colors'
+import useConvert from '../hooks/useConvert'
+import { useWallet } from '../hooks'
+
+
 
 const ConvertNdauToNpay = (props) => {
 
     const [errors, setErrors] = useState([]);
-    const { totalBalance, dollorBalnce, image } = props?.route?.params ?? {}
+    const { totalBalance, ndauAddress, image } = props?.route?.params ?? {}
     const [ndauAmount, setNdauAmount] = useState("");
     const [npayAmount, setNpayAmount] = useState("0.0");
     const [loaderValue, setLoaderValue] = useState("");
-    const [exchangeRate, setExchangeRate] = useState("42013.14519");
     const modalRef = useRef(null)
     const modalRef2 = useRef(null)
-
-
-    // useEffect( async () => {
-    //     const response =  await axios.get(
-    //         `https://open.er-api.com/v6/latest/USD`
-    //     );
-    //     const usdToIdrRate = response?.data?.rates.IDR;
-    //     console.log(usdToIdrRate, 'us------')
-    // }, [])
+    const { sigedErcWallet, getRecoverdAddress } = useConvert()
+    const { getActiveWallet } = useWallet()
 
 
     const getRemainNdauBalance = (amount) => {
-        
         try {
             const toShow = parseFloat((totalBalance - amount).toFixed(3));
             return toShow < 0 ? 0 : toShow
@@ -47,32 +43,42 @@ const ConvertNdauToNpay = (props) => {
         }
     }
 
-
     const handleConvert = () => {
+        setLoaderValue("Signing")
 
-        setLoaderValue("Updating")
-
-        setTimeout(() => {
+        let payload = {
+            amount: ndauAmount,
+            ndau_address: ndauAddress,
+            npay_adddress: getActiveWallet().ercAddress,
+            nonce: '1'
+        }
+        console.log(payload, 'payload---')
+        sigedErcWallet(payload).then((res) => {
             setLoaderValue("")
-            if (exchangeRate && ndauAmount) {
-                const convertedAmount = parseFloat(ndauAmount) * exchangeRate;
-                setNpayAmount(convertedAmount.toFixed(2));
-            } else {
-                setNpayAmount("0.0");
-            }
-            modalRef2.current(true)
-
-        }, 2000)
+            console.log(JSON.stringify(res, null, 2), 'signed')
+        }).catch(err => {
+            console.log(err)
+        })
 
 
 
+        // setLoaderValue("Updating")
+        // setTimeout(() => {
+        //     setLoaderValue("")
+        //     if (exchangeRate && ndauAmount) {
+        //         const convertedAmount = parseFloat(ndauAmount) * exchangeRate;
+        //         setNpayAmount(convertedAmount.toFixed(2));
+        //     } else {
+        //         setNpayAmount("0.0");
+        //     }
+        //     modalRef2.current(true)
+
+        // }, 2000)
     }
+
     const handleDone = () => {
-
         modalRef.current(false)
-
     }
-
 
     return (
         <ScreenContainer headerTitle={"Convert"}>
@@ -90,25 +96,18 @@ const ConvertNdauToNpay = (props) => {
             </View>
 
             <View style={[styles.convertContainer1]}>
-
-
                 <View style={styles.leftView}>
                     <CustomText>You Get</CustomText>
-
                     <View style={styles.selectCoin}>
                         <Spacer width={2} />
                         <Image style={styles.image} source={images.nDau} />
                         <Spacer width={2} />
                         <CustomText body2 color='black'>NDAU</CustomText>
                         <Spacer width={2} />
-
                     </View>
-
-
                 </View>
                 <Spacer height={20} />
                 <View style={styles.rightView}>
-
                     <View style={styles.row}>
                         <TextInput style={styles.inputCon}
                             placeholderTextColor={'#fff'}
@@ -129,9 +128,7 @@ const ConvertNdauToNpay = (props) => {
                                 }
                             }}
                             maxLength={10}
-
                         />
-
                         {/* <Spacer width={4} />
                         <CustomText caption style={{ marginTop: 6 }}>{`~ $${parseFloat(dollorBalnce || 0)?.toFixed(2) || "0"}`}</CustomText> */}
                     </View>
@@ -154,23 +151,18 @@ const ConvertNdauToNpay = (props) => {
             <View style={[styles.convertContainer2]}>
                 <View style={styles.leftView}>
                     <CustomText>You Get</CustomText>
-
                     <View style={styles.selectCoin}>
                         <Spacer width={2} />
                         <NpayIcon />
                         <Spacer width={2} />
                         <CustomText body2 color='black'>NPAY</CustomText>
                         <Spacer width={2} />
-
                     </View>
-
-
                 </View>
+
                 <Spacer height={20} />
                 <View style={styles.rightView}>
-
                     <View style={styles.row}>
-
                         <TextInput style={styles.inputCon}
                             placeholderTextColor={'#fff'}
                             placeholder='0.0'
@@ -178,7 +170,6 @@ const ConvertNdauToNpay = (props) => {
                             editable={false}
                             selectTextOnFocus={false}
                         />
-
                         {/* <Spacer width={4} />
                         <CustomText caption style={{ marginTop: 6 }}>$177.55</CustomText> */}
                     </View>
@@ -188,10 +179,11 @@ const ConvertNdauToNpay = (props) => {
                         <CustomText body2 >{npayAmount}</CustomText>
                     </View>
                 </View>
+
             </View>
 
             <View style={styles.convertBtn}>
-                <Button label={"Convert"} onPress={handleConvert} />
+                <Button label={"Convert"} onPress={handleConvert} disabled={ndauAmount.length === 0 || totalBalance === 0} />
             </View>
 
             <CustomModal bridge={modalRef}>
@@ -203,6 +195,7 @@ const ConvertNdauToNpay = (props) => {
                 </View>
                 <Button label={"Done"} onPress={handleDone} />
             </CustomModal>
+
             <CustomModal bridge={modalRef2}>
                 <View style={styles.modal}>
                     <CustomText h5 semiBold>NOTE</CustomText>
@@ -210,14 +203,12 @@ const ConvertNdauToNpay = (props) => {
                     <View style={styles.divider} />
                     <Spacer height={20} />
                     <CustomText body>NDAU is converted to NPAY on a 1:1 basis.  All NDAU converted from this NDAU address will be sent to your NPAY address that is listed under the “Tokens” screen in this wallet app.</CustomText>
-
                 </View>
                 <View>
                     <Button label={"I Understand"} onPress={() => modalRef2.current(false)} />
                     <Spacer height={12} />
                     <Button label={"Cancel"} onPress={() => modalRef2.current(false)} buttonContainerStyle={styles.cancelBtn} />
                 </View>
-
             </CustomModal>
 
         </ScreenContainer>
@@ -235,7 +226,6 @@ const styles = StyleSheet.create({
         padding: 10,
         borderColor: themeColors.orange,
         borderWidth: 1
-
     },
     convertContainer2: {
         borderRadius: 20,
@@ -244,17 +234,13 @@ const styles = StyleSheet.create({
         padding: 10,
         borderColor: themeColors.primary,
         borderWidth: 1
-
     },
     leftView: {
-
         alignItems: 'center',
         justifyContent: 'space-between',
         flexDirection: "row"
     },
     rightView: {
-
-
         alignItems: 'center',
         justifyContent: 'space-between',
         flexDirection: "row"
@@ -310,7 +296,6 @@ const styles = StyleSheet.create({
         height: 1,
         width: '100%',
         backgroundColor: 'grey',
-
     },
     cancelBtn: {
         backgroundColor: "transparent",
