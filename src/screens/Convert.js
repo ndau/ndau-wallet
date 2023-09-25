@@ -60,7 +60,6 @@ const ConvertNdauToNpay = (props) => {
         })
 
 
-
         // setLoaderValue("Updating")
         // setTimeout(() => {
         //     setLoaderValue("")
