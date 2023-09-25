@@ -69,7 +69,7 @@ const Notifications = (props) => {
 				<View style={styles.modelContainer}>
 					<NotificationDelete height={40} width={40} />
 					<Spacer height={25} />
-					<CustomText body semiBold style={styles.alertMessage}>Are you sure want to delete</CustomText>
+					<CustomText body semiBold style={styles.alertMessage}>Are you sure want to delete?</CustomText>
 					<Spacer height={25} />
 					<View style={styles.btnsRow}>
 						<Button

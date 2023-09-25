@@ -32,7 +32,6 @@ export default useNotification = () => {
             dispatch(addNotification(obj));
             const currentNotifications = await getNotifications()
             saveNotifications([...currentNotifications, obj]);
-        
         } else if (type === tokenShortName.ZK_ETH) {
             dispatch(addNotification(obj));
             const currentNotifications = await getNotifications()
