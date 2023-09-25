@@ -34,14 +34,14 @@ const ImportMultiCoinWallet = (props) => {
   const [errors, setErrors] = useState([]);
   const [walletNameValue, setWalletNameValue] = useState("");
   const [defaultWalletId, setDefaultWalletId] = useState("Wallet 1");
-  const { addWalletWithAddress, addLegacyWallet } = useWallet()
+  const { addWalletWithAddress, addLegacyWallet, checkWalletExistence, getWallets } = useWallet()
 
   const checkIfWalletAlreadyExists = () => {
 
     try {
-      const user = UserStore.getUser();
-      if (DataFormatHelper.checkIfWalletAlreadyExists(user, SetupStore.walletId)) {
-        FlashNotification.show(`There is already a wallet named "${SetupStore.walletId}". Please choose another name.`);
+      const foundedWallet = getWallets().filter(wallet => wallet.walletName?.toLowerCase() === walletNameValue?.toLowerCase());
+      if (foundedWallet.length !== 0) {
+        FlashNotification.show(`There is already a wallet named "${walletNameValue}". Please choose another name.`);
         return true;
       }
     } catch (error) { }
@@ -78,8 +78,8 @@ const ImportMultiCoinWallet = (props) => {
 
     if (UserStore.isUserSetup()) {
       //Todo
-      // const isExist = await MultiSafeHelper.recoveryPhraseAlreadyExists(UserStore.getUser().userId, UserStore.getPassword())
-      // if (isExist) return FlashNotification.show("This recovery phrase already exists in the wallet.");
+      const isExist = await checkWalletExistence(SetupStore.recoveryPhrase.join(" "))
+      if (isExist) return FlashNotification.show("This recovery phrase already exists in the wallet.");
       if (checkIfWalletAlreadyExists()) return;
 
       if (item.type === "LEGACY") {

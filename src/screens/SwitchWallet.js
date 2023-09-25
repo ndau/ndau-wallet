@@ -38,7 +38,7 @@ const SwitchWallet = () => {
   }
 
   const RenderItem = useCallback(({ item }) => {
-    const { walletId, type } = item;
+    const { walletId, type, walletName } = item;
     return (
       <TouchableOpacity
         disabled={getActiveWallet().walletId === walletId}
@@ -53,7 +53,7 @@ const SwitchWallet = () => {
             <WalletIcon />
           </View>
           <View style={{ justifyContent: "space-between", padding: 4, flex: 1 }}>
-            <CustomText titilium body>{walletId}</CustomText>
+            <CustomText titilium body>{walletName}</CustomText>
             <CustomText titilium body2>{type || "nDau Legacy Wallet"}</CustomText>
           </View>
           <TouchableOpacity onPress={() => navigation.navigate(ScreenNames.EditWallet, { item })}>

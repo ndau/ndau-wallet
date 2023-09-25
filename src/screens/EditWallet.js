@@ -21,7 +21,7 @@ const EditWallet = (props) => {
   const navigation = useNavigation();
   const { changeWalletName } = useWallet();
 
-  const [walletName, setWalletName] = useState(item.walletId || "");
+  const [walletName, setWalletName] = useState(item.walletName || "");
 
   return (
     <ScreenContainer>
