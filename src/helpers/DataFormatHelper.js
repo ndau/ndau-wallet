@@ -40,6 +40,18 @@ const moveTempUserToWalletName = (user, walletId) => {
   }
 }
 
+const createRandomWord = (length = 4) => {
+  let result = '';
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  const charactersLength = characters.length;
+  let counter = 0;
+  while (counter < length) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    counter += 1;
+  }
+  return result;
+}
+
 /**
  * Simple function to create a 8 character SHA256 hash
  * of the string passed in.
@@ -360,5 +372,6 @@ export default {
   getWalletName,
   groupArrayIntoRows,
   accountNdauAmount,
-  spendableNapu
+  spendableNapu,
+  createRandomWord
 }

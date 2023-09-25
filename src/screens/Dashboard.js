@@ -171,7 +171,7 @@ const Dashboard = ({ navigation }) => {
 	}, [tokens])
 
 	useEffect(() => {
-		if (selected === 1) {
+		if (selected === 1 && isFocused) {
 			setNFTLoading(true);
 			getCollections().then(nftsList => {
 				setNFTLoading(false);
@@ -184,7 +184,7 @@ const Dashboard = ({ navigation }) => {
 		} else {
 			setNfts([])
 		}
-	}, [selected])
+	}, [selected, isFocused])
 
 	const renderItem = useCallback(({ item, index }) => {
 		if (selected == 0) return <Token {...item} index={index} onPress={() => handleNavigation(item)} />

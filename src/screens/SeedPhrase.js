@@ -292,7 +292,7 @@ const SeedPhrase = (props) => {
         }
       </View>
       <Button
-        // disabled={seeds.length == 0 || buttonDisabled}
+        disabled={seeds.length == 0 || buttonDisabled}
         label={buttonText}
         onPress={handleContinue}
       />

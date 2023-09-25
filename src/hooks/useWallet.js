@@ -141,7 +141,7 @@ export default useWallet = () => {
       else return `${AppConstants.WALLET_NAME} ` + (Object.keys(user.wallets).length || "")
     }
 
-    const walletId = Date.now();
+    const walletId = DataFormatHelper.createRandomWord();
 
     if (!user) { // no user found, have to create
       user = new User();
@@ -243,7 +243,6 @@ export default useWallet = () => {
       try {
         const user = UserStore.getUser()
         const wallet = user.wallets[walletId]
-        wallet.walletId = name;
         wallet.walletName = name;
         user.wallets[walletId] = wallet
         await MultiSafeHelper.saveUser(user, UserStore.getPassword());
@@ -252,6 +251,14 @@ export default useWallet = () => {
       } catch (e) {
         reject(e)
       }
+    })
+  }
+
+  const checkWalletExistence = (phrase) => {
+    return new Promise(async (resolve, reject) => {
+      const keys = await _createNDAUWalletKeys(phrase);
+      const filteredWalletForNDAU = getWallets().filter(wallet => wallet.keys[keys.accountCreationKeyHash]);
+      resolve(filteredWalletForNDAU.length !== 0)
     })
   }
 
@@ -272,6 +279,7 @@ export default useWallet = () => {
     removeWallet,
     removeAccount,
     changeWalletName,
-    getActiveWalletId
+    getActiveWalletId,
+    checkWalletExistence
   }
 }
