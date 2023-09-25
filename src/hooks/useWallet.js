@@ -141,16 +141,16 @@ export default useWallet = () => {
       else return `${AppConstants.WALLET_NAME} ` + (Object.keys(user.wallets).length || "")
     }
 
-    const walletAddresHash = DataFormatHelper.create8CharHash(data.address);
+    const walletId = Date.now();
 
     if (!user) { // no user found, have to create
       user = new User();
-      user.userId = `${AppConstants.WALLET_NAME}`
+      user.userId = `Anonymous`
     }
 
     const wallet = {
       type: "ERC",
-      walletId: createNewWalletName(data),
+      walletId: walletId,
       walletName: createNewWalletName(data),
       ercAddress: data.address,
       accounts: {}, // this handled by previous app, they add ndau accounts in it. so means don't change
@@ -161,6 +161,7 @@ export default useWallet = () => {
         path: data.path,
       }
     }
+    const walletAddresHash = DataFormatHelper.create8CharHash(walletId);
     user.wallets[walletAddresHash] = wallet;
 
     UserStore.setUser(user);

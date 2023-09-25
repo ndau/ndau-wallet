@@ -155,7 +155,9 @@ const useWalletConnect = () => {
             namespaces[key] = {
               accounts: [
                 `${obj.chains[0]}:${accountAddress}`,
-                `eip155:5:${accountAddress}` // for goerli supported
+                `eip155:5:${accountAddress}`, // for goerli supported
+                `eip155:137:${accountAddress}`, // Polygon
+                `eip155:80001:${accountAddress}` // Polygon-Mumbai
               ],
               chains: obj.chains,
               methods: obj.methods,

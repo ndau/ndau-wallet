@@ -150,7 +150,7 @@ const Dashboard = ({ navigation }) => {
 			loadOnlyNDAUBalances()
 		}
 		setWalletData({
-			walletName: UserStore.getActiveWallet().walletId,
+			walletName: UserStore.getActiveWallet().walletName,
 			type: UserStore.getActiveWallet().type
 		})
 	}

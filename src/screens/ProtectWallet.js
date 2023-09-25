@@ -49,7 +49,7 @@ const ProtectWallet = (props) => {
       UserStore.setPassword(pins.pin);
       const user = UserStore.getUser();
       SetupStore.encryptionPassword = pins.pin;
-      if (!SetupStore.walletId) SetupStore.walletId = user?.userId || "Main Wallet";
+      if (!SetupStore.walletId) SetupStore.walletId = DataFormatHelper.create8CharHash(Date.now())//user?.userId || "Main Wallet";
 
       // Store password for future use if user try FaceId for unlock
       keychain.setGenericPassword("", pins.pin, { storage: keychain.STORAGE_TYPE.AES });
@@ -74,8 +74,6 @@ const ProtectWallet = (props) => {
   }, [pins.pin, pins.confirmPin]);
 
   const addUser = async () => {
-    const msg = isImporting ? "Importing your wallet" : "Creating your wallet"
-    setLoading(msg);
     let user = UserStore.getUser();
     const isFirstTime = !user;
     if (item.type === "LEGACY") {
@@ -100,7 +98,7 @@ const ProtectWallet = (props) => {
     return new Promise(async (resolve, reject) => {
       const msg = isImporting ? "Importing your wallet" : "Creating your wallet"
       setLoading(msg);
-      await addWalletWithAddress(SetupStore.recoveryPhrase.join(' '), SetupStore.walletId);
+      await addWalletWithAddress(SetupStore.recoveryPhrase.join(' '), "Main Wallet");
       await UserData.loadUserData(UserStore.getUser())
       setLoading("");
       resolve();
@@ -108,6 +106,8 @@ const ProtectWallet = (props) => {
   }
 
   const checkSensorsAvailability = () => {
+    const msg = isImporting ? "Importing your wallet" : "Creating your wallet"
+    setLoading(msg);
     ReactNativeBiometricsLegacy.isSensorAvailable().then((res) => {
       const data = {
         isFaceId: res.available && res.biometryType === BiometryTypes.FaceID,
