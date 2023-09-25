@@ -35,6 +35,9 @@ const NotificationCard = ({ item, index, onDelete }) => {
         else if (type === tokenShortName.ETHERERUM) {
             return <RoundEtheriumIcon />
         }
+        else if (type === tokenShortName.ZK_ETH) {
+            return <RoundEtheriumIcon />
+        }
         else if (type === tokenShortName.USDC) {
             return <RoundUsdcIcon />
         }
@@ -63,8 +66,8 @@ const NotificationCard = ({ item, index, onDelete }) => {
             <Animated.View style={{ flex: 1 }} entering={FadeInDown.delay(100 * index)}>
                 <View style={styles.row}>
                     <View style={styles.main}>
-                        <View>
-                            <CustomText body titiliumBold>{item.message}</CustomText>
+                        <View style={{width:'95%'}}>
+                            <CustomText body titiliumBold >{item.message}</CustomText>
                             <View style={styles.row3}>
                                 <View style={styles.row2}>
                                     <CustomText body2 titiliumBold >{`To :`}</CustomText>
@@ -113,7 +116,8 @@ const styles = StyleSheet.create({
     },
     row2: {
         flexDirection: 'row',
-        alignItems: 'center'
+        alignItems: 'center',
+      
     },
     row3: {
         flexDirection: 'row',
@@ -135,7 +139,8 @@ const styles = StyleSheet.create({
     maticImg: {
         width: 20,
         height: 20
-    }
+    },
+  
 })
 
 export default NotificationCard

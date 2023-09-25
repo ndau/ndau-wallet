@@ -181,7 +181,7 @@ const ConvertNdauToNpay = (props) => {
             </View>
 
             <View style={styles.convertBtn}>
-                <Button label={"Convert"} onPress={handleConvert} disabled={ndauAmount.length === 0 || totalBalance === 0} />
+                <Button label={"Convert"} onPress={handleConvert} disabled={ndauAmount.length === 0 || totalBalance === 0 || getRemainNdauBalance(ndauAmount) === 0} />
             </View>
 
             <CustomModal bridge={modalRef}>
