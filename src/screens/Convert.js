@@ -6,7 +6,6 @@ import {
     View
 } from 'react-native'
 
-
 import { images } from '../../assets/images'
 import { ConvertIcon, NpayIcon, WalletSuccessSVGComponent } from '../assets/svgs/components'
 import Button from '../components/Button'

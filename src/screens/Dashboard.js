@@ -15,7 +15,7 @@ import Token from "../components/Token";
 import FlashNotification from "../components/common/FlashNotification";
 import { themeColors } from "../config/colors";
 import DataFormatHelper from "../helpers/DataFormatHelper";
-import { CoinGecko, Converters, EthersScanAPI, NetworkManager } from "../helpers/EthersScanAPI";
+import { CoinGecko, NetworkManager } from "../helpers/EthersScanAPI";
 import { useNFTS, useWallet } from "../hooks";
 import NdauStore from "../stores/NdauStore";
 import UserStore from "../stores/UserStore";
@@ -283,8 +283,6 @@ const Dashboard = ({ navigation }) => {
 					}}
 				/>
 			</BottomSheetModal>
-
-
 		</ScreenContainer>
 	)
 }

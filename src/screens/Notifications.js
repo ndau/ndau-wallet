@@ -34,7 +34,6 @@ const Notifications = (props) => {
 			}
 		}
 		loadNotifications();
-
 		return () => { }
 	}, [isFocused]);
 

@@ -1,13 +1,13 @@
 import { format } from 'date-fns'
 import React, { useCallback } from 'react'
-import { Dimensions, StyleSheet, TouchableOpacity, View, Image } from 'react-native'
+import { Image, StyleSheet, TouchableOpacity, View } from 'react-native'
 import Animated, { FadeInDown } from "react-native-reanimated"
 
-import { NotificationDelete, NotificationFailed, NotificationSuccess, RoundEtheriumIcon, RoundMaticIcon, RoundNdauIcon, RoundNpayIcon, RoundUsdcIcon } from '../../../assets/svgs/components'
+import { images } from '../../../../assets/images'
+import { NotificationDelete, NotificationFailed, NotificationSuccess, RoundEtheriumIcon, RoundNdauIcon, RoundNpayIcon, RoundUsdcIcon } from '../../../assets/svgs/components'
 import CustomText from '../../../components/CustomText'
 import Spacer from '../../../components/Spacer'
 import { tokenShortName } from '../../../utils'
-import { images } from '../../../../assets/images'
 
 const NotificationCard = ({ item, index, onDelete }) => {
 
@@ -64,7 +64,7 @@ const NotificationCard = ({ item, index, onDelete }) => {
                 <View style={styles.row}>
                     <View style={styles.main}>
                         <View>
-                            <CustomText body titiliumBold style={styles.message}>{item.message}</CustomText>
+                            <CustomText body titiliumBold>{item.message}</CustomText>
                             <View style={styles.row3}>
                                 <View style={styles.row2}>
                                     <CustomText body2 titiliumBold >{`To :`}</CustomText>
@@ -91,7 +91,6 @@ const NotificationCard = ({ item, index, onDelete }) => {
 }
 
 const styles = StyleSheet.create({
-
     container: {
         flexDirection: 'row',
         marginBottom: 25,
@@ -107,14 +106,10 @@ const styles = StyleSheet.create({
     column: {
         alignItems: 'center',
     },
-    message: {
-        // width: Dimensions.get('window').width / 1.4
-    },
     row: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         paddingRight: 20,
-        // width: Dimensions.get('window').width / 1.24
     },
     row2: {
         flexDirection: 'row',
