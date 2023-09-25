@@ -11,7 +11,7 @@ const NFT = ({ name, image, index, isLast, onPress }) => {
 		<Animated.View entering={FadeInDown.delay(100 * index)} style={[styles.container, isLast && { maxWidth: "48%" }]}>
 			<TouchableOpacity onPress={onPress} activeOpacity={0.8}>
 				<>
-					<Image resizeMode="stretch" source={{ uri: image }} style={styles.image} />
+					{!!image && typeof image !== 'number' && <Image resizeMode="stretch" source={{ uri: image }} style={styles.image} />}
 					<CustomText titiliumSemiBold h6 style={styles.name}>{name}</CustomText>
 				</>
 			</TouchableOpacity>
