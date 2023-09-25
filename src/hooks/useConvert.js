@@ -21,7 +21,7 @@ export default useConvert = () => {
         async function loadChainId() {
             try {
                 const network = await provider.getNetwork();
-                setNetworkChainId(networkChainId?.chainId)
+                setNetworkChainId(network?.chainId)
             } catch (error) {
                 console.error('Error:', error);
             }
