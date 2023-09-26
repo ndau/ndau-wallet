@@ -26,7 +26,7 @@ const EditWallet = (props) => {
   return (
     <ScreenContainer>
       <Spacer height={16} />
-      <CustomText bold h6 style={styles.margin}>{item.walletId}</CustomText>
+      <CustomText bold h6 style={styles.margin}>{item.walletName}</CustomText>
       <Spacer height={16} />
       <View style={styles.container}>
         <View style={{ flex: 1 }}>
