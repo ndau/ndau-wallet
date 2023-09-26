@@ -21,6 +21,7 @@ import Wallet from '../model/Wallet';
 import User from '../model/User';
 import FlashNotification from '../components/common/FlashNotification';
 import LogStore from '../stores/LogStore';
+import SetupStore from '../stores/SetupStore';
 
 /**
  * This function will persist the user information after any setup is
@@ -177,7 +178,6 @@ const createWallet = async (
   rootDerivedPath,
   wallet,
 ) => {
-  console.log('Inside wallet create');
   if (!accountCreationKey && !recoveryBytes) {
     throw new Error(
       'you MUST pass either recoveryBytes or accountCreationKey to this method',
@@ -198,7 +198,7 @@ const createWallet = async (
     if (!wallet) {
       wallet = new Wallet();
       wallet.walletId = walletId;
-      wallet.walletName = walletId;
+      wallet.walletName = SetupStore.walletName || "Main Wallet";
 
       wallet.accountCreationKeyHash =
         DataFormatHelper.create8CharHash(accountCreationKey);

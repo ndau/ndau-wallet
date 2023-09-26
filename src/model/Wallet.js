@@ -15,6 +15,7 @@
 class Wallet {
   constructor () {
     this.walletId = ''
+    this.walletName = ''
     this.accountCreationKeyHash = ''
     this.accounts = {}
     this.keys = {}
@@ -25,7 +26,8 @@ class Wallet {
       walletId: this.walletId,
       accountCreationKeyHash: this.accountCreationKeyHash,
       accounts: this.accounts,
-      keys: this.keys
+      keys: this.keys,
+      walletName: this.walletName
     }
   }
 }

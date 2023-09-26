@@ -85,7 +85,6 @@ const ImportMultiCoinWallet = (props) => {
         setLoading("Importing a Wallet");
         let user = UserStore.getUser();
         UserStore.setUser(user);
-        user.walletName = walletNameValue;
         user = await addLegacyWallet(user);
         await UserData.loadUserData(user);
         setLoading("");

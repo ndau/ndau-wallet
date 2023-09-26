@@ -60,7 +60,7 @@ export default useWallet = () => {
       user = await AccountHelper.setupNewUser(
         user,
         DataFormatHelper.convertRecoveryArrayToString(SetupStore.recoveryPhrase),
-        user?.walletName ? user.walletName : SetupStore.walletName ? SetupStore.walletName : SetupStore.userId,
+        DataFormatHelper.createRandomWord(),
         0,
         SetupStore.entropy,
         SetupStore.encryptionPassword,
@@ -71,7 +71,7 @@ export default useWallet = () => {
       user = await AccountHelper.addNewWallet(
         user,
         DataFormatHelper.convertRecoveryArrayToString(SetupStore.recoveryPhrase),
-        user.walletName ? user.walletName : AppConstants.WALLET_NAME + " " + Object.keys(user.wallets).length,
+        DataFormatHelper.createRandomWord(),
         user.userId,
         0,
         SetupStore.encryptionPassword
