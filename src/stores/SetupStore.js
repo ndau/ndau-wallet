@@ -28,6 +28,7 @@ class SetupStore {
     this._shuffledMap = []
     this._addressType = AppConstants.MAINNET_ADDRESS
     this._walletId = ''
+    this._walletName = ''
   }
 
   set userId (userId) {
@@ -104,6 +105,14 @@ class SetupStore {
 
   get walletId () {
     return this._walletId
+  }
+
+  set walletName (walletName) {
+    this._walletName = walletName
+  }
+
+  get walletName () {
+    return this._walletName
   }
 
   printData = () => {

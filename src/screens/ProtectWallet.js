@@ -98,7 +98,7 @@ const ProtectWallet = (props) => {
     return new Promise(async (resolve, reject) => {
       const msg = isImporting ? "Importing your wallet" : "Creating your wallet"
       setLoading(msg);
-      await addWalletWithAddress(SetupStore.recoveryPhrase.join(' '), "Main Wallet");
+      await addWalletWithAddress(SetupStore.recoveryPhrase.join(' '), SetupStore.walletName);
       await UserData.loadUserData(UserStore.getUser())
       setLoading("");
       resolve();

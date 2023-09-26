@@ -60,7 +60,7 @@ export default useWallet = () => {
       user = await AccountHelper.setupNewUser(
         user,
         DataFormatHelper.convertRecoveryArrayToString(SetupStore.recoveryPhrase),
-        user?.walletName ? user.walletName : SetupStore.walletId ? SetupStore.walletId : SetupStore.userId,
+        user?.walletName ? user.walletName : SetupStore.walletName ? SetupStore.walletName : SetupStore.userId,
         0,
         SetupStore.entropy,
         SetupStore.encryptionPassword,
@@ -254,8 +254,23 @@ export default useWallet = () => {
     })
   }
 
-  const checkWalletExistence = (phrase) => {
+  const checkWalletExistence = (phrase, forLegacy = false) => {
     return new Promise(async (resolve, reject) => {
+
+      if (forLegacy) {
+        return KeyAddr.wordsToBytes(AppConstants.APP_LANGUAGE, phrase).then(async base64Str => {
+          __getNDAUFormatWalletKeys(base64Str, (keys) => {
+            const keyToCheck = DataFormatHelper.create8CharHash(keys.keys[Object.keys(keys.keys)[0]].privateKey);
+            const filteredWalletForNDAU = getWallets().filter(wallet => wallet.keys[keyToCheck]);
+            return resolve(filteredWalletForNDAU.length !== 0)
+          })
+        }).catch(err => {
+          console.log('err', JSON.stringify(err.message, null, 2));
+          reject(err);
+        })
+      }
+
+      // this will check for Ethers phrases
       const keys = await _createNDAUWalletKeys(phrase);
       const filteredWalletForNDAU = getWallets().filter(wallet => wallet.keys[keys.accountCreationKeyHash]);
       resolve(filteredWalletForNDAU.length !== 0)

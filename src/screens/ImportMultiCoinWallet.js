@@ -77,8 +77,7 @@ const ImportMultiCoinWallet = (props) => {
     }
 
     if (UserStore.isUserSetup()) {
-      //Todo
-      const isExist = await checkWalletExistence(SetupStore.recoveryPhrase.join(" "))
+      const isExist = await checkWalletExistence(SetupStore.recoveryPhrase.join(" "), item.type === "LEGACY")
       if (isExist) return FlashNotification.show("This recovery phrase already exists in the wallet.");
       if (checkIfWalletAlreadyExists()) return;
 
@@ -161,9 +160,9 @@ const ImportMultiCoinWallet = (props) => {
           errors={errors}
           onChangeText={(value) => {
             if (value) {
-              SetupStore.walletId = value;
+              SetupStore.walletName = value;
             } else {
-              SetupStore.walletId = defaultWalletId;
+              SetupStore.walletName = defaultWalletId;
             }
             setWalletNameValue(value);
           }}
