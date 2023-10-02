@@ -1,15 +1,24 @@
-import React, { useMemo, useRef, useState } from "react";
+import React, { useMemo, useState } from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 import Animated, { FadeInDown, FadeOutDown } from "react-native-reanimated";
 
 import { themeColors } from "../config/colors";
 import CustomText from "./CustomText";
-import { isSmallerDivce } from "../utils";
 
 const SeedPhraseCapsule = ({ disabled, style, selected, item, index, onSelect, cachedSelected, onIvalideSelect }) => {
 	const [fullSelection, setFullSelection] = useState(selected);
 
-	const indexInWord = useMemo(() => item.index === 0 ? `${item.index + 1}st` : item.index === 1 ? `${item.index + 1}nd` : `${item.index + 1}th`, [])
+	const indexInWord = useMemo(() => {
+		if (item.index === 0) {
+			return `${item.index + 1}st`
+		} else if (item.index === 1) {
+			return `${item.index + 1}nd`
+		} else if (item.index === 2) {
+			return `${item.index + 1}rd`
+		} else {
+			return `${item.index + 1}th`
+		}
+	}, [])
 
 	const handleSelection = () => {
 		if (fullSelection?.[item.index] && cachedSelected?.length === item.index) {

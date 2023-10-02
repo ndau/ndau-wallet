@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import {
     Image,
     StyleSheet,
@@ -17,6 +17,9 @@ import Spacer from '../components/Spacer'
 import { themeColors } from '../config/colors'
 import useConvert from '../hooks/useConvert'
 import { useWallet } from '../hooks'
+import { ethers } from 'ethers'
+import { NetworkManager } from '../helpers/EthersScanAPI'
+import UserStore from "../stores/UserStore";
 
 const ConvertNdauToNpay = (props) => {
 
@@ -29,6 +32,14 @@ const ConvertNdauToNpay = (props) => {
     const modalRef2 = useRef(null)
     const { sigedErcWallet, getRecoverdAddress } = useConvert()
     const { getActiveWallet } = useWallet()
+    const provider = ethers.getDefaultProvider(NetworkManager?.getEnv()?.zkSyncEra);
+    const wallet = new ethers.Wallet(UserStore?.getActiveWallet()?.ercKeys?.privateKey);
+
+
+    useEffect(() => {
+        getNonceZksync()
+
+    }, [])
 
 
     const getRemainNdauBalance = (amount) => {
@@ -38,6 +49,11 @@ const ConvertNdauToNpay = (props) => {
         } catch (e) {
             return "0"
         }
+    }
+    async function getNonceZksync() {
+        const nonce = await provider.getTransactionCount(wallet.address,'latest');
+        console.log('Nonce:', nonce);
+        console.log('walletAddress:', wallet.address);
     }
 
     const handleConvert = () => {

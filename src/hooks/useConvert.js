@@ -27,20 +27,8 @@ export default useConvert = () => {
             }
         }
         loadChainId();
-        // getNonce()
         return () => { }
     }, []);
-
-
-
-
-
-    // async function getNonce() {
-    //     const nonce = await provider.getTransactionCount(wallet.address, 'latest');
-    //     console.log('Nonce:', nonce);
-    //     console.log('walletAddress:', wallet.address);
-    // }
-
 
     const getTypedMessage = (convertData) => {
 
@@ -72,12 +60,7 @@ export default useConvert = () => {
             domain,
             types,
             primaryType: Convert,
-            message: {
-                amount: "",
-                ndau_address: "",
-                npay_adddress: "",
-                nonce: ''
-            }
+            message: convertData
         }
 
         const typedData = JSON.stringify(EIP712Msg);
