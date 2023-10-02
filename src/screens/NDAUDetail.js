@@ -19,7 +19,7 @@ import DateHelper from "../helpers/DateHelper";
 import AccountAPIHelper from "../helpers/AccountAPIHelper";
 import DataFormatHelper from "../helpers/DataFormatHelper";
 import NdauNumber from "../helpers/NdauNumber";
-import { ndauUtils } from "../utils";
+import { ndauUtils, tokenShortName } from "../utils";
 import UserStore from "../stores/UserStore";
 import Loading from "../components/Loading";
 import AccountAPI from "../api/AccountAPI";
@@ -115,9 +115,7 @@ const NDAUDetail = (props) => {
 
 	const launchBuyNdauInBrowser = async () => {
 		const url = AppConfig.BUY_NDAU_URL;
-
 		const supported = await Linking.openURL(url);
-
 		if (supported) {
 			await Linking.openURL(url);
 		} else {
@@ -202,7 +200,6 @@ const NDAUDetail = (props) => {
 						<CustomText semiBold h4>{`${(item.totalFunds || "0.00")}`}</CustomText>
 						<CustomText titilium body>{` ~ $${parseFloat(item.usdAmount || 0)?.toFixed(2) || "0"}`}</CustomText>
 					</View>
-
 					<View style={styles.buttonContainer}>
 						<View style={styles.row}>
 							<IconButton disabled={accountInfo.isLocked} label="Buy" icon={<Buy />} onPress={launchBuyNdauInBrowser} />
@@ -210,12 +207,20 @@ const NDAUDetail = (props) => {
 							<IconButton disabled={!canRecieve} label="Receive" icon={<Receive />} onPress={() => props.navigation.navigate(ScreenNames.Receive, { address: item.address, tokenName: item.tokenName })} />
 						</View>
 						<View style={styles.row}>
-							<IconButton disabled={accountInfo.isLocked || disableButton} label="Convert" icon={<Convert />} onPress={() => props.navigation.navigate(ScreenNames.ConvertNdauToNpay, {
-								totalBalance: item?.totalFunds,
-								dollorBalnce: item?.usdAmount,
-								image: item?.image,
-								ndauAddress: item?.address
-							})} />
+							<IconButton disabled={accountInfo.isLocked || disableButton} label="Convert" icon={<Convert />}
+								onPress={() => {
+									// if (item.tokenName === tokenShortName.NDAU) {
+									// 	// props.navigation.navigate(ScreenNames.ConvertNdauToNpay)
+									// } else {
+										props.navigation.navigate(ScreenNames.ConvertNdauToNpay, {
+											totalBalance: item?.totalFunds,
+											dollorBalnce: item?.usdAmount,
+											image: item?.image,
+											ndauAddress: item?.address
+										})
+									// }
+								}
+								} />
 							<IconButton disabled={accountInfo.isLocked || disableButton} label="Lock" icon={<Lock />} onPress={() => props.navigation.navigate(ScreenNames.LockPeriod, { item })} />
 						</View>
 					</View>

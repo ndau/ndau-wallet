@@ -18,8 +18,6 @@ import { themeColors } from '../config/colors'
 import useConvert from '../hooks/useConvert'
 import { useWallet } from '../hooks'
 
-
-
 const ConvertNdauToNpay = (props) => {
 
     const [errors, setErrors] = useState([]);
@@ -49,7 +47,7 @@ const ConvertNdauToNpay = (props) => {
             amount: ndauAmount,
             ndau_address: ndauAddress,
             npay_adddress: getActiveWallet().ercAddress,
-            nonce: '1'
+            nonce: 'string'
         }
         console.log(payload, 'payload---')
         sigedErcWallet(payload).then((res) => {
@@ -82,9 +80,7 @@ const ConvertNdauToNpay = (props) => {
         <ScreenContainer headerTitle={"Convert"}>
 
             {loaderValue && <Loading label={loaderValue} />}
-
             <Spacer height={20} />
-
             <View style={styles.headerView}>
                 <Image style={styles.icon} source={image} />
                 <Spacer height={18} />
@@ -139,11 +135,9 @@ const ConvertNdauToNpay = (props) => {
             </View>
 
             <Spacer height={12} />
-
             <View style={styles.svgView}>
                 <ConvertIcon />
             </View>
-
             <Spacer height={12} />
 
             <View style={[styles.convertContainer2]}>
@@ -157,7 +151,6 @@ const ConvertNdauToNpay = (props) => {
                         <Spacer width={2} />
                     </View>
                 </View>
-
                 <Spacer height={20} />
                 <View style={styles.rightView}>
                     <View style={styles.row}>
@@ -177,7 +170,6 @@ const ConvertNdauToNpay = (props) => {
                         <CustomText body2 >{npayAmount}</CustomText>
                     </View>
                 </View>
-
             </View>
 
             <View style={styles.convertBtn}>

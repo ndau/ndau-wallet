@@ -6,16 +6,16 @@ import UserStore from "../stores/UserStore";
 
 export default useConvert = () => {
 
-    const wallet = new ethers.Wallet(UserStore.getActiveWallet().ercKeys.privateKey);
-    const provider = ethers.getDefaultProvider(NetworkManager.getEnv().zkSyncEra);
+    const wallet = new ethers.Wallet(UserStore?.getActiveWallet()?.ercKeys?.privateKey);
+    const provider = ethers.getDefaultProvider(NetworkManager?.getEnv()?.zkSyncEra);
     const [networkChainId, setNetworkChainId] = useState(null);
 
-    const convertSchema = [
-        { name: 'amount', type: 'uint256' },
-        { name: 'npay_adddress', type: 'address' },
-        { name: 'ndau_address', type: 'address' },
-        { name: 'nonce', type: 'uint256' },
-    ];
+    // const convertSchema = [
+    //     { name: 'amount', type: 'uint256' },
+    //     { name: 'npay_adddress', type: 'address' },
+    //     { name: 'ndau_address', type: 'address' },
+    //     { name: 'nonce', type: 'uint256' },
+    // ];
 
     useEffect(() => {
         async function loadChainId() {
@@ -27,57 +27,108 @@ export default useConvert = () => {
             }
         }
         loadChainId();
+        // getNonce()
         return () => { }
     }, []);
 
+
+
+
+
+    // async function getNonce() {
+    //     const nonce = await provider.getTransactionCount(wallet.address, 'latest');
+    //     console.log('Nonce:', nonce);
+    //     console.log('walletAddress:', wallet.address);
+    // }
+
+
     const getTypedMessage = (convertData) => {
-        const typedData = JSON.stringify(
-            {
-                types: {
-                    EIP712Domain: [
-                        { name: 'name', type: 'string' },
-                        { name: 'version', type: 'string' },
-                        { name: 'chainId', type: 'uint256' },
-                        { name: 'verifyingContract', type: 'address' },
-                    ],
-                    converTransaction: convertSchema,
-                },
-                primaryType: 'convert',
-                domain: {
-                    name: 'ndau-wallet',
-                    version: '1.0',
-                    chainId: networkChainId,
-                    // verifyingContract: NetworkManager.__contractAddresses
-                },
-                message: convertData,
+
+        const EIP712Domain = [
+            { name: 'name', type: 'string' },
+            { name: 'version', type: 'string' },
+            { name: 'chainId', type: 'uint256' }
+        ];
+
+        const Convert = `Convert a payment of ${10} NDAU to the NPAY`;
+
+        const domain = {
+            name: 'zkSync',
+            version: '2',
+            chainId: networkChainId,
+        };
+
+        const types = {
+            EIP712Domain,
+            [Convert]: [
+                { name: 'ndau_Address', type: 'address' },
+                { name: 'npay_Address', type: 'address' },
+                { name: 'amount', type: 'uint' },
+                { name: 'nonce', type: 'unint' }
+            ],
+        };
+
+        const EIP712Msg = {
+            domain,
+            types,
+            primaryType: Convert,
+            message: {
+                amount: "",
+                ndau_address: "",
+                npay_adddress: "",
+                nonce: ''
             }
-        )
+        }
+
+        const typedData = JSON.stringify(EIP712Msg);
+
         return typedData;
+
+        // const typedData = JSON.stringify(
+        //     {
+        //         types: {
+        //             EIP712Domain: [
+        //                 { name: 'name', type: 'string' },
+        //                 { name: 'version', type: 'string' },
+        //                 { name: 'chainId', type: 'uint256' },
+        //                 { name: 'primaryType', type: 'string' },
+        //             ],
+        //             converTransaction: convertSchema,
+        //         },
+        //         primaryType: 'convert',
+        //         domain: {
+        //             name: 'ndau-wallet',
+        //             version: '1.0',
+        //             chainId: networkChainId,
+        //         },
+        //         message: convertData,
+        //     }
+        // )
+        // return typedData;
     }
 
-    const sigedLegacyWallet = (data) => {
-        return new Promise(async (resolve, reject) => {
-            // try {
-            //     // Sign the message
-            //     const signature = await wallet.signMessage(data);
-            //     // const recoveredAddress = ethers.utils.verifyMessage(data, signature);
-            //     resolve(signature)
-            // } catch (error) {
 
-            // }
-        })
-    }
 
     const sigedErcWallet = (data) => {
         return new Promise(async (resolve, reject) => {
             try {
                 const getData = getTypedMessage(data)
-                const signature = await wallet.signMessage(getData);     // Sign the message
-                const recoveredAddress = ethers.utils.verifyMessage(getData, signature); // recovered the message
+                const signature = await wallet.signMessage(getData);
+                let sig = ethers.utils.splitSignature(signature);
+                const { r, s, v } = sig;
+
+                // const recoveredAddress = ethers.utils.verifyMessage(getData, signature); // recovered the message
 
                 let result = {
-                    signedData: signature,
-                    recoveredAddress: recoveredAddress
+                    signerAddress: signature,
+                    sig,
+                    data: {
+                        rr: r,
+                        ss: s,
+                        vv: v
+                    }
+                    // signedData: signature,
+                    // recoveredAddress: recoveredAddress
                 }
                 resolve(result)
 
@@ -89,7 +140,6 @@ export default useConvert = () => {
 
     return {
         sigedErcWallet,
-        sigedLegacyWallet,
     }
 
 }
