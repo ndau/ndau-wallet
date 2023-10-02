@@ -36,12 +36,6 @@ const ConvertNdauToNpay = (props) => {
     const wallet = new ethers.Wallet(UserStore?.getActiveWallet()?.ercKeys?.privateKey);
 
 
-    useEffect(() => {
-        getNonceZksync()
-
-    }, [])
-
-
     const getRemainNdauBalance = (amount) => {
         try {
             const toShow = parseFloat((totalBalance - amount).toFixed(3));
