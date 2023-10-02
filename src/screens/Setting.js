@@ -61,6 +61,7 @@ const Setting = (props) => {
 				<FlatList
 					data={options}
 					showsVerticalScrollIndicator={false}
+					ListFooterComponent={<View style={styles.footer} />}
 					keyExtractor={(i, _) => _.toString()}
 					renderItem={({ item }) => {
 						if (!hideOptionForConnectWallet && item.id == 1) return null;
@@ -141,6 +142,9 @@ const styles = StyleSheet.create({
 		width: "100%",
 		backgroundColor: themeColors.white,
 		borderRadius: 10
+	},
+	footer: {
+		height: 120
 	}
 })
 
