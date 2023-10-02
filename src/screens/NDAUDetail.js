@@ -212,12 +212,12 @@ const NDAUDetail = (props) => {
 									// if (item.tokenName === tokenShortName.NDAU) {
 									// 	// props.navigation.navigate(ScreenNames.ConvertNdauToNpay)
 									// } else {
-										props.navigation.navigate(ScreenNames.ConvertNdauToNpay, {
-											totalBalance: item?.totalFunds,
-											dollorBalnce: item?.usdAmount,
-											image: item?.image,
-											ndauAddress: item?.address
-										})
+										// props.navigation.navigate(ScreenNames.ConvertNdauToNpay, {
+										// 	totalBalance: item?.totalFunds,
+										// 	dollorBalnce: item?.usdAmount,
+										// 	image: item?.image,
+										// 	ndauAddress: item?.address
+										// })
 									// }
 								}
 								} />
