@@ -209,14 +209,13 @@ const NDAUDetail = (props) => {
 						<View style={styles.row}>
 							<IconButton disabled={accountInfo.isLocked || disableButton} label="Convert" icon={<Convert />}
 								onPress={() => {
-									props.navigation.navigate(ScreenNames.ConvertNdauToNpay, {
-										totalBalance: item?.totalFunds,
-										dollorBalnce: item?.usdAmount,
-										image: item?.image,
-										ndauAddress: item?.address
-									})
-								}
-								} />
+									// props.navigation.navigate(ScreenNames.ConvertNdauToNpay, {
+									// 	totalBalance: item?.totalFunds,
+									// 	dollorBalnce: item?.usdAmount,
+									// 	image: item?.image,
+									// 	ndauAddress: item?.address
+									// })
+								}} />
 							<IconButton disabled={accountInfo.isLocked || disableButton} label="Lock" icon={<Lock />} onPress={() => props.navigation.navigate(ScreenNames.LockPeriod, { item })} />
 						</View>
 					</View>

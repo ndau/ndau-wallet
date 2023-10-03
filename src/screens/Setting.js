@@ -30,7 +30,7 @@ const Setting = (props) => {
 		{ separator: true },
 		{ id: 6, name: "Twitter", image: <Twitter />, onPress: () => openLink(AppConfig.SOCIAL_LINKS.twitter), hideArrow: true },
 		{ id: 7, name: "Linkedin", image: <Image source={images.linkedin} style={styles.image} />, onPress: () => openLink(AppConfig.SOCIAL_LINKS.linkedin), hideArrow: true },
-		{ id: 8, name: "Youtube", image: <Image source={images.youtube} style={[styles.image, { backgroundColor: undefined }]} />, onPress: () => openLink(AppConfig.SOCIAL_LINKS.youtube), hideArrow: true },
+		{ id: 8, name: "Reddit", image: <Image source={images.reddit} style={[styles.image, { backgroundColor: undefined }]} />, onPress: () => openLink(AppConfig.SOCIAL_LINKS.reddit), hideArrow: true },
 	], [])
 
 	const openLink = (url) => {

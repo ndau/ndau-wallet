@@ -18,7 +18,9 @@ const images = {
   ndauAccountImage: require('./ndauAccount.png'),
   matic: require('./matic.png'),
   linkedin: require('./linkedin.png'),
-  youtube: require('./youtube.png')
+  youtube: require('./youtube.png'),
+  facebook: require('./Facebook.png'),
+  reddit: require('./Reddit.png'),
 }
 
 export { images };

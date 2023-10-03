@@ -61,7 +61,8 @@ const VIEW_TRANSACTION_DETAIL_VIEW = "https://goerli.etherscan.io/tx"
 const SOCIAL_LINKS = {
   twitter: "https://twitter.com/ndaucollective",
   linkedin: "https://www.linkedin.com/company/oneiro-inc",
-  youtube: "https://www.youtube.com/channel/UCwyd6n3vAvjwDCx38u7ZF2A"
+  youtube: "https://www.youtube.com/channel/UCwyd6n3vAvjwDCx38u7ZF2A",
+  reddit: "https://www.reddit.com/r/ndau/"
 }
 
 export default {
