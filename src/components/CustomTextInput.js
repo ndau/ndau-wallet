@@ -19,7 +19,8 @@ const CustomTextInput = ({
 	numberOfLines,
 	multiline,
 	autoCapitalize,
-	inputMainCon
+	inputMainCon,
+	keyboardType
 }) => {
 
 	const RenderMsg = useCallback(({ msg, isError }) => {
@@ -35,7 +36,7 @@ const CustomTextInput = ({
 
 	return (
 		<View style={styles.main}>
-			{label&&<CustomText body titilium>{label}</CustomText>}
+			{label && <CustomText body titilium>{label}</CustomText>}
 			<TextInput
 				value={value}
 				maxLength={maxLength}
@@ -46,6 +47,7 @@ const CustomTextInput = ({
 				secureTextEntry={password}
 				onBlur={onBlur}
 				multiline={multiline}
+				keyboardType={keyboardType}
 				numberOfLines={numberOfLines}
 				autoCapitalize={autoCapitalize}
 
@@ -60,7 +62,7 @@ const styles = StyleSheet.create({
 	main: {
 		marginVertical: 10
 	},
-	
+
 	container: {
 		height: 54,
 		padding: 10,

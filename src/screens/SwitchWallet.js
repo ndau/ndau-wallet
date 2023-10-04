@@ -54,7 +54,7 @@ const SwitchWallet = () => {
           </View>
           <View style={{ justifyContent: "space-between", padding: 4, flex: 1 }}>
             <CustomText titilium body>{walletName}</CustomText>
-            <CustomText titilium body2>{type || "nDau Legacy Wallet"}</CustomText>
+            <CustomText titilium body2>{type || "ndau Legacy Wallet"}</CustomText>
           </View>
           <TouchableOpacity onPress={() => navigation.navigate(ScreenNames.EditWallet, { item })}>
             <View style={{ justifyContent: "center" }}>

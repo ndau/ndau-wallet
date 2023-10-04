@@ -1,6 +1,6 @@
 import { useNavigation } from "@react-navigation/native";
-import React, { useState } from "react";
-import { Image, StyleSheet, View } from "react-native";
+import React, { useState,useEffect } from "react";
+import { Image, StyleSheet, View, Keyboard } from "react-native";
 
 import { QRCode } from "../assets/svgs/components";
 import Button from "../components/Button";
@@ -19,6 +19,8 @@ import { ScreenNames } from "./ScreenNames";
 const Send = (props) => {
   const { item } = props?.route?.params ?? {};
   const { savedNotifications } = useNotification()
+  const [isKeyboardOpen, setKeyboardOpen] = useState(false);
+  const [isButtonVisible, setButtonVisible] = useState(true);
   const navigation = useNavigation();
   const {
     getTransactionFee,
@@ -37,6 +39,23 @@ const Send = (props) => {
     total: 0
   })
 
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {
+      setKeyboardOpen(true);
+      setButtonVisible(false);
+    });
+
+    const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () => {
+      setKeyboardOpen(false);
+      setButtonVisible(true);
+    });
+
+    return () => {
+      keyboardDidShowListener.remove();
+      keyboardDidHideListener.remove();
+    };
+  }, []);
+
   const renderDetail = ({ title, value }) => {
     return (
       value !== undefined ? (
@@ -49,7 +68,7 @@ const Send = (props) => {
   }
 
   const getName = () => {
-    return item?.shortName || "Ndau";
+    return item?.shortName || "ndau";
   }
 
   const getRemainBalance = (amount) => {
@@ -104,6 +123,7 @@ const Send = (props) => {
 
   const renderEnterAmmount = () => {
 
+
     const getQuotes = () => {
       setLoading("Updating");
       if (item.shortName) {
@@ -156,6 +176,7 @@ const Send = (props) => {
           label={getName() + ' amount'}
           value={ndauAmount}
           placeholder={"Enter amount"}
+          keyboardType={'number-pad'}
           // placeholder={getName() + " amount"}
           errors={errors}
           onChangeText={(t) => {
@@ -191,11 +212,14 @@ const Send = (props) => {
               {!item?.shortName && renderDetail({ title: "SIB", value: transaction.sib })}
               {renderDetail({ title: "Total", value: parseFloat(transaction.total).toFixed(8) })}
             </View>
-            <Button
-              disabled={errors.length > 0 || ndauAmount.length === 0}
-              label={"Next"}
-              onPress={getQuotes}
-            />
+            {isButtonVisible && !isKeyboardOpen && (
+              <Button
+                disabled={errors.length > 0 || ndauAmount.length === 0}
+                label={"Next"}
+                onPress={getQuotes}
+              />
+            )}
+
           </View>
         </View>
       </>
@@ -212,7 +236,7 @@ const Send = (props) => {
         ndauAmount
       ).then(res => {
         setLoading("");
-        savedNotifications(`${ndauAmount} ${item?.shortName?.toUpperCase()} was successfully transfered `, true, item?.shortName, item?.address, ndauAddress)
+        savedNotifications(`${ndauAmount} ${item?.shortName} was successfully transfered `, true, item?.shortName, item?.address, ndauAddress)
         navigation.goBack();
       }).catch(err => {
         setLoading("");
@@ -225,7 +249,7 @@ const Send = (props) => {
         ndauAddress,
         ndauAmount
       ).then(response => {
-        savedNotifications(`${ndauAmount} NDAU was successfully transfered `, true, 'ndau', item?.address, ndauAddress)
+        savedNotifications(`${ndauAmount} ndau was successfully transfered `, true, 'ndau', item?.address, ndauAddress)
         setLoading("");
         navigation.goBack();
       }).catch(err => {

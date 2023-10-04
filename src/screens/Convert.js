@@ -26,6 +26,7 @@ const ConvertNdauToNpay = (props) => {
     const [errors, setErrors] = useState([]);
     const { totalBalance, ndauAddress, image } = props?.route?.params ?? {}
     const [ndauAmount, setNdauAmount] = useState("");
+    const [nonce, setNonce] = useState(null);
     const [npayAmount, setNpayAmount] = useState("0.0");
     const [loaderValue, setLoaderValue] = useState("");
     const modalRef = useRef(null)
@@ -35,6 +36,9 @@ const ConvertNdauToNpay = (props) => {
     const provider = ethers.getDefaultProvider(NetworkManager?.getEnv()?.zkSyncEra);
     const wallet = new ethers.Wallet(UserStore?.getActiveWallet()?.ercKeys?.privateKey);
 
+    useEffect(() => {
+        getNonceZksync()
+    }, [])
 
     const getRemainNdauBalance = (amount) => {
         try {
@@ -45,9 +49,9 @@ const ConvertNdauToNpay = (props) => {
         }
     }
     async function getNonceZksync() {
-        const nonce = await provider.getTransactionCount(wallet.address,'latest');
-        console.log('Nonce:', nonce);
-        console.log('walletAddress:', wallet.address);
+        const nonce = await provider.getTransactionCount(wallet.address, 'latest');
+        setNonce(nonce)
+        return nonce
     }
 
     const handleConvert = () => {
@@ -57,7 +61,7 @@ const ConvertNdauToNpay = (props) => {
             amount: ndauAmount,
             ndau_address: ndauAddress,
             npay_adddress: getActiveWallet().ercAddress,
-            nonce: 'string'
+            nonce: nonce
         }
         console.log(payload, 'payload---')
         sigedErcWallet(payload).then((res) => {
@@ -106,7 +110,7 @@ const ConvertNdauToNpay = (props) => {
                         <Spacer width={2} />
                         <Image style={styles.image} source={images.nDau} />
                         <Spacer width={2} />
-                        <CustomText body2 color='black'>NDAU</CustomText>
+                        <CustomText body2 color='black'>ndau</CustomText>
                         <Spacer width={2} />
                     </View>
                 </View>
@@ -157,7 +161,7 @@ const ConvertNdauToNpay = (props) => {
                         <Spacer width={2} />
                         <NpayIcon />
                         <Spacer width={2} />
-                        <CustomText body2 color='black'>NPAY</CustomText>
+                        <CustomText body2 color='black'>npay</CustomText>
                         <Spacer width={2} />
                     </View>
                 </View>

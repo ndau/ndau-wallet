@@ -1,5 +1,5 @@
 import { CommonActions, useNavigation } from "@react-navigation/native";
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { Modal, StyleSheet, View } from "react-native";
 import { ethers } from "ethers";
 
@@ -22,6 +22,7 @@ import UserData from "../model/UserData";
 import SetupStore from "../stores/SetupStore";
 import UserStore from "../stores/UserStore";
 import { ScreenNames } from "./ScreenNames";
+import { Keyboard } from "react-native";
 
 
 const ImportMultiCoinWallet = (props) => {
@@ -35,6 +36,25 @@ const ImportMultiCoinWallet = (props) => {
   const [walletNameValue, setWalletNameValue] = useState("");
   const [defaultWalletId, setDefaultWalletId] = useState("Wallet 1");
   const { addWalletWithAddress, addLegacyWallet, checkWalletExistence, getWallets } = useWallet()
+  const [isKeyboardOpen, setKeyboardOpen] = useState(false);
+  const [isButtonVisible, setButtonVisible] = useState(true);
+
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {
+      setKeyboardOpen(true);
+      setButtonVisible(false);
+    });
+
+    const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () => {
+      setKeyboardOpen(false);
+      setButtonVisible(true);
+    });
+
+    return () => {
+      keyboardDidShowListener.remove();
+      keyboardDidHideListener.remove();
+    };
+  }, []);
 
   const checkIfWalletAlreadyExists = () => {
 
@@ -55,6 +75,7 @@ const ImportMultiCoinWallet = (props) => {
     navigateToDashboard()
   };
 
+
   const recoverUser = async () => {
     return await RecoveryPhraseHelper.recoverUser(
       DataFormatHelper.convertRecoveryArrayToString(recoverdPhrase),
@@ -66,7 +87,7 @@ const ImportMultiCoinWallet = (props) => {
     if (item.type === "LEGACY") {
       const bytes = await KeyAddr.wordsToBytes(AppConstants.APP_LANGUAGE, SetupStore.recoveryPhrase.join(" "))
       if (!bytes) {
-        return FlashNotification.show("Phrase does not belongs to Ndau Legacy wallet");
+        return FlashNotification.show("Phrase does not belongs to ndau Legacy wallet");
       }
     } else {
       try {
@@ -172,13 +193,17 @@ const ImportMultiCoinWallet = (props) => {
           onChangeText={(t) => {
             setRecoverdPhrase(t);
             SetupStore.recoveryPhrase = t;
+            // Keyboard.dismiss()
           }}
         />
       </View>
-      <Button
-        label={"Import"}
-        onPress={handleSubmit}
-      />
+      {isButtonVisible && !isKeyboardOpen && (
+        <Button
+          label={"Import"}
+          onPress={handleSubmit}
+        />
+      )}
+
 
       <CustomModal bridge={modalRef}>
         <View style={styles.modal}>

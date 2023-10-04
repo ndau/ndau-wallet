@@ -292,7 +292,7 @@ const NDAUDetail = (props) => {
 			<CustomModal bridge={customModalRef}>
 				<View style={styles.innerModalContainer}>
 					<Image style={styles.icon} source={item.image} />
-					<CustomText titiliumSemiBold h5 style={{ marginVertical: 6 }}>NDAU TRANSFER FEE</CustomText>
+					<CustomText titiliumSemiBold h5 style={{ marginVertical: 6 }}>ndau transfer fee</CustomText>
 					<View style={styles.separator} />
 					<CustomText titilium style={styles.textPara}>Transaction are subject to a small fee that supports the operations of the ndau network</CustomText>
 					<View style={styles.transferFeeContainer}>

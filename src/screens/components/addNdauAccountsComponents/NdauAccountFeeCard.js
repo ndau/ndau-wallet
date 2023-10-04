@@ -16,7 +16,7 @@ const NdauAccountFeeCard = ({ onUnderstand, onCancel, item, isCancel, isReceive 
             <Image style={styles.image} source={images.nDau} />
             <Spacer height={25} />
             <CustomText body bold color='white' style={{ textAlign: 'center' }}>
-                {isReceive ? "NDAU  RECEIVE  FEES" : "NDAU NEW ACCOUNT FEES"}
+                {isReceive ? "ndau  receive  fees" : "ndau new account fees"}
             </CustomText>
             <Spacer height={12} />
 
