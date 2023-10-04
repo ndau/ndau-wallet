@@ -255,7 +255,7 @@ export default useTransaction = () => {
         resolve(new NdauNumber(data.fee_napu).toDetail())
       } catch (err) {
         reject(err)
-        console.log('error: Getting NDAU Lock fee', JSON.stringify(err, null, 2));
+        console.log('error: Getting ndau lock fees', JSON.stringify(err, null, 2));
       }
     })
   }
@@ -299,7 +299,7 @@ export default useTransaction = () => {
         resolve(true);
       } catch (err) {
         reject(err)
-        console.log('error: Getting NDAU Lock fee', JSON.stringify(err, null, 2));
+        console.log('error: Getting ndau lock fees', JSON.stringify(err, null, 2));
       }
     })
   }

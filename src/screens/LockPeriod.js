@@ -150,7 +150,7 @@ const LockPeriod = (props) => {
 			</CustomModal>
 
 			<CustomModal canIgnore bridge={modalLockRef}>
-				<CustomText titiliumSemiBold h4 style={styles.modalText}>NDAU LOCK FEES</CustomText>
+				<CustomText titiliumSemiBold h4 style={styles.modalText}>ndau lock fees</CustomText>
 				<View style={styles.separator} />
 				<View style={styles.headerContainer}>
 					<CustomText titilium style={styles.modalText}>Transaction are subject to a small fee that supports the operation of the ndau network</CustomText>
