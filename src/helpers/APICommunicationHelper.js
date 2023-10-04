@@ -92,7 +92,7 @@ const get = async (url, retries = AppConfig.API_MAX_RETRIES, timeoutMS = AppConf
         //   `APICommunicationHelper.get ${JSON.stringify({ url: url })}`
         // )
      
-        console.log('API Response :: GET ->', url);
+        console.log('API Response :: GET  ->', url);
         const response = await axios.get(url, { timeout: timeoutMS })
         // console.log('API Response :: GET ->', {url, response: response.data});
 

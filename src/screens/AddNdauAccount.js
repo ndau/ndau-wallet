@@ -1,4 +1,4 @@
-import { StyleSheet, FlatList, View } from 'react-native'
+import { StyleSheet, FlatList, View, TouchableOpacity } from 'react-native'
 import React, { useEffect, useRef, useState } from 'react'
 
 import ScreenContainer from '../components/Screen'
@@ -17,6 +17,8 @@ import { useIsFocused } from '@react-navigation/native'
 import FlashNotification from '../components/common/FlashNotification'
 import Animated, { useAnimatedStyle, useSharedValue, withRepeat, withTiming } from 'react-native-reanimated'
 import CustomText from '../components/CustomText'
+import Button from '../components/Button'
+import RecoveryPhraseHelper from '../helpers/RecoveryPhraseHelper'
 
 const AddNdauAccount = (props) => {
     const { item, onSelectAccount, addAccount } = props?.route?.params ?? {};
@@ -113,6 +115,20 @@ const AddNdauAccount = (props) => {
         });
     }
 
+    const renderScanMyAccounts = () => {
+        return (
+            <Button 
+                onPress={async () => {
+                    setLoading("Scanning for accounts");
+                    await RecoveryPhraseHelper.scanWalletAccounts();
+                    setLoading("");
+                    refreshDetails();
+                }}
+                label={'Scan my accounts'}
+            />
+        )
+    }
+
 
     return (
         <ScreenContainer>
@@ -170,7 +186,7 @@ const AddNdauAccount = (props) => {
                 }}
                 keyExtractor={(item, index) => index.toString()}
             />
-
+            {!nDauAccounts.length && renderScanMyAccounts()}
             <CustomModal bridge={modalRef}>
                 <AddAccountPopupCard
                     val={noOfAccounts}

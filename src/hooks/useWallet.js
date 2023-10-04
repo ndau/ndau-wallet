@@ -16,6 +16,7 @@ import KeyMaster from "../helpers/KeyMaster";
 import APIAddressHelper from "../helpers/APIAddressHelper";
 import APICommunicationHelper from "../helpers/APICommunicationHelper";
 import UserData from "../model/UserData";
+import RecoveryPhraseHelper from "../helpers/RecoveryPhraseHelper";
 
 export default useWallet = () => {
   const { wallets } = useSelector(state => state.WalletReducer);
@@ -56,27 +57,7 @@ export default useWallet = () => {
 
 
   const addLegacyWallet = async (user) => {
-    if (!user) {
-      user = await AccountHelper.setupNewUser(
-        user,
-        DataFormatHelper.convertRecoveryArrayToString(SetupStore.recoveryPhrase),
-        DataFormatHelper.createRandomWord(),
-        0,
-        SetupStore.entropy,
-        SetupStore.encryptionPassword,
-        SetupStore.addressType
-      );
-
-    } else { // Already user is created
-      user = await AccountHelper.addNewWallet(
-        user,
-        DataFormatHelper.convertRecoveryArrayToString(SetupStore.recoveryPhrase),
-        DataFormatHelper.createRandomWord(),
-        user.userId,
-        0,
-        SetupStore.encryptionPassword
-      )
-    }
+    user = await RecoveryPhraseHelper.recoverUser(SetupStore.recoveryPhrase.join(' '), UserStore.getUser())
     return user;
   }
 
@@ -164,7 +145,11 @@ export default useWallet = () => {
     const walletAddresHash = DataFormatHelper.create8CharHash(walletId);
     user.wallets[walletAddresHash] = wallet;
 
+    const rootPrivateKey = wallet.keys[wallet["accountCreationKeyHash"]].privateKey;
+    await RecoveryPhraseHelper.recoverAddresses(wallet, rootPrivateKey);
+
     UserStore.setUser(user);
+    await UserData.loadUserData(user);
     UserStore.setActiveWallet(walletAddresHash);
     await MultiSafeHelper.saveUser(
       user,
