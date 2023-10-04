@@ -209,12 +209,12 @@ const NDAUDetail = (props) => {
 						<View style={styles.row}>
 							<IconButton disabled={accountInfo.isLocked || disableButton} label="Convert" icon={<Convert />}
 								onPress={() => {
-									// props.navigation.navigate(ScreenNames.ConvertNdauToNpay, {
-									// 	totalBalance: item?.totalFunds,
-									// 	dollorBalnce: item?.usdAmount,
-									// 	image: item?.image,
-									// 	ndauAddress: item?.address
-									// })
+									props.navigation.navigate(ScreenNames.ConvertNdauToNpay, {
+										totalBalance: item?.totalFunds,
+										dollorBalnce: item?.usdAmount,
+										image: item?.image,
+										ndauAddress: item?.address
+									})
 								}} />
 							<IconButton disabled={accountInfo.isLocked || disableButton} label="Lock" icon={<Lock />} onPress={() => props.navigation.navigate(ScreenNames.LockPeriod, { item })} />
 						</View>
@@ -292,7 +292,7 @@ const NDAUDetail = (props) => {
 			<CustomModal bridge={customModalRef}>
 				<View style={styles.innerModalContainer}>
 					<Image style={styles.icon} source={item.image} />
-					<CustomText titiliumSemiBold h5 style={{ marginVertical: 6 }}>NDAU TRANSFER FEE</CustomText>
+					<CustomText titiliumSemiBold h5 style={{ marginVertical: 6 }}>ndau transfer fee</CustomText>
 					<View style={styles.separator} />
 					<CustomText titilium style={styles.textPara}>Transaction are subject to a small fee that supports the operations of the ndau network</CustomText>
 					<View style={styles.transferFeeContainer}>

@@ -42,7 +42,7 @@ const Dashboard = ({ navigation }) => {
 
 	const makeToken = (type, { totalFunds, usdAmount, accounts }) => {
 		const tokens = {
-			0: { shortName: tokenShortName.NDAU, name: "NDAU", network: "nDau", totalFunds: "0", usdAmount: "0", image: images.nDau, accounts: getNDauAccounts().length },
+			0: { shortName: tokenShortName.NDAU, name: "ndau", network: "ndau", totalFunds: "0", usdAmount: "0", image: images.nDau, accounts: getNDauAccounts().length },
 			1: { shortName: tokenShortName.NPAY, name: "NPAY", network: "zkSync Era", totalFunds: "0", usdAmount: "0", image: images.nPay },
 			2: { shortName: tokenShortName.ETHERERUM, name: "ETHEREUM", network: "ethereum", totalFunds: "0", usdAmount: "0", image: images.ethereum },
 			3: { shortName: tokenShortName.USDC, name: "USDC", network: "ethereum", totalFunds: "0", usdAmount: "0", image: images.USDC },
@@ -192,7 +192,7 @@ const Dashboard = ({ navigation }) => {
 	}, [tokens, nfts])
 
 	const handleNavigation = useCallback((item) => {
-		if (item.name === "NDAU") navigation.navigate(ScreenNames.AddNdauAccount, { item });
+		if (item.name === "ndau") navigation.navigate(ScreenNames.AddNdauAccount, { item });
 		else navigation.navigate(ScreenNames.ERCDetail, { item });
 	}, [])
 

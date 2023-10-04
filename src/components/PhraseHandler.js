@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { StyleSheet, TextInput, View } from "react-native";
+import { Keyboard, StyleSheet, TextInput, View } from "react-native";
 import Clipboard from "@react-native-clipboard/clipboard";
 
 import Animated from "react-native-reanimated";
@@ -80,9 +80,27 @@ const PhraseHandler = ({
   return (
     <>
       <View style={styles.main}>
-        <CustomText body titilium>
-          {label}
-        </CustomText>
+        <View style={styles.headerRow}>
+          <CustomText body titilium>
+            {label}
+          </CustomText>
+          <Button
+            buttonContainerStyle={styles.outlineButton}
+            label={'Paste'}
+            onPress={() => {
+              Keyboard.dismiss()
+              Clipboard.getString().then((res) => {
+                const words = res?.trimStart().trimEnd().split(" ");
+                if (words.length > 24) return;
+                setPhrases(
+                  words
+                    .map((word) => word.trimStart().trimEnd())
+                    .filter((word) => word)
+                );
+              });
+            }}
+          />
+        </View>
         <View style={styles.container}>
           {phrases.map(renderPhrase)}
           <TextInput
@@ -122,7 +140,7 @@ const PhraseHandler = ({
           <RenderMsg key={msg} msg={msg} />
         ))}
       </View>
-      <Button
+      {/* <Button
         label={"Paste Secret Phrase"}
         buttonContainerStyle={styles.outlineButton}
         onPress={() => {
@@ -136,7 +154,7 @@ const PhraseHandler = ({
             );
           });
         }}
-      />
+      /> */}
     </>
   );
 };
@@ -182,7 +200,16 @@ const styles = StyleSheet.create({
     backgroundColor: undefined,
     borderWidth: 2,
     borderColor: themeColors.primary,
+    height: 30,
+    padding: 0,
+    paddingHorizontal: 12
   },
+  headerRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 10
+  }
 });
 
 export default PhraseHandler;

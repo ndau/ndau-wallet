@@ -16,7 +16,7 @@ const NdauAddAccounHeaderCard = ({ addAccountPress, totalAccounts, totalBalance,
                 <View style={styles.row}>
                     <NdauLogoSVGComponent />
                     <Spacer width={10} />
-                    <CustomText color={themeColors.white} body>My NDAU Accounts</CustomText>
+                    <CustomText color={themeColors.white} body>My ndau accounts</CustomText>
                 </View>
                 <View style={styles.totalAccountCon}>
                     <CustomText color={themeColors.black} body2>{totalAccounts?.length > 0 ? `${totalAccounts?.length } accounts`: "0 accounts"}</CustomText>

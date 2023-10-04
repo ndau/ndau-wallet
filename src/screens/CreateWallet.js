@@ -24,7 +24,7 @@ const CreateWallet = (props) => {
       <Spacer height={16} />
       <View style={styles.container}>
         <CustomText titiliumSemiBold style={styles.margin}>
-          Please review the nDau Wallet Terms of Service & Privacy Policy
+          Please review the ndau wallet Terms of Service & Privacy Policy
         </CustomText>
         <Spacer height={16} />
         <Button
