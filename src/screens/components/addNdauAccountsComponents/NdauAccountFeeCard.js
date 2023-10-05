@@ -86,7 +86,7 @@ const styles = StyleSheet.create({
     feeSection: {
         borderRadius: 12,
         backgroundColor: themeColors.modalBackground,
-        borderWidth: .2,
+        borderWidth: 1,
         borderColor: 'white',
         width: '100%',
         height: 60,

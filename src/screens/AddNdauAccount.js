@@ -71,7 +71,6 @@ const AddNdauAccount = (props) => {
     }), [])
 
     const addAccounts = () => {
-
         modelNdauFeeRef.current(false)
         setLoading("Creating Account")
         addAccountsInNdau(noOfAccounts).then((res) => {
@@ -125,7 +124,6 @@ const AddNdauAccount = (props) => {
                     modalRef.current(true)
                 }}
                 totalAccounts={getNDauAccounts()}
-
             />
             <Spacer height={20} />
             <View style={styles.divider} />
@@ -148,13 +146,13 @@ const AddNdauAccount = (props) => {
                     return <AccountItemCard
                         key={index}
                         disabled={
-                            paramItem.address === item.address || 
+                            paramItem.address === item.address ||
                             (
-                                !!onSelectAccount && 
-                                    (
-                                        !!item.addressData?.lock?.unlocksOn || 
-                                        !!item.addressData.rewardsTarget
-                                    )
+                                !!onSelectAccount &&
+                                (
+                                    !!item.addressData?.lock?.unlocksOn ||
+                                    !!item.addressData.rewardsTarget
+                                )
                             )
                         }
                         item={item}
@@ -184,6 +182,7 @@ const AddNdauAccount = (props) => {
                     decrement={decremnet}
                     onCancel={() => {
                         modalRef.current(false)
+                        setNoOfAccounts(1);
                     }}
                 />
             </CustomModal>
@@ -213,10 +212,12 @@ const AddNdauAccount = (props) => {
                         }
                     }}
                     onCancel={() => {
+                        
                         modelNdauFeeRef.current(false);
                         if (addAccount) {
                             props.navigation.goBack();
                         }
+                   
                     }}
 
                     isCancel={true}
