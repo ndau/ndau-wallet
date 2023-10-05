@@ -1,24 +1,24 @@
-import { StyleSheet, FlatList, View, TouchableOpacity } from 'react-native'
 import React, { useEffect, useRef, useState } from 'react'
+import { FlatList, StyleSheet, View } from 'react-native'
 
-import ScreenContainer from '../components/Screen'
-import { themeColors } from '../config/colors'
-import NdauAddAccounHeaderCard from './components/addNdauAccountsComponents/NdauAddAccounHeaderCard'
-import Spacer from '../components/Spacer'
-import Search from './components/addNdauAccountsComponents/Search'
-import AddAccountPopupCard from './components/addNdauAccountsComponents/AddAccountPopupCard'
-import CustomModal from '../components/Modal'
-import { useWallet } from '../hooks'
-import AccountItemCard from './components/addNdauAccountsComponents/AccountIemCard'
-import Loading from '../components/Loading'
-import { ScreenNames } from './ScreenNames'
-import NdauAccountFeeCard from './components/addNdauAccountsComponents/NdauAccountFeeCard'
 import { useIsFocused } from '@react-navigation/native'
-import FlashNotification from '../components/common/FlashNotification'
-import Animated, { useAnimatedStyle, useSharedValue, withRepeat, withTiming } from 'react-native-reanimated'
-import CustomText from '../components/CustomText'
+import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated'
 import Button from '../components/Button'
+import CustomText from '../components/CustomText'
+import Loading from '../components/Loading'
+import CustomModal from '../components/Modal'
+import ScreenContainer from '../components/Screen'
+import Spacer from '../components/Spacer'
+import FlashNotification from '../components/common/FlashNotification'
+import { themeColors } from '../config/colors'
 import RecoveryPhraseHelper from '../helpers/RecoveryPhraseHelper'
+import { useWallet } from '../hooks'
+import { ScreenNames } from './ScreenNames'
+import AccountItemCard from './components/addNdauAccountsComponents/AccountIemCard'
+import AddAccountPopupCard from './components/addNdauAccountsComponents/AddAccountPopupCard'
+import NdauAccountFeeCard from './components/addNdauAccountsComponents/NdauAccountFeeCard'
+import NdauAddAccounHeaderCard from './components/addNdauAccountsComponents/NdauAddAccounHeaderCard'
+import Search from './components/addNdauAccountsComponents/Search'
 
 const AddNdauAccount = (props) => {
     const { item, onSelectAccount, addAccount } = props?.route?.params ?? {};
@@ -116,7 +116,7 @@ const AddNdauAccount = (props) => {
 
     const renderScanMyAccounts = () => {
         return (
-            <Button 
+            <Button
                 onPress={async () => {
                     setLoading("Scanning for accounts");
                     await RecoveryPhraseHelper.scanWalletAccounts();
@@ -206,7 +206,6 @@ const AddNdauAccount = (props) => {
             <CustomModal bridge={modelNdauFeeRef}>
                 <NdauAccountFeeCard
                     onUnderstand={() => {
-
                         if (addAccount) {
                             modelNdauFeeRef.current(false)
                             setLoading("Creating account");
@@ -222,32 +221,27 @@ const AddNdauAccount = (props) => {
                             });
                         }
                         else {
-
                             console.log('account')
                             addAccounts()
                         }
                     }}
                     onCancel={() => {
-                        
                         modelNdauFeeRef.current(false);
                         if (addAccount) {
                             props.navigation.goBack();
                         }
-                   
                     }}
-
                     isCancel={true}
                 />
             </CustomModal>
 
-            {
-                message && (
-                    <Animated.View style={[styles.animatedViewContainer, boxStyle]}>
-                        <View style={styles.message}>
-                            <CustomText titiliumSemiBold>{message}</CustomText>
-                        </View>
-                    </Animated.View>
-                )
+            {message && (
+                <Animated.View style={[styles.animatedViewContainer, boxStyle]}>
+                    <View style={styles.message}>
+                        <CustomText titiliumSemiBold>{message}</CustomText>
+                    </View>
+                </Animated.View>
+            )
             }
         </ScreenContainer>
     )
