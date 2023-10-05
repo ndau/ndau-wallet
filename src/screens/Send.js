@@ -1,6 +1,6 @@
 import { useNavigation } from "@react-navigation/native";
-import React, { useState,useEffect } from "react";
-import { Image, StyleSheet, View, Keyboard } from "react-native";
+import React, { useState, useEffect } from "react";
+import { Image, StyleSheet, View, Keyboard, ScrollView } from "react-native";
 
 import { QRCode } from "../assets/svgs/components";
 import Button from "../components/Button";
@@ -82,42 +82,44 @@ const Send = (props) => {
 
   const renderEnterAddress = () => {
     return (
-      <>
-        <Spacer height={16} />
-        <CustomText titiliumSemiBold body>Who you are sending to?</CustomText>
-        <Spacer height={10} />
-        <CustomTextInput
-          label={'Address'}
-          placeholder={getName() + " address"}
-          value={ndauAddress}
-          onChangeText={setNdauAddress}
-        />
-        <View style={styles.container}>
-          <View style={styles.separatorContainer}>
-            <View style={styles.separator} />
-            <CustomText titiliumSemiBold body style={{ marginHorizontal: 10 }}>OR</CustomText>
-            <View style={styles.separator} />
+      <ScrollView scrollEnabled={false} keyboardShouldPersistTaps={'handled'}>
+        <>
+          <Spacer height={16} />
+          <CustomText titiliumSemiBold body>Who you are sending to?</CustomText>
+          <Spacer height={10} />
+          <CustomTextInput
+            label={'Address'}
+            placeholder={getName() + " address"}
+            value={ndauAddress}
+            onChangeText={setNdauAddress}
+          />
+          <View style={styles.container}>
+            <View style={styles.separatorContainer}>
+              <View style={styles.separator} />
+              <CustomText titiliumSemiBold body style={{ marginHorizontal: 10 }}>OR</CustomText>
+              <View style={styles.separator} />
+            </View>
+            <Button
+              label={"Scan QR Code  "}
+              rightIcon={<QRCode />}
+              onPress={() => {
+                navigation.navigate(ScreenNames.Scanner, { onScan: (data) => setNdauAddress(data) })
+              }}
+              buttonContainerStyle={styles.qrCodeButton}
+            />
+            <Button
+              disabled={ndauAddress.length === 0}
+              label={"Next"}
+              onPress={() => {
+                if (ndauAddress === item.address) {
+                  return FlashNotification.show("You can't send funds within same account");
+                }
+                setSection(1)
+              }}
+            />
           </View>
-          <Button
-            label={"Scan QR Code  "}
-            rightIcon={<QRCode />}
-            onPress={() => {
-              navigation.navigate(ScreenNames.Scanner, { onScan: (data) => setNdauAddress(data) })
-            }}
-            buttonContainerStyle={styles.qrCodeButton}
-          />
-          <Button
-            disabled={ndauAddress.length === 0}
-            label={"Next"}
-            onPress={() => {
-              if (ndauAddress === item.address) {
-                return FlashNotification.show("You can't send funds within same account");
-              }
-              setSection(1)
-            }}
-          />
-        </View>
-      </>
+        </>
+      </ScrollView>
     )
   };
 
@@ -169,59 +171,61 @@ const Send = (props) => {
 
     return (
       <>
-        <Spacer height={16} />
-        <CustomText titiliumSemiBold body>How much are you sending?</CustomText>
-        <Spacer height={10} />
-        <CustomTextInput
-          label={getName() + ' amount'}
-          value={ndauAmount}
-          placeholder={"Enter amount"}
-          keyboardType={'number-pad'}
-          // placeholder={getName() + " amount"}
-          errors={errors}
-          onChangeText={(t) => {
-            if (t[0] === "0" && t[1] === "0") return
-            if (/^\d*\.?\d*$/.test(t)) {
-              setNdauAmount(t)
-              if (parseFloat(t) <= parseFloat(item.totalFunds)) {
+        <ScrollView scrollEnabled={false} keyboardShouldPersistTaps={'handled'}>
+          <Spacer height={16} />
+          <CustomText titiliumSemiBold body>How much are you sending?</CustomText>
+          <Spacer height={10} />
+          <CustomTextInput
+            label={getName() + ' amount'}
+            value={ndauAmount}
+            placeholder={"Enter amount"}
+            keyboardType={'number-pad'}
+            // placeholder={getName() + " amount"}
+            errors={errors}
+            onChangeText={(t) => {
+              if (t[0] === "0" && t[1] === "0") return
+              if (/^\d*\.?\d*$/.test(t)) {
+                setNdauAmount(t)
+                if (parseFloat(t) <= parseFloat(item.totalFunds)) {
+                  setErrors([]);
+                } else if (t.length > 0 && t !== ".") {
+                  setErrors(["Insufficent balance"]);
+                }
+              } else {
                 setErrors([]);
-              } else if (t.length > 0 && t !== ".") {
-                setErrors(["Insufficent balance"]);
               }
-            } else {
-              setErrors([]);
-            }
-          }}
-          maxLength={10}
-        // onBlur={getQuotes}
-        />
+            }}
+            maxLength={10}
+          // onBlur={getQuotes}
+          />
 
-        <Spacer height={10} />
-        <View style={styles.remainngContainer}>
-          <CustomText titilium style={{ flex: 1 }}>Remaining Balance</CustomText>
-          <Image style={styles.icon} source={item.image} />
-          <CustomText titilium style={{ marginHorizontal: 6 }}>{getRemainBalance(ndauAmount)}</CustomText>
-        </View>
-        <View style={styles.container}>
-          <View style={[styles.separator, { flex: undefined, marginVertical: 20 }]} />
-          <View style={{ flex: 1 }}>
-            <View style={{ flex: 1 }}>
-              <CustomText titiliumSemiBold h6>Fees</CustomText>
-              <Spacer height={10} />
-              {renderDetail({ title: "Transaction Fee", value: transaction.transactionFee })}
-              {!item?.shortName && renderDetail({ title: "SIB", value: transaction.sib })}
-              {renderDetail({ title: "Total", value: parseFloat(transaction.total).toFixed(8) })}
-            </View>
-            {isButtonVisible && !isKeyboardOpen && (
-              <Button
-                disabled={errors.length > 0 || ndauAmount.length === 0}
-                label={"Next"}
-                onPress={getQuotes}
-              />
-            )}
-
+          <Spacer height={10} />
+          <View style={styles.remainngContainer}>
+            <CustomText titilium style={{ flex: 1 }}>Remaining Balance</CustomText>
+            <Image style={styles.icon} source={item.image} />
+            <CustomText titilium style={{ marginHorizontal: 6 }}>{getRemainBalance(ndauAmount)}</CustomText>
           </View>
-        </View>
+          <View style={styles.container}>
+            <View style={[styles.separator, { flex: undefined, marginVertical: 20 }]} />
+            <View style={{ flex: 1 }}>
+              <View style={{ flex: 1 }}>
+                <CustomText titiliumSemiBold h6>Fees</CustomText>
+                <Spacer height={10} />
+                {renderDetail({ title: "Transaction Fee", value: transaction.transactionFee })}
+                {!item?.shortName && renderDetail({ title: "SIB", value: transaction.sib })}
+                {renderDetail({ title: "Total", value: parseFloat(transaction.total).toFixed(8) })}
+              </View>
+
+            </View>
+          </View>
+        </ScrollView>
+        {isButtonVisible && !isKeyboardOpen && (
+          <Button
+            disabled={errors.length > 0 || ndauAmount.length === 0}
+            label={"Next"}
+            onPress={getQuotes}
+          />
+        )}
       </>
     )
   }
