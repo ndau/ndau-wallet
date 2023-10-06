@@ -33,7 +33,7 @@ const ConvertNdauToNpay = (props) => {
     const modalRef2 = useRef(null)
     const { sigedErcWallet, getRecoverdAddress } = useConvert()
     const { getActiveWallet } = useWallet()
-    const provider = ethers.getDefaultProvider(NetworkManager?.getEnv()?.zkSyncEra);
+    const provider = new ethers.providers.JsonRpcProvider(NetworkManager?.getEnv()?.zkSyncEra)
     const wallet = new ethers.Wallet(UserStore?.getActiveWallet()?.ercKeys?.privateKey);
 
     useEffect(() => {
@@ -49,7 +49,7 @@ const ConvertNdauToNpay = (props) => {
         }
     }
     async function getNonceZksync() {
-        const nonce = await provider.getTransactionCount(wallet.address, 'latest');
+        const nonce = await provider.getTransactionCount(wallet.address);
         setNonce(nonce)
         return nonce
     }

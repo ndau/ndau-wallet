@@ -10,13 +10,6 @@ export default useConvert = () => {
     const provider = ethers.getDefaultProvider(NetworkManager?.getEnv()?.zkSyncEra);
     const [networkChainId, setNetworkChainId] = useState(null);
 
-    // const convertSchema = [
-    //     { name: 'amount', type: 'uint256' },
-    //     { name: 'npay_adddress', type: 'address' },
-    //     { name: 'ndau_address', type: 'address' },
-    //     { name: 'nonce', type: 'uint256' },
-    // ];
-
     useEffect(() => {
         async function loadChainId() {
             try {
@@ -55,42 +48,17 @@ export default useConvert = () => {
                 { name: 'nonce', type: 'unint' }
             ],
         };
-
         const EIP712Msg = {
             domain,
             types,
             primaryType: Convert,
             message: convertData
-        }
-
+        } 
         const typedData = JSON.stringify(EIP712Msg);
 
         return typedData;
 
-        // const typedData = JSON.stringify(
-        //     {
-        //         types: {
-        //             EIP712Domain: [
-        //                 { name: 'name', type: 'string' },
-        //                 { name: 'version', type: 'string' },
-        //                 { name: 'chainId', type: 'uint256' },
-        //                 { name: 'primaryType', type: 'string' },
-        //             ],
-        //             converTransaction: convertSchema,
-        //         },
-        //         primaryType: 'convert',
-        //         domain: {
-        //             name: 'ndau-wallet',
-        //             version: '1.0',
-        //             chainId: networkChainId,
-        //         },
-        //         message: convertData,
-        //     }
-        // )
-        // return typedData;
     }
-
-
 
     const sigedErcWallet = (data) => {
         return new Promise(async (resolve, reject) => {
@@ -100,18 +68,18 @@ export default useConvert = () => {
                 let sig = ethers.utils.splitSignature(signature);
                 const { r, s, v } = sig;
 
-                // const recoveredAddress = ethers.utils.verifyMessage(getData, signature); // recovered the message
+                const recoveredAddress = ethers.utils.verifyMessage(getData, signature); // recovered the message
 
                 let result = {
-                    signerAddress: signature,
-                    sig,
-                    data: {
-                        rr: r,
-                        ss: s,
-                        vv: v
-                    }
-                    // signedData: signature,
-                    // recoveredAddress: recoveredAddress
+                    // signerAddress: signature,
+                    // sig,
+                    // data: {
+                    //     rr: r,
+                    //     ss: s,
+                    //     vv: v
+                    // }
+                    signedData: signature,
+                    recoveredAddress: recoveredAddress
                 }
                 resolve(result)
 
