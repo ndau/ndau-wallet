@@ -45,7 +45,8 @@ export class TransferTransaction {
       await this.create()
       await this.sign()
       await this.prevalidate()
-      await this.submit()
+      const response = await this.submit();
+      return response;
     } catch (error) {
       this.handleError(error)
       throw error

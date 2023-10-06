@@ -102,8 +102,8 @@ export default useTransaction = () => {
           addressToSend,
           amount
         );
-        await transferTransaction.createSignPrevalidateSubmit();
-        resolve(true);
+        const response = await transferTransaction.createSignPrevalidateSubmit();
+        resolve(response);
       } catch (e) {
         reject(e);
       }

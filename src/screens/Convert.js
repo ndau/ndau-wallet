@@ -16,10 +16,11 @@ import ScreenContainer from '../components/Screen'
 import Spacer from '../components/Spacer'
 import { themeColors } from '../config/colors'
 import useConvert from '../hooks/useConvert'
-import { useWallet } from '../hooks'
+import { useTransaction, useWallet } from '../hooks'
 import { ethers } from 'ethers'
 import { NetworkManager } from '../helpers/EthersScanAPI'
 import UserStore from "../stores/UserStore";
+import FlashNotification from '../components/common/FlashNotification'
 
 const ConvertNdauToNpay = (props) => {
 
@@ -33,6 +34,7 @@ const ConvertNdauToNpay = (props) => {
     const modalRef2 = useRef(null)
     const { sigedErcWallet, getRecoverdAddress } = useConvert()
     const { getActiveWallet } = useWallet()
+    const { sendAmountToNdauAddress } = useTransaction();
     const provider = ethers.getDefaultProvider(NetworkManager?.getEnv()?.zkSyncEra);
     const wallet = new ethers.Wallet(UserStore?.getActiveWallet()?.ercKeys?.privateKey);
 
@@ -56,34 +58,31 @@ const ConvertNdauToNpay = (props) => {
 
     const handleConvert = () => {
         setLoaderValue("Signing")
+        sendAmountToNdauAddress(
+            UserStore.getAccountDetail(ndauAddress),
+            "ndnf5mpi9a688btwhsjfym46v4kk5tat2p6494m2bq8h8hce", // converter address
+            ndauAmount
+        ).then(response => {
+            const payload = {
+                TxHash: response.hash,
+                amount: ndauAmount,
+                ndau_address: ndauAddress,
+                npay_adddress: getActiveWallet().ercAddress,
+                nonce: nonce
+            }
 
-        let payload = {
-            ndau_address: ndauAddress,
-            npay_adddress: getActiveWallet().ercAddress,
-            amount: ndauAmount,
-            nonce: nonce
-        }
-        console.log(payload, 'payload---')
-        sigedErcWallet(payload).then((res) => {
-            setLoaderValue("")
-            console.log(JSON.stringify(res, null, 2), 'signed')
+            console.log('Payload', JSON.stringify(payload, null, 2));
+            sigedErcWallet(payload).then((res) => {
+                setLoaderValue("")
+                console.log(JSON.stringify(res, null, 2), 'signed')
+            }).catch(err => {
+                setLoaderValue("")
+                FlashNotification.show(err.message);
+            })
         }).catch(err => {
-            console.log(err)
+            setLoaderValue("")
+            FlashNotification.show(err.message);
         })
-
-
-        // setLoaderValue("Updating")
-        // setTimeout(() => {
-        //     setLoaderValue("")
-        //     if (exchangeRate && ndauAmount) {
-        //         const convertedAmount = parseFloat(ndauAmount) * exchangeRate;
-        //         setNpayAmount(convertedAmount.toFixed(2));
-        //     } else {
-        //         setNpayAmount("0.0");
-        //     }
-        //     modalRef2.current(true)
-
-        // }, 2000)
     }
 
     const handleDone = () => {
