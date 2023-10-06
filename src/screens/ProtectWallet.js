@@ -52,7 +52,7 @@ const ProtectWallet = (props) => {
       if (!SetupStore.walletId) SetupStore.walletId = DataFormatHelper.create8CharHash(DataFormatHelper.createRandomWord())//user?.userId || "Main Wallet";
 
       // Store password for future use if user try FaceId for unlock
-      keychain.setGenericPassword("", pins.pin, { storage: keychain.STORAGE_TYPE.AES });
+      keychain.setGenericPassword("ndau-wallet", pins.pin, { storage: keychain.STORAGE_TYPE.AES });
 
       setValidate((_) => ({
         ..._,
