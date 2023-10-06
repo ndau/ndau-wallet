@@ -38,8 +38,6 @@ export default useConvert = () => {
             { name: 'chainId', type: 'uint256' }
         ];
 
-        const Convert = `Convert a payment of ${10} NDAU to the NPAY`;
-
         const domain = {
             name: 'zkSync',
             version: '2',
@@ -48,7 +46,7 @@ export default useConvert = () => {
 
         const types = {
             EIP712Domain,
-            [Convert]: [
+            Convert: [
                 { name: 'ndau_Address', type: 'address' },
                 { name: 'npay_Address', type: 'address' },
                 { name: 'amount', type: 'uint' },
@@ -59,7 +57,7 @@ export default useConvert = () => {
         const EIP712Msg = {
             domain,
             types,
-            primaryType: Convert,
+            primaryType: "Convert",
             message: convertData
         }
 

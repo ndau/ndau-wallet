@@ -58,9 +58,9 @@ const ConvertNdauToNpay = (props) => {
         setLoaderValue("Signing")
 
         let payload = {
-            amount: ndauAmount,
             ndau_address: ndauAddress,
             npay_adddress: getActiveWallet().ercAddress,
+            amount: ndauAmount,
             nonce: nonce
         }
         console.log(payload, 'payload---')
