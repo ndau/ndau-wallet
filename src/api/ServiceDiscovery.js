@@ -41,7 +41,7 @@ const getNodeAddress = async type => {
 }
 
 const getBlockchainServiceNodeURL = async () => {
-  
+
   try {
     if (moment().diff(blockchainCache.lastChecked) > CACHE_TTL) {
       LogStore.log(`Blockchain Service Discovery URL: ${AWS_S3_SERVICE_JSON}`)
@@ -54,10 +54,10 @@ const getBlockchainServiceNodeURL = async () => {
     throw new ServiceDiscoveryError()
   }
 
-  if (blockchainCache.nodes?.length > 0) {      
+  if (blockchainCache.nodes?.length > 0) {
     // return a random service for use
-    return blockchainCache.nodes[
-      Math.floor(Math.random() * blockchainCache.nodes.length)
+    return blockchainCache.nodes[0
+      // Math.floor(Math.random() * blockchainCache.nodes.length)
     ]
   } else {
     LogStore.log('All nodes are unavailable')
@@ -130,7 +130,7 @@ const _checkNodeStatus = async (nodeAddress) => {
   } catch (error) {
     LogStore.log(`Node is unavailable: ${error}`)
     return false
-  } 
+  }
 }
 
 const _prependProtocol = (address) => {

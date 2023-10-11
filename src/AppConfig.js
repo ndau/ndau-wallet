@@ -58,6 +58,8 @@ const Wallet_Connect_ApiKey = "faceb005777e478fa503489e83ba8b3b";
 
 const VIEW_TRANSACTION_DETAIL_VIEW = "https://goerli.etherscan.io/tx"
 
+const NDAU_NPAY_CONVERSION = "https://dev.bpcdao.ndau.tech/api/admin/ndau_conversion/"
+
 const SOCIAL_LINKS = {
   twitter: "https://twitter.com/ndaucollective",
   linkedin: "https://www.linkedin.com/company/oneiro-inc",
@@ -92,5 +94,6 @@ export default {
   BUY_ERC20_URL,
   Wallet_Connect_ApiKey,
   VIEW_TRANSACTION_DETAIL_VIEW,
-  SOCIAL_LINKS
+  SOCIAL_LINKS,
+  NDAU_NPAY_CONVERSION
 }

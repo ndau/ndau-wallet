@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Alert, Image, Linking, ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
+import { Alert, Image, Linking, NativeModules, ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
 
 import CopyAddressButton from "../components/CopyAddressButton";
 import CustomText from "../components/CustomText";
@@ -25,6 +25,9 @@ import Loading from "../components/Loading";
 import AccountAPI from "../api/AccountAPI";
 import { useIsFocused } from "@react-navigation/native";
 import FlashNotification from "../components/common/FlashNotification";
+import { ethers } from "ethers";
+import { NetworkManager } from "../helpers/EthersScanAPI";
+import TxSignPrep from "../model/TxSignPrep";
 
 const NDAUDetail = (props) => {
 
@@ -32,7 +35,7 @@ const NDAUDetail = (props) => {
 	const customModalRef = useRef();
 	const isFocused = useIsFocused();
 	const [loading, setLoading] = useState("");
-	const { getNdauAccountDetail, removeAccount } = useWallet();
+	const { getNdauAccountDetail, removeAccount, getActiveWallet } = useWallet();
 	const { notifyForNDAU } = useTransaction();
 
 	const [accountInfo, setAccountInfo] = useState({
@@ -80,7 +83,6 @@ const NDAUDetail = (props) => {
 				}
 				setAccountInfo(prev => {
 					const _ = { ...prev }
-
 					const eaiValueForDisplay = AccountAPIHelper.eaiValueForDisplay(addressData)
 					const sendingEAITo = AccountAPIHelper.sendingEAITo(addressData)
 					const receivingEAIFrom = AccountAPIHelper.receivingEAIFrom(addressData)
@@ -190,6 +192,7 @@ const NDAUDetail = (props) => {
 		}
 	};
 
+	// console.log(JSON.stringify(item.validationKeys[0], null, 2), 'data')
 	return (
 		<ScreenContainer headerTitle={item.name} headerRight={canRecieve && <CopyAddressButton onPress={copyAddress} />}>
 			<ScrollView showsVerticalScrollIndicator={false}>
@@ -208,7 +211,7 @@ const NDAUDetail = (props) => {
 						</View>
 						<View style={styles.row}>
 							<IconButton disabled={accountInfo.isLocked || disableButton} label="Convert" icon={<Convert />}
-								onPress={() => {
+								onPress={async () => {							
 									props.navigation.navigate(ScreenNames.ConvertNdauToNpay, {
 										totalBalance: item?.totalFunds,
 										dollorBalnce: item?.usdAmount,

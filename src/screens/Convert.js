@@ -27,20 +27,35 @@ const ConvertNdauToNpay = (props) => {
     const [errors, setErrors] = useState([]);
     const { totalBalance, ndauAddress, image } = props?.route?.params ?? {}
     const [ndauAmount, setNdauAmount] = useState("");
-    const [nonce, setNonce] = useState(null);
+    const [nonceVal, setNonceVal] = useState(0);
     const [npayAmount, setNpayAmount] = useState("0.0");
     const [loaderValue, setLoaderValue] = useState("");
     const modalRef = useRef(null)
     const modalRef2 = useRef(null)
-    const { sigedErcWallet, getRecoverdAddress } = useConvert()
+    const { sigedErcWallet, ndauConversion } = useConvert()
     const { getActiveWallet } = useWallet()
     const { sendAmountToNdauAddress } = useTransaction();
-    const provider = ethers.getDefaultProvider(NetworkManager?.getEnv()?.zkSyncEra);
-    const wallet = new ethers.Wallet(UserStore?.getActiveWallet()?.ercKeys?.privateKey);
+    // const provider = ethers.getDefaultProvider(NetworkManager?.getEnv()?.zkSyncEra);
+    // const wallet = new ethers.Wallet(UserStore?.getActiveWallet()?.ercKeys?.privateKey);
+    // const [networkChainId, setNetworkChainId] = useState(null);
 
-    useEffect(() => {
-        getNonceZksync()
-    }, [])
+
+    // useEffect(() => {
+    //     getNonceZksync()
+    // }, [])
+
+    // useEffect(() => {
+    //     async function loadChainId() {
+    //         try {
+    //             const network = await provider.getNetwork();
+    //             setNetworkChainId(network?.chainId)
+    //         } catch (error) {
+    //             console.error('Error:', error);
+    //         }
+    //     }
+    //     loadChainId();
+    //     return () => { }
+    // }, []);
 
     const getRemainNdauBalance = (amount) => {
         try {
@@ -52,8 +67,70 @@ const ConvertNdauToNpay = (props) => {
     }
     async function getNonceZksync() {
         const nonce = await provider.getTransactionCount(wallet.address, 'latest');
-        setNonce(nonce)
+        setNonceVal(nonce)
         return nonce
+    }
+
+
+    const finalPayload = (data, signatures) => {
+        console.log(signatures.sig2, 'signatures.sign2----')
+
+        if (signatures.sig2) {
+            return {
+                domain: {
+                    name: 'zkSync',
+                    version: '2',
+                    chainId: signatures.chainId
+                },
+                types: {
+                    Convert: [
+                        { name: 'ndau_address', type: 'address' },
+                        { name: 'npay_address', type: 'address' },
+                        { name: 'signature2', type: 'string' },
+                        { name: 'amount', type: 'uint' },
+                        { name: 'nonce', type: 'unint' }
+                    ]
+                },
+                primary_type: "Convert",
+                message: {
+                    TxHash: data?.TxHash,
+                    amount: data?.amount,
+                    ndau_address: data?.ndau_address,
+                    npay_adddress: data?.npay_adddress,
+                    signature2: signatures?.signature2,
+                    nonce: nonceVal
+                },
+                signature: signatures?.signature1
+            }
+        } else {
+            return {
+                domain: {
+                    name: 'zkSync',
+                    version: '2',
+                    chainId: signatures.chainId
+                },
+                types: {
+                    Convert: [
+                        { name: 'ndau_address', type: 'address' },
+                        { name: 'npay_address', type: 'address' },
+                        { name: 'signature2', type: 'string' },
+                        { name: 'amount', type: 'uint' },
+                        { name: 'nonce', type: 'unint' }
+                    ]
+                },
+                primary_type: "Convert",
+                message: {
+                    TxHash: data?.TxHash,
+                    amount: data?.amount,
+                    ndau_address: data?.ndau_address,
+                    npay_adddress: data?.npay_adddress,
+                    nonce: nonceVal
+                },
+                signature: signatures?.signature1
+            }
+        }
+
+
     }
 
     const handleConvert = () => {
@@ -66,15 +143,20 @@ const ConvertNdauToNpay = (props) => {
             const payload = {
                 TxHash: response.hash,
                 amount: ndauAmount,
-                ndau_address: ndauAddress,
-                npay_adddress: getActiveWallet().ercAddress,
-                nonce: nonce
+                ndau_address: "ndackkdedpu93bwhnvv3jvyxm3cs69sr4v9nva936z5zp24v", //hardcode for now
+                npay_adddress: "0xF54C7538Fbdd77FAe4085a422CeAf3AcA37596Fd", //hardcode for now
+                nonce: nonceVal
             }
-
-            console.log('Payload', JSON.stringify(payload, null, 2));
             sigedErcWallet(payload).then((res) => {
-                setLoaderValue("")
-                console.log(JSON.stringify(res, null, 2), 'signed')
+                const conversionPayload = finalPayload(payload, res)
+                console.log(JSON.stringify(conversionPayload, null, 2), 'payload---')
+                ndauConversion(conversionPayload).then((res) => {
+                    setLoaderValue("")
+                    console.log(res, 'response---')
+                }).catch(err => {
+                    setLoaderValue("")
+                    FlashNotification.show(err.message);
+                })
             }).catch(err => {
                 setLoaderValue("")
                 FlashNotification.show(err.message);
@@ -98,7 +180,7 @@ const ConvertNdauToNpay = (props) => {
                 <Image style={styles.icon} source={image} />
                 <Spacer height={18} />
                 <View style={styles.balanceView}>
-                    <CustomText semiBold h6>{`${(totalBalance || "0.00")}`}</CustomText>
+                    <CustomText semiBold h6>{`${(totalBalance || 0.0)}`}</CustomText>
                 </View>
             </View>
 
