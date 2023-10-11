@@ -197,7 +197,7 @@ const NDAUDetail = (props) => {
 					<Image style={styles.icon} source={item.image} />
 					<CustomText titilium body style={{ marginTop: 20, marginBottom: 4 }}>{"Balance"}</CustomText>
 					<View style={{ flexDirection: "row", alignItems: "center", marginBottom: 20 }}>
-						<CustomText semiBold h4>{`${(item.totalFunds || "0.00")}`}</CustomText>
+						<CustomText semiBold h4>{`${(accountInfo.spendableNdau || item.totalFunds || "0.00")}`}</CustomText>
 						<CustomText titilium body>{` ~ $${parseFloat(item.usdAmount || 0)?.toFixed(2) || "0"}`}</CustomText>
 					</View>
 					<View style={styles.buttonContainer}>

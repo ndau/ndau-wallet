@@ -19,6 +19,8 @@ import AddAccountPopupCard from './components/addNdauAccountsComponents/AddAccou
 import NdauAccountFeeCard from './components/addNdauAccountsComponents/NdauAccountFeeCard'
 import NdauAddAccounHeaderCard from './components/addNdauAccountsComponents/NdauAddAccounHeaderCard'
 import Search from './components/addNdauAccountsComponents/Search'
+import UserData from '../model/UserData'
+import UserStore from "../stores/UserStore";
 
 const AddNdauAccount = (props) => {
     const { item, onSelectAccount, addAccount } = props?.route?.params ?? {};
@@ -100,7 +102,8 @@ const AddNdauAccount = (props) => {
         )
     }
 
-    const refreshDetails = () => {
+    const refreshDetails = async () => {
+        await UserData.loadUserData(UserStore.getUser());
         getNdauAccountsDetails().then(() => {
             const obj = getNDauAccounts().reduce((prev, curr) => {
                 return {

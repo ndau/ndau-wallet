@@ -179,7 +179,7 @@ const Send = (props) => {
             label={getName() + ' amount'}
             value={ndauAmount}
             placeholder={"Enter amount"}
-            keyboardType={'number-pad'}
+            keyboardType="numeric"
             // placeholder={getName() + " amount"}
             errors={errors}
             onChangeText={(t) => {
