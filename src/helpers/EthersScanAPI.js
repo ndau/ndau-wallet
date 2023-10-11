@@ -106,7 +106,7 @@ export const NetworkManager = {
       },
       L2: {
         USDC: "0x3355df6d4c9c3035724fd0e3914de96a5a83aaf4",
-        NPAY: "0xd7afcb470bcF8d07E3A4dCBa0Ec7D9f5D8C6a05a"
+        NPAY: "0x1ab43093F4b3f8E5E4666d2062768ACCe67c9920"
       }
     },
     Testnet: {
