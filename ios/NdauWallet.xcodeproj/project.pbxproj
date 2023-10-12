@@ -36,6 +36,10 @@
 		D9241EC28F32413E8C503200 /* ClashDisplay-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1154B0FF20FE41F595A29909 /* ClashDisplay-Bold.ttf */; };
 		E77634A522C644FF9E35AD7C /* ClashDisplay-Semibold.otf in Resources */ = {isa = PBXBuildFile; fileRef = BAFAA29F55C040549E1635E6 /* ClashDisplay-Semibold.otf */; };
 		EF7693BECBE84DBEAD4E3586 /* ClashDisplay-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7F84080B73C74AD39950EAB3 /* ClashDisplay-Medium.ttf */; };
+		F16FC4082AD82E2800318637 /* Keyaddr.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F16FC4052AD82E2800318637 /* Keyaddr.framework */; };
+		F16FC4092AD82E2800318637 /* Keyaddr.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F16FC4052AD82E2800318637 /* Keyaddr.framework */; };
+		F16FC40A2AD82E2800318637 /* KeyaddrManager.m in Sources */ = {isa = PBXBuildFile; fileRef = F16FC4072AD82E2800318637 /* KeyaddrManager.m */; };
+		F16FC40B2AD82E2800318637 /* KeyaddrManager.m in Sources */ = {isa = PBXBuildFile; fileRef = F16FC4072AD82E2800318637 /* KeyaddrManager.m */; };
 		FF7C65DBB5E445E1935CD697 /* ClashDisplay-Extralight.otf in Resources */ = {isa = PBXBuildFile; fileRef = 40F90CF5650D40AAB05038CE /* ClashDisplay-Extralight.otf */; };
 /* End PBXBuildFile section */
 
@@ -90,7 +94,9 @@
 		D86C679FA8D24E919EB871EE /* TitilliumWeb-SemiBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "TitilliumWeb-SemiBold.ttf"; path = "../src/assets/fonts/TitilliumWeb-SemiBold.ttf"; sourceTree = "<group>"; };
 		EA07D1C7E110472585008A2C /* TitilliumWeb-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "TitilliumWeb-Regular.ttf"; path = "../src/assets/fonts/TitilliumWeb-Regular.ttf"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
-		F13DCE7E2AD730F50021C7D7 /* KeyaddrFramework */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = KeyaddrFramework; sourceTree = "<group>"; };
+		F16FC4052AD82E2800318637 /* Keyaddr.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Keyaddr.framework; sourceTree = "<group>"; };
+		F16FC4062AD82E2800318637 /* KeyaddrManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeyaddrManager.h; sourceTree = "<group>"; };
+		F16FC4072AD82E2800318637 /* KeyaddrManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KeyaddrManager.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -99,6 +105,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				7699B88040F8A987B510C191 /* libPods-NdauWallet-NdauWalletTests.a in Frameworks */,
+				F16FC4092AD82E2800318637 /* Keyaddr.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -107,6 +114,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				0C80B921A6F3F58F76C31292 /* libPods-NdauWallet.a in Frameworks */,
+				F16FC4082AD82E2800318637 /* Keyaddr.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -163,7 +171,9 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
-				F13DCE7E2AD730F50021C7D7 /* KeyaddrFramework */,
+				F16FC4052AD82E2800318637 /* Keyaddr.framework */,
+				F16FC4062AD82E2800318637 /* KeyaddrManager.h */,
+				F16FC4072AD82E2800318637 /* KeyaddrManager.m */,
 				13B07FAE1A68108700A75B9A /* NdauWallet */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* NdauWalletTests */,
@@ -506,6 +516,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F16FC40B2AD82E2800318637 /* KeyaddrManager.m in Sources */,
 				00E356F31AD99517003FC87E /* NdauWalletTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -514,6 +525,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F16FC40A2AD82E2800318637 /* KeyaddrManager.m in Sources */,
 				13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 			);
@@ -536,6 +548,10 @@
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				DEVELOPMENT_TEAM = 52CMB5YQ7W;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
@@ -565,6 +581,10 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
 				DEVELOPMENT_TEAM = 52CMB5YQ7W;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				INFOPLIST_FILE = NdauWalletTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -591,7 +611,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
 				CLANG_ENABLE_MODULES = YES;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_TEAM = 52CMB5YQ7W;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -627,7 +647,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
 				CLANG_ENABLE_MODULES = YES;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_TEAM = 52CMB5YQ7W;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
