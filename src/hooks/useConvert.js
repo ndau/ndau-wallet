@@ -65,7 +65,7 @@ export default useConvert = () => {
 
 
 
-    const signedNdua = (ndauKey, data) => {
+    const signedNdau = (ndauKey, data) => {
         return new Promise((resolve, reject) => {
             const preparedTransaction = new TxSignPrep().prepare(data)
             const base64EncodedPrepTx = preparedTransaction.b64encode()
@@ -108,11 +108,11 @@ export default useConvert = () => {
                     }
                     resolve(result)
                 } else {
-                    const signature2 = await signedNdua(ndauKey, JSON.stringify(data?.npay_address))
+                    const signature2 = await signedNdau(ndauKey, JSON.stringify(data?.npay_address))
                     data.signature2 = signature2
                     const nonceVal = await provider.getTransactionCount(data?.npay_address);
                     const getData = getTypedMessage(data)
-                    const signature1 = await signedNdua(ndauKey, JSON.stringify(getData))
+                    const signature1 = await signedNdau(ndauKey, JSON.stringify(getData))
 
                     let result = {
                         signature1: signature1,
