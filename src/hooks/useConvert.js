@@ -16,7 +16,7 @@ export default useConvert = () => {
     const [networkChainId, setNetworkChainId] = useState(null);
     useEffect(() => {
 
-        console.log(Object.keys(NativeModules.KeyaddrManager) ,'modules---')
+        console.log(Object.keys(NativeModules.KeyaddrManager), 'modules---')
 
         async function loadChainId() {
             try {
@@ -63,8 +63,6 @@ export default useConvert = () => {
         return typedData;
     }
 
-
-
     const signedNdau = (ndauKey, data) => {
         return new Promise((resolve, reject) => {
             const preparedTransaction = new TxSignPrep().prepare(data)
@@ -82,19 +80,15 @@ export default useConvert = () => {
     }
 
     const sigedErcWallet = (data, ndauKey) => {
-
         return new Promise(async (resolve, reject) => {
             try {
                 if (UserStore?.getActiveWallet()?.ercKeys?.privateKey) {
                     const wallet = new ethers.Wallet(UserStore?.getActiveWallet()?.ercKeys?.privateKey);
                     const nonceVal = await provider.getTransactionCount(data?.npay_address);
-                    const signature2 = await signedNdua(ndauKey, JSON.stringify(data?.npay_address))
+                    const signature2 = await signedNdau(ndauKey, JSON.stringify(data?.npay_address))
                     data.signature2 = signature2
                     data.nonceVal = nonceVal
-
                     const getData = getTypedMessage(data)
-
-
                     const signature1 = await wallet?.signMessage(getData);
                     // const signature2 = await wallet?.signMessage(JSON.stringify(data?.npay_adddress));
                     // let sig = ethers.utils.splitSignature(signature);
@@ -134,18 +128,14 @@ export default useConvert = () => {
             try {
                 axios.post(AppConfig.NDAU_NPAY_CONVERSION, data).then(response => {
                     resolve(response?.data)
-
                 }).catch(error => {
                     reject(error)
                 })
             } catch (error) {
                 reject(error)
             }
-
         })
     }
-
-
 
     return {
         sigedErcWallet,
