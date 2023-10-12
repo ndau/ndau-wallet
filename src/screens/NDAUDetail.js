@@ -37,7 +37,7 @@ const NDAUDetail = (props) => {
 	const [loading, setLoading] = useState("");
 	const { getNdauAccountDetail, removeAccount, getActiveWallet } = useWallet();
 	const { notifyForNDAU } = useTransaction();
-	const ndauAccountPrivateKey = getActiveWallet().keys[item.validationKeys[0]].privateKey
+	const ndauAccountPrivateKey = getActiveWallet()?.keys[item?.validationKeys[0]]?.privateKey
 	const [accountInfo, setAccountInfo] = useState({
 		isLocked: false,
 		unlocksOn: "",

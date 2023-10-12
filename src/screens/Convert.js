@@ -189,6 +189,7 @@ const ConvertNdauToNpay = (props) => {
                                 placeholderTextColor={'grey'}
                                 placeholder='address'
                                 value={npayAddress}
+                                editable={!npayAddressVal}
                                 onChangeText={(t) => {
                                     setNpayAddress(t)
                                 }}

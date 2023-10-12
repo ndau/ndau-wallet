@@ -56,8 +56,8 @@ const getBlockchainServiceNodeURL = async () => {
 
   if (blockchainCache.nodes?.length > 0) {
     // return a random service for use
-    return blockchainCache.nodes[0
-      // Math.floor(Math.random() * blockchainCache.nodes.length)
+    return blockchainCache.nodes[
+      Math.floor(Math.random() * blockchainCache.nodes.length)
     ]
   } else {
     LogStore.log('All nodes are unavailable')
