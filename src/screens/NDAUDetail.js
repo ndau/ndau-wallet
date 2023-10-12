@@ -37,7 +37,7 @@ const NDAUDetail = (props) => {
 	const [loading, setLoading] = useState("");
 	const { getNdauAccountDetail, removeAccount, getActiveWallet } = useWallet();
 	const { notifyForNDAU } = useTransaction();
-
+	const ndauAccountPrivateKey = getActiveWallet().keys[item.validationKeys[0]].privateKey
 	const [accountInfo, setAccountInfo] = useState({
 		isLocked: false,
 		unlocksOn: "",
@@ -193,6 +193,7 @@ const NDAUDetail = (props) => {
 	};
 
 	// console.log(JSON.stringify(item.validationKeys[0], null, 2), 'data')
+	console.log(JSON.stringify(getActiveWallet().keys[item.validationKeys[0]].privateKey, null, 2), 'data')
 	return (
 		<ScreenContainer headerTitle={item.name} headerRight={canRecieve && <CopyAddressButton onPress={copyAddress} />}>
 			<ScrollView showsVerticalScrollIndicator={false}>
@@ -211,12 +212,14 @@ const NDAUDetail = (props) => {
 						</View>
 						<View style={styles.row}>
 							<IconButton disabled={accountInfo.isLocked || disableButton} label="Convert" icon={<Convert />}
-								onPress={async () => {							
+								onPress={async () => {
 									props.navigation.navigate(ScreenNames.ConvertNdauToNpay, {
 										totalBalance: item?.totalFunds,
 										dollorBalnce: item?.usdAmount,
 										image: item?.image,
-										ndauAddress: item?.address
+										ndauAddress: item?.address,
+										ndauPrivateKey: ndauAccountPrivateKey,
+										npayAddressVal:getActiveWallet().ercAddress
 									})
 								}} />
 							<IconButton disabled={accountInfo.isLocked || disableButton} label="Lock" icon={<Lock />} onPress={() => props.navigation.navigate(ScreenNames.LockPeriod, { item })} />

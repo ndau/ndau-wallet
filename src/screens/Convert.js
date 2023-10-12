@@ -14,20 +14,19 @@ import Loading from '../components/Loading'
 import CustomModal from '../components/Modal'
 import ScreenContainer from '../components/Screen'
 import Spacer from '../components/Spacer'
-import { themeColors } from '../config/colors'
-import useConvert from '../hooks/useConvert'
-import { useTransaction, useWallet } from '../hooks'
-import { ethers } from 'ethers'
-import { NetworkManager } from '../helpers/EthersScanAPI'
-import UserStore from "../stores/UserStore";
 import FlashNotification from '../components/common/FlashNotification'
+import { themeColors } from '../config/colors'
+import { useTransaction, useWallet } from '../hooks'
+import useConvert from '../hooks/useConvert'
+import UserStore from "../stores/UserStore"
+import { ndauUtils } from '../utils'
 
 const ConvertNdauToNpay = (props) => {
 
     const [errors, setErrors] = useState([]);
-    const { totalBalance, ndauAddress, image } = props?.route?.params ?? {}
+    const { totalBalance, ndauAddress, image, ndauPrivateKey, npayAddressVal } = props?.route?.params ?? {}
     const [ndauAmount, setNdauAmount] = useState("");
-    const [nonceVal, setNonceVal] = useState(0);
+    const [npayAddress, setNpayAddress] = useState(npayAddressVal);
     const [npayAmount, setNpayAmount] = useState("0.0");
     const [loaderValue, setLoaderValue] = useState("");
     const modalRef = useRef(null)
@@ -35,27 +34,11 @@ const ConvertNdauToNpay = (props) => {
     const { sigedErcWallet, ndauConversion } = useConvert()
     const { getActiveWallet } = useWallet()
     const { sendAmountToNdauAddress } = useTransaction();
-    // const provider = ethers.getDefaultProvider(NetworkManager?.getEnv()?.zkSyncEra);
-    // const wallet = new ethers.Wallet(UserStore?.getActiveWallet()?.ercKeys?.privateKey);
-    // const [networkChainId, setNetworkChainId] = useState(null);
 
 
-    // useEffect(() => {
-    //     getNonceZksync()
-    // }, [])
-
-    // useEffect(() => {
-    //     async function loadChainId() {
-    //         try {
-    //             const network = await provider.getNetwork();
-    //             setNetworkChainId(network?.chainId)
-    //         } catch (error) {
-    //             console.error('Error:', error);
-    //         }
-    //     }
-    //     loadChainId();
-    //     return () => { }
-    // }, []);
+    useEffect(() => {
+        setNpayAddress(npayAddress)
+    }, [npayAddress])
 
     const getRemainNdauBalance = (amount) => {
         try {
@@ -65,72 +48,34 @@ const ConvertNdauToNpay = (props) => {
             return "0"
         }
     }
-    async function getNonceZksync() {
-        const nonce = await provider.getTransactionCount(wallet.address, 'latest');
-        setNonceVal(nonce)
-        return nonce
-    }
 
-
-    const finalPayload = (data, signatures) => {
-        console.log(signatures.sig2, 'signatures.sign2----')
-
-        if (signatures.sig2) {
-            return {
-                domain: {
-                    name: 'zkSync',
-                    version: '2',
-                    chainId: signatures.chainId
-                },
-                types: {
-                    Convert: [
-                        { name: 'ndau_address', type: 'address' },
-                        { name: 'npay_address', type: 'address' },
-                        { name: 'signature2', type: 'string' },
-                        { name: 'amount', type: 'uint' },
-                        { name: 'nonce', type: 'unint' }
-                    ]
-                },
-                primary_type: "Convert",
-                message: {
-                    TxHash: data?.TxHash,
-                    amount: data?.amount,
-                    ndau_address: data?.ndau_address,
-                    npay_adddress: data?.npay_adddress,
-                    signature2: signatures?.signature2,
-                    nonce: nonceVal
-                },
-                signature: signatures?.signature1
-            }
-        } else {
-            return {
-                domain: {
-                    name: 'zkSync',
-                    version: '2',
-                    chainId: signatures.chainId
-                },
-                types: {
-                    Convert: [
-                        { name: 'ndau_address', type: 'address' },
-                        { name: 'npay_address', type: 'address' },
-                        { name: 'signature2', type: 'string' },
-                        { name: 'amount', type: 'uint' },
-                        { name: 'nonce', type: 'unint' }
-                    ]
-                },
-                primary_type: "Convert",
-                message: {
-                    TxHash: data?.TxHash,
-                    amount: data?.amount,
-                    ndau_address: data?.ndau_address,
-                    npay_adddress: data?.npay_adddress,
-                    nonce: nonceVal
-                },
-                signature: signatures?.signature1
-            }
+    const finalPayload = (data, newPayload) => {
+        return {
+            domain: {
+                name: 'zkSync',
+                version: '2',
+                chainId: newPayload.chainId
+            },
+            types: {
+                Convert: [
+                    { name: 'ndau_address', type: 'address' },
+                    { name: 'npay_address', type: 'address' },
+                    { name: 'signature2', type: 'string' },
+                    { name: 'amount', type: 'uint' },
+                    { name: 'nonce', type: 'unint' }
+                ]
+            },
+            primary_type: "Convert",
+            message: {
+                TxHash: data?.TxHash,
+                amount: data?.amount,
+                ndau_address: data?.ndau_address,
+                npay_address: data?.npay_address,
+                signature2: newPayload?.signature2,
+                nonce: newPayload.nonceVal
+            },
+            signature: newPayload?.signature1
         }
-
-
     }
 
     const handleConvert = () => {
@@ -143,16 +88,15 @@ const ConvertNdauToNpay = (props) => {
             const payload = {
                 TxHash: response.hash,
                 amount: ndauAmount,
-                ndau_address: "ndackkdedpu93bwhnvv3jvyxm3cs69sr4v9nva936z5zp24v", //hardcode for now
-                npay_adddress: "0xF54C7538Fbdd77FAe4085a422CeAf3AcA37596Fd", //hardcode for now
-                nonce: nonceVal
+                ndau_address: ndauAddress,
+                npay_address: npayAddress,
             }
-            sigedErcWallet(payload).then((res) => {
+            sigedErcWallet(payload, ndauPrivateKey).then((res) => {
                 const conversionPayload = finalPayload(payload, res)
                 console.log(JSON.stringify(conversionPayload, null, 2), 'payload---')
                 ndauConversion(conversionPayload).then((res) => {
                     setLoaderValue("")
-                    console.log(res, 'response---')
+
                 }).catch(err => {
                     setLoaderValue("")
                     FlashNotification.show(err.message);
@@ -186,7 +130,7 @@ const ConvertNdauToNpay = (props) => {
 
             <View style={[styles.convertContainer1]}>
                 <View style={styles.leftView}>
-                    <CustomText>You Get</CustomText>
+                    <CustomText>{`From :  ${ndauUtils.truncateAddress(ndauAddress)}`}</CustomText>
                     <View style={styles.selectCoin}>
                         <Spacer width={2} />
                         <Image style={styles.image} source={images.nDau} />
@@ -237,7 +181,21 @@ const ConvertNdauToNpay = (props) => {
 
             <View style={[styles.convertContainer2]}>
                 <View style={styles.leftView}>
-                    <CustomText>You Get</CustomText>
+                    <View style={styles.npayRowCon}>
+                        <View>
+                            <CustomText>To :</CustomText>
+                            <Spacer height={4} />
+                            <TextInput style={styles.inputConNpay}
+                                placeholderTextColor={'grey'}
+                                placeholder='address'
+                                value={npayAddress}
+                                onChangeText={(t) => {
+                                    setNpayAddress(t)
+                                }}
+                            />
+                        </View>
+                    </View>
+
                     <View style={styles.selectCoin}>
                         <Spacer width={2} />
                         <NpayIcon />
@@ -268,7 +226,7 @@ const ConvertNdauToNpay = (props) => {
             </View>
 
             <View style={styles.convertBtn}>
-                <Button label={"Convert"} onPress={handleConvert} disabled={ndauAmount.length === 0 || totalBalance === 0 || getRemainNdauBalance(ndauAmount) === 0} />
+                <Button label={"Convert"} onPress={handleConvert} disabled={ndauAmount.length === 0 || totalBalance === 0 || getRemainNdauBalance(ndauAmount) === 0 || npayAddress === ""} />
             </View>
 
             <CustomModal bridge={modalRef}>
@@ -355,6 +313,12 @@ const styles = StyleSheet.create({
         fontSize: 18,
 
     },
+    inputConNpay: {
+        color: 'white',
+        fontSize: 10,
+
+        flex: 1
+    },
     icon: {
         height: 60,
         width: 60,
@@ -386,6 +350,22 @@ const styles = StyleSheet.create({
         backgroundColor: "transparent",
         borderColor: 'white',
         borderWidth: 1
+    },
+    outlineButton: {
+        backgroundColor: undefined,
+        borderWidth: 2,
+        borderColor: themeColors.primary,
+        height: 30,
+        padding: 0,
+        paddingHorizontal: 12,
+
+    },
+
+    npayRowCon: {
+        flexDirection: "row",
+        alignItems: 'center',
+        flex: 1
+
     }
 
 })
