@@ -4,8 +4,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const NOTIFICATIONS_KEY = 'notifications';
 
 export const saveNotifications = async (notifications) => {
-
-    console.log(notifications,'dataNotifications')
     try {
         await AsyncStorage.setItem(NOTIFICATIONS_KEY, JSON.stringify(notifications));
     } catch (error) {

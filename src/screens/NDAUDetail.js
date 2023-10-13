@@ -1,33 +1,30 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Alert, Image, Linking, NativeModules, ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
+import { Alert, Image, Linking, ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
 
+import Clipboard from "@react-native-clipboard/clipboard";
+import { useIsFocused } from "@react-navigation/native";
+import AppConfig from "../AppConfig";
+import AppConstants from "../AppConstants";
+import AccountAPI from "../api/AccountAPI";
+import { Buy, Clock, Convert, Delete, DollarSign, EAI, Exclamation, Lock, Receive, Send, UnLocked } from "../assets/svgs/components";
+import Button from "../components/Button";
 import CopyAddressButton from "../components/CopyAddressButton";
 import CustomText from "../components/CustomText";
-import ScreenContainer from "../components/Screen";
-import { themeColors } from "../config/colors";
 import IconButton from "../components/IconButton";
-import { Buy, Clock, Convert, Delete, DollarSign, EAI, Exclamation, Lock, Receive, Send, Swap, UnLocked } from "../assets/svgs/components";
-import Spacer from "../components/Spacer";
-import Button from "../components/Button";
+import Loading from "../components/Loading";
 import CustomModal from "../components/Modal";
-import AppConstants from "../AppConstants";
-import { ScreenNames } from "./ScreenNames";
-import AppConfig from "../AppConfig";
-import Clipboard from "@react-native-clipboard/clipboard";
-import { useTransaction, useWallet } from "../hooks";
-import DateHelper from "../helpers/DateHelper";
+import ScreenContainer from "../components/Screen";
+import Spacer from "../components/Spacer";
+import FlashNotification from "../components/common/FlashNotification";
+import { themeColors } from "../config/colors";
 import AccountAPIHelper from "../helpers/AccountAPIHelper";
 import DataFormatHelper from "../helpers/DataFormatHelper";
+import DateHelper from "../helpers/DateHelper";
 import NdauNumber from "../helpers/NdauNumber";
-import { ndauUtils, tokenShortName } from "../utils";
+import { useTransaction, useWallet } from "../hooks";
 import UserStore from "../stores/UserStore";
-import Loading from "../components/Loading";
-import AccountAPI from "../api/AccountAPI";
-import { useIsFocused } from "@react-navigation/native";
-import FlashNotification from "../components/common/FlashNotification";
-import { ethers } from "ethers";
-import { NetworkManager } from "../helpers/EthersScanAPI";
-import TxSignPrep from "../model/TxSignPrep";
+import { ndauUtils } from "../utils";
+import { ScreenNames } from "./ScreenNames";
 
 const NDAUDetail = (props) => {
 
@@ -191,9 +188,7 @@ const NDAUDetail = (props) => {
 			);
 		}
 	};
-
-	// console.log(JSON.stringify(item.validationKeys[0], null, 2), 'data')
-	console.log(JSON.stringify(getActiveWallet().keys[item.validationKeys[0]].privateKey, null, 2), 'data')
+	
 	return (
 		<ScreenContainer headerTitle={item.name} headerRight={canRecieve && <CopyAddressButton onPress={copyAddress} />}>
 			<ScrollView showsVerticalScrollIndicator={false}>

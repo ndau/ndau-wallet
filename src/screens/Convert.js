@@ -93,7 +93,6 @@ const ConvertNdauToNpay = (props) => {
             }
             sigedErcWallet(payload, ndauPrivateKey).then((res) => {
                 const conversionPayload = finalPayload(payload, res)
-                console.log(JSON.stringify(conversionPayload, null, 2), 'payload---')
                 ndauConversion(conversionPayload).then((res) => {
                     setLoaderValue("")
 

@@ -118,7 +118,6 @@ const Address = ({ route: { params } }) => {
         onPress={() => {
           try {
             const data = new ethers.Wallet(address);
-            console.log('data', JSON.stringify(data, null, 2));
           } catch (e) {
             FlashNotification.show("Invalid private key")
           }
