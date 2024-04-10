@@ -26,6 +26,42 @@ export default useConvert = () => {
     return () => {};
   }, []);
 
+  // const getTypedMessage = (convertData) => {
+
+  //     const EIP712Domain = [
+  //         { name: 'name', type: 'string' },
+  //         { name: 'version', type: 'string' },
+  //         { name: 'chainId', type: 'uint256' }
+  //     ];
+  //     const domain = {
+  //         name: 'zkSync',
+  //         version: '2',
+  //         chainId: networkChainId,
+  //     };
+  //     const types = {
+  //         EIP712Domain,
+  //         Convert: [
+  //             { name: 'ndau_address', type: 'address' },
+  //             { name: 'npay_address', type: 'address' },
+  //             { name: 'amount', type: 'uint256' },
+  //             { name: 'nonce', type: 'unint256' },
+  //             { name: 'signature2', type: 'string' },
+  //         ],
+  //     };
+
+  //     const EIP712Msg = {
+  //         domain,
+  //         types,
+  //         primaryType: "Convert",
+  //         message: convertData
+  //     }
+  //     const typedData = JSON.stringify(EIP712Msg);
+  //     return typedData;
+  // }
+  // loadChainId();
+  // return () => {};
+  // }, []);
+
   const getTypedMessage = (convertData) => {
     const EIP712Domain = [
       { name: 'name', type: 'string' },

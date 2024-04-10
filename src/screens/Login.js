@@ -48,6 +48,8 @@ const Login = (props) => {
     called.current = true;
     try {
       let user = await MultiSafeHelper.getDefaultUser(passcode);
+      console.log('user.............', user);
+      console.log('wallets.............', user.wallets);
       if (user) {
         setLoading(true);
         UserStore.setUser(user);

@@ -7,6 +7,7 @@ import { Transaction } from '../transactions/Transaction';
 import { TransferTransaction } from '../transactions/TransferTransaction';
 import { EthersScanAPI, NetworkManager } from '../helpers/EthersScanAPI';
 import { LockTransaction } from '../transactions/LockTransaction';
+import { BurnAndMintTransaction } from '../transactions/BurnAndMintTransaction';
 import NdauNumber from '../helpers/NdauNumber';
 import { NotifyTransaction } from '../transactions/NotifyTransaction';
 import { SetRewardsDestinationTransaction } from '../transactions/SetRewardsDestinationTransaction';
@@ -27,11 +28,11 @@ export default useTransaction = () => {
 
       try {
         Object.assign(TransferTransaction.prototype, Transaction);
-        const transferTransaction = new TransferTransaction(UserStore.getActiveWallet(), account, address, amount);
+        const tx = new TransferTransaction(UserStore.getActiveWallet(), account, address, amount);
 
-        await transferTransaction.create();
-        await transferTransaction.sign();
-        const prevalidateData = await transferTransaction.prevalidate();
+        await tx.create();
+        await tx.sign();
+        const prevalidateData = await tx.prevalidate();
 
         if (prevalidateData.fee_napu) {
           transactionFee = DataFormatHelper.getNdauFromNapu(prevalidateData.fee_napu, AppConfig.NDAU_DETAIL_PRECISION);
@@ -75,13 +76,8 @@ export default useTransaction = () => {
     return new Promise(async (resolve, reject) => {
       try {
         Object.assign(TransferTransaction.prototype, Transaction);
-        const transferTransaction = new TransferTransaction(
-          UserStore.getActiveWallet(),
-          account,
-          addressToSend,
-          amount
-        );
-        const response = await transferTransaction.createSignPrevalidateSubmit();
+        const tx = new TransferTransaction(UserStore.getActiveWallet(), account, addressToSend, amount);
+        const response = await tx.createSignPrevalidateSubmit();
         resolve(response);
       } catch (e) {
         reject(e);
@@ -249,10 +245,10 @@ export default useTransaction = () => {
     return new Promise(async (resolve, reject) => {
       try {
         Object.assign(LockTransaction.prototype, Transaction);
-        const lockTransaction = new LockTransaction(UserStore.getActiveWallet(), account, lockISO);
-        await lockTransaction.create();
-        await lockTransaction.sign();
-        const data = await lockTransaction.prevalidate();
+        const tx = new LockTransaction(UserStore.getActiveWallet(), account, lockISO);
+        await tx.create();
+        await tx.sign();
+        const data = await tx.prevalidate();
         resolve(new NdauNumber(data.fee_napu).toDetail());
       } catch (err) {
         reject(err);
@@ -277,9 +273,9 @@ export default useTransaction = () => {
         );
 
         Object.assign(LockTransaction.prototype, Transaction);
-        const lockTransaction = new LockTransaction(wallet, account, lockISO);
+        const tx = new LockTransaction(wallet, account, lockISO);
 
-        await lockTransaction.createSignPrevalidateSubmit();
+        await tx.createSignPrevalidateSubmit();
 
         await notifyTransaction.createSignPrevalidateSubmit();
 
@@ -292,7 +288,7 @@ export default useTransaction = () => {
         resolve(true);
       } catch (err) {
         reject(err);
-        console.log('error: Getting ndau lock fees', JSON.stringify(err, null, 2));
+        console.log('error: Lock ndau account', JSON.stringify(err, null, 2));
       }
     });
   };
@@ -302,8 +298,8 @@ export default useTransaction = () => {
       try {
         const wallet = UserStore.getActiveWallet();
         Object.assign(NotifyTransaction.prototype, Transaction);
-        const notifyTransaction = new NotifyTransaction(wallet, account);
-        const response = await notifyTransaction.createSignPrevalidateSubmit();
+        const tx = new NotifyTransaction(wallet, account);
+        const response = await tx.createSignPrevalidateSubmit();
         resolve(response);
       } catch (e) {
         reject(e);
@@ -315,15 +311,29 @@ export default useTransaction = () => {
     return new Promise(async (resolve, reject) => {
       try {
         Object.assign(SetRewardsDestinationTransaction.prototype, Transaction);
-        const setRewardsDestinationTransaction = new SetRewardsDestinationTransaction(
+        const tx = new SetRewardsDestinationTransaction(
           UserStore.getActiveWallet(),
           account,
           accountAddressForEAI || account.address
         );
-        const response = await setRewardsDestinationTransaction.createSignPrevalidateSubmit();
+        const response = await tx.createSignPrevalidateSubmit();
         resolve(response);
       } catch (e) {
         reject(e);
+      }
+    });
+  };
+
+  const burnAndMint = (account, qty, ethaddr) => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        Object.assign(BurnAndMintTransaction.prototype, Transaction);
+        const tx = new BurnAndMintTransaction(UserStore.getActiveWallet(), account, qty, ethaddr);
+        const response = await tx.createSignPrevalidateSubmit();
+        resolve(response);
+      } catch (err) {
+        reject(err);
+        console.log('error: Burn and mint', JSON.stringify(err, null, 2));
       }
     });
   };
@@ -431,6 +441,7 @@ export default useTransaction = () => {
     lockNDAUAccount,
     notifyForNDAU,
     setEAI,
+    burnAndMint,
     getTransactions,
     getTransactionByHash,
     getERCTransactionDetail,

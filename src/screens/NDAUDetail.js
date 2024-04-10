@@ -200,8 +200,11 @@ const NDAUDetail = (props) => {
     }
   };
 
+  console.log('active wallet.....:', getActiveWallet().keys);
+  // For testing
+  // item.totalFunds = 100;
   // console.log(JSON.stringify(item.validationKeys[0], null, 2), 'data')
-  console.log(JSON.stringify(getActiveWallet().keys[item.validationKeys[0]].privateKey, null, 2), 'data');
+  // console.log(JSON.stringify(getActiveWallet().keys[item.validationKeys[0]].privateKey, null, 2), 'data')
   return (
     <ScreenContainer headerTitle={item.name} headerRight={canRecieve && <CopyAddressButton onPress={copyAddress} />}>
       <ScrollView showsVerticalScrollIndicator={false}>

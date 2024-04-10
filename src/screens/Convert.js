@@ -19,7 +19,7 @@ import { ndauUtils } from '../utils';
 const ConvertNdauToNpay = (props) => {
   const [errors, setErrors] = useState([]);
   const { totalBalance, ndauAddress, image, ndauPrivateKey, npayAddressVal } = props?.route?.params ?? {};
-  const [ndauAmount, setNdauAmount] = useState('');
+  const [ndauAmount, setNdauAmount] = useState(0);
   const [npayAddress, setNpayAddress] = useState(npayAddressVal);
   const [npayAmount, setNpayAmount] = useState('0.0');
   const [loaderValue, setLoaderValue] = useState('');
@@ -27,7 +27,7 @@ const ConvertNdauToNpay = (props) => {
   const modalRef2 = useRef(null);
   const { sigedErcWallet, ndauConversion } = useConvert();
   const { getActiveWallet } = useWallet();
-  const { sendAmountToNdauAddress } = useTransaction();
+  const { burnAndMint, sendAmountToNdauAddress } = useTransaction();
 
   useEffect(() => {
     setNpayAddress(npayAddress);
@@ -53,9 +53,9 @@ const ConvertNdauToNpay = (props) => {
         Convert: [
           { name: 'ndau_address', type: 'address' },
           { name: 'npay_address', type: 'address' },
+          { name: 'amount', type: 'uint256' },
+          { name: 'nonce', type: 'uint256' },
           { name: 'signature2', type: 'string' },
-          { name: 'amount', type: 'uint' },
-          { name: 'nonce', type: 'unint' },
         ],
       },
       primary_type: 'Convert',
@@ -72,41 +72,49 @@ const ConvertNdauToNpay = (props) => {
   };
 
   const handleConvert = () => {
+    console.log('handleConvert............'
+    );
     setLoaderValue('Signing');
-    sendAmountToNdauAddress(
-      UserStore.getAccountDetail(ndauAddress),
-      'ndnf5mpi9a688btwhsjfym46v4kk5tat2p6494m2bq8h8hce', // converter address
-      ndauAmount
-    )
-      .then((response) => {
-        const payload = {
-          TxHash: response.hash,
-          amount: ndauAmount,
-          ndau_address: ndauAddress,
-          npay_address: npayAddress,
-        };
-        sigedErcWallet(payload, ndauPrivateKey)
-          .then((res) => {
-            const conversionPayload = finalPayload(payload, res);
-            console.log(JSON.stringify(conversionPayload, null, 2), 'payload---');
-            ndauConversion(conversionPayload)
-              .then((res) => {
-                setLoaderValue('');
-              })
-              .catch((err) => {
-                setLoaderValue('');
-                FlashNotification.show(err.message);
-              });
-          })
-          .catch((err) => {
-            setLoaderValue('');
-            FlashNotification.show(err.message);
-          });
+    burnAndMint(UserStore.getAccountDetail(ndauAddress), ndauAmount, npayAddress, 1)
+      .then((res) => {
+        setLoaderValue('');
+        console.log('res............', res);
+        // props.navigation.navigate(ScreenNames.NDAUDetail, { item });
       })
       .catch((err) => {
         setLoaderValue('');
         FlashNotification.show(err.message);
       });
+
+    // sendAmountToNdauAddress(
+    //     UserStore.getAccountDetail(ndauAddress),
+    //     "ndnf5mpi9a688btwhsjfym46v4kk5tat2p6494m2bq8h8hce", // converter address
+    //     ndauAmount
+    // ).then(response => {
+    //     const payload = {
+    //         TxHash: response.hash,
+    //         amount: ndauAmount,
+    //         ndau_address: ndauAddress,
+    //         npay_address: npayAddress,
+    //     }
+    //     sigedErcWallet(payload, ndauPrivateKey).then((res) => {
+    //         const conversionPayload = finalPayload(payload, res)
+    //         console.log(JSON.stringify(conversionPayload, null, 2), 'payload---')
+    //         ndauConversion(conversionPayload).then((res) => {
+    //             setLoaderValue("")
+
+    //         }).catch(err => {
+    //             setLoaderValue("")
+    //             FlashNotification.show(err.message);
+    //         })
+    //     }).catch(err => {
+    //         setLoaderValue("")
+    //         FlashNotification.show(err.message);
+    //     })
+    // }).catch(err => {
+    //     setLoaderValue("")
+    //     FlashNotification.show(err.message);
+    // })
   };
 
   const handleDone = () => {
@@ -174,6 +182,22 @@ const ConvertNdauToNpay = (props) => {
       </View>
 
       <Spacer height={12} />
+
+      <View style={[styles.convertContainer2]}>
+        <View style={styles.rightView}>
+          <CustomText>Set Bounty (USDC):</CustomText>
+          <Spacer height={4} />
+          <TextInput
+            style={styles.inputCon}
+            placeholderTextColor={'#fff'}
+            placeholder="0.0"
+            value={npayAmount || 0.0}
+            editable={false}
+            selectTextOnFocus={false}
+          />
+        </View>
+      </View>
+      <Spacer height={12} />
       <View style={styles.svgView}>
         <ConvertIcon />
       </View>
@@ -209,25 +233,27 @@ const ConvertNdauToNpay = (props) => {
           </View>
         </View>
         <Spacer height={20} />
-        <View style={styles.rightView}>
-          <View style={styles.row}>
-            <TextInput
-              style={styles.inputCon}
-              placeholderTextColor={'#fff'}
-              placeholder="0.0"
-              value={npayAmount || 0.0}
-              editable={false}
-              selectTextOnFocus={false}
-            />
-            {/* <Spacer width={4} />
+        {false && (
+          <View style={styles.rightView}>
+            <View style={styles.row}>
+              <TextInput
+                style={styles.inputCon}
+                placeholderTextColor={'#fff'}
+                placeholder="0.0"
+                value={npayAmount || 0.0}
+                editable={false}
+                selectTextOnFocus={false}
+              />
+              {/* <Spacer width={4} />
                         <CustomText caption style={{ marginTop: 6 }}>$177.55</CustomText> */}
+            </View>
+            <View style={styles.row}>
+              <CustomText body2>{`Bal   :`}</CustomText>
+              <Spacer width={10} />
+              <CustomText body2>{npayAmount}</CustomText>
+            </View>
           </View>
-          <View style={styles.row}>
-            <CustomText body2>{`Bal   :`}</CustomText>
-            <Spacer width={10} />
-            <CustomText body2>{npayAmount}</CustomText>
-          </View>
-        </View>
+        )}
       </View>
 
       <View style={styles.convertBtn}>
