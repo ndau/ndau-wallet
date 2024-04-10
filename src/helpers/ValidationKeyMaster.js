@@ -11,7 +11,7 @@
 import KeyPathHelper from '../helpers/KeyPathHelper';
 import KeyMaster from '../helpers/KeyMaster';
 import DataFormatHelper from '../helpers/DataFormatHelper';
-import {NativeModules} from 'react-native';
+import { NativeModules } from 'react-native';
 import AppConfig from '../AppConfig';
 import LogStore from '../stores/LogStore';
 import FlashNotification from '../components/common/FlashNotification';
@@ -37,29 +37,20 @@ import FlashNotification from '../components/common/FlashNotification';
  */
 const _generateLegacy1ValidationKey = async (wallet, account, index) => {
   if (!index) {
-    index = DataFormatHelper.getNextPathIndex(
-      wallet,
-      KeyPathHelper.legacyValidationKeyPath1(),
-    );
+    index = DataFormatHelper.getNextPathIndex(wallet, KeyPathHelper.legacyValidationKeyPath1());
   }
   const keyPath = KeyPathHelper.legacyValidationKeyPath1() + `/${index}`;
 
   const validationPrivateKey = await NativeModules.KeyaddrManager.deriveFrom(
     wallet.keys[account.ownershipKey].privateKey,
     '/',
-    keyPath,
+    keyPath
   );
 
-  const validationPublicKey = await NativeModules.KeyaddrManager.toPublic(
-    validationPrivateKey,
-  );
+  const validationPublicKey = await NativeModules.KeyaddrManager.toPublic(validationPrivateKey);
 
   const actualPath = wallet.keys[account.ownershipKey].path + keyPath;
-  return KeyMaster.createKey(
-    validationPrivateKey,
-    validationPublicKey,
-    actualPath,
-  );
+  return KeyMaster.createKey(validationPrivateKey, validationPublicKey, actualPath);
 };
 
 /**
@@ -77,34 +68,23 @@ const _generateLegacy1ValidationKey = async (wallet, account, index) => {
  * @param {number} index
  */
 const _generateLegacy2ValidationKey = async (wallet, account, index) => {
-  const privateValidationRootKey =
-    await NativeModules.KeyaddrManager.deriveFrom(
-      wallet.keys[wallet.accountCreationKeyHash].privateKey,
-      KeyPathHelper.accountCreationKeyPath(),
-      KeyPathHelper.legacyValidationKeyPath2(),
-    );
-
-  const keyPath = KeyPathHelper.getLegacy2Thru4AccountValidationKeyPath(
-    wallet,
-    account,
-    index,
+  const privateValidationRootKey = await NativeModules.KeyaddrManager.deriveFrom(
+    wallet.keys[wallet.accountCreationKeyHash].privateKey,
+    KeyPathHelper.accountCreationKeyPath(),
+    KeyPathHelper.legacyValidationKeyPath2()
   );
+
+  const keyPath = KeyPathHelper.getLegacy2Thru4AccountValidationKeyPath(wallet, account, index);
 
   const validationPrivateKey = await NativeModules.KeyaddrManager.deriveFrom(
     privateValidationRootKey,
     KeyPathHelper.getLegacy2Thru4RootAccountValidationKeyPath(wallet, account),
-    keyPath,
+    keyPath
   );
 
-  const validationPublicKey = await NativeModules.KeyaddrManager.toPublic(
-    validationPrivateKey,
-  );
+  const validationPublicKey = await NativeModules.KeyaddrManager.toPublic(validationPrivateKey);
 
-  return KeyMaster.createKey(
-    validationPrivateKey,
-    validationPublicKey,
-    keyPath,
-  );
+  return KeyMaster.createKey(validationPrivateKey, validationPublicKey, keyPath);
 };
 
 /**
@@ -123,34 +103,23 @@ const _generateLegacy2ValidationKey = async (wallet, account, index) => {
  * @param {number} index
  */
 const _generateLegacy3ValidationKey = async (wallet, account, index) => {
-  const privateValidationRootKey =
-    await NativeModules.KeyaddrManager.deriveFrom(
-      wallet.keys[wallet.accountCreationKeyHash].privateKey,
-      KeyPathHelper.accountCreationKeyPath(),
-      KeyPathHelper.legacyValidationKeyPath3(),
-    );
-
-  const keyPath = KeyPathHelper.getLegacy2Thru4AccountValidationKeyPath(
-    wallet,
-    account,
-    index,
+  const privateValidationRootKey = await NativeModules.KeyaddrManager.deriveFrom(
+    wallet.keys[wallet.accountCreationKeyHash].privateKey,
+    KeyPathHelper.accountCreationKeyPath(),
+    KeyPathHelper.legacyValidationKeyPath3()
   );
+
+  const keyPath = KeyPathHelper.getLegacy2Thru4AccountValidationKeyPath(wallet, account, index);
 
   const validationPrivateKey = await NativeModules.KeyaddrManager.deriveFrom(
     privateValidationRootKey,
     KeyPathHelper.legacyValidationKeyPath3(),
-    keyPath,
+    keyPath
   );
 
-  const validationPublicKey = await NativeModules.KeyaddrManager.toPublic(
-    validationPrivateKey,
-  );
+  const validationPublicKey = await NativeModules.KeyaddrManager.toPublic(validationPrivateKey);
 
-  return KeyMaster.createKey(
-    validationPrivateKey,
-    validationPublicKey,
-    keyPath,
-  );
+  return KeyMaster.createKey(validationPrivateKey, validationPublicKey, keyPath);
 };
 
 /**
@@ -170,28 +139,18 @@ const _generateLegacy3ValidationKey = async (wallet, account, index) => {
  * @param {number} index
  */
 const _generateLegacy4ValidationKey = async (wallet, account, index) => {
-  const keyPath = KeyPathHelper.getLegacy2Thru4AccountValidationKeyPath(
-    wallet,
-    account,
-    index,
-  );
+  const keyPath = KeyPathHelper.getLegacy2Thru4AccountValidationKeyPath(wallet, account, index);
 
   const validationPrivateKey = await NativeModules.KeyaddrManager.deriveFrom(
     wallet.keys[account.ownershipKey].privateKey,
     '/',
-    keyPath,
+    keyPath
   );
 
-  const validationPublicKey = await NativeModules.KeyaddrManager.toPublic(
-    validationPrivateKey,
-  );
+  const validationPublicKey = await NativeModules.KeyaddrManager.toPublic(validationPrivateKey);
 
   const actualPath = wallet.keys[account.ownershipKey].path + keyPath;
-  return KeyMaster.createKey(
-    validationPrivateKey,
-    validationPublicKey,
-    actualPath,
-  );
+  return KeyMaster.createKey(validationPrivateKey, validationPublicKey, actualPath);
 };
 
 /**
@@ -209,34 +168,23 @@ const _generateLegacy4ValidationKey = async (wallet, account, index) => {
  * @param {number} index
  */
 const _generateValidationKey = async (wallet, account, index) => {
-  const privateValidationRootKey =
-    await NativeModules.KeyaddrManager.deriveFrom(
-      wallet.keys[wallet.accountCreationKeyHash].privateKey,
-      KeyPathHelper.accountCreationKeyPath(),
-      KeyPathHelper.validationKeyPath(),
-    );
-
-  const keyPath = KeyPathHelper.getAccountValidationKeyPath(
-    wallet,
-    account,
-    index,
+  const privateValidationRootKey = await NativeModules.KeyaddrManager.deriveFrom(
+    wallet.keys[wallet.accountCreationKeyHash].privateKey,
+    KeyPathHelper.accountCreationKeyPath(),
+    KeyPathHelper.validationKeyPath()
   );
+
+  const keyPath = KeyPathHelper.getAccountValidationKeyPath(wallet, account, index);
 
   const validationPrivateKey = await NativeModules.KeyaddrManager.deriveFrom(
     privateValidationRootKey,
     KeyPathHelper.validationKeyPath(),
-    keyPath,
+    keyPath
   );
 
-  const validationPublicKey = await NativeModules.KeyaddrManager.toPublic(
-    validationPrivateKey,
-  );
+  const validationPublicKey = await NativeModules.KeyaddrManager.toPublic(validationPrivateKey);
 
-  return KeyMaster.createKey(
-    validationPrivateKey,
-    validationPublicKey,
-    keyPath,
-  );
+  return KeyMaster.createKey(validationPrivateKey, validationPublicKey, keyPath);
 };
 
 /**
@@ -250,36 +198,16 @@ const _generateValidationKey = async (wallet, account, index) => {
 const addValidationKey = async (wallet, account) => {
   const key = await _generateValidationKey(wallet, account);
 
-  addThisValidationKey(
-    account,
-    wallet,
-    key.privateKey,
-    key.publicKey,
-    key.path,
-  );
+  addThisValidationKey(account, wallet, key.privateKey, key.publicKey, key.path);
 };
 
-const addThisValidationKey = (
-  account,
-  wallet,
-  validationPrivateKey,
-  validationPublicKey,
-  keyPath,
-) => {
+const addThisValidationKey = (account, wallet, validationPrivateKey, validationPublicKey, keyPath) => {
   if (!keyPath) {
-    const nextIndex = DataFormatHelper.getNextPathIndex(
-      wallet,
-      KeyPathHelper.getRootAccountValidationKeyPath(),
-    );
+    const nextIndex = DataFormatHelper.getNextPathIndex(wallet, KeyPathHelper.getRootAccountValidationKeyPath());
     keyPath = KeyPathHelper.getRootAccountValidationKeyPath() + `/${nextIndex}`;
   }
-  const validationKeyHash =
-    DataFormatHelper.create8CharHash(validationPrivateKey);
-  wallet.keys[validationKeyHash] = KeyMaster.createKey(
-    validationPrivateKey,
-    validationPublicKey,
-    keyPath,
-  );
+  const validationKeyHash = DataFormatHelper.create8CharHash(validationPrivateKey);
+  wallet.keys[validationKeyHash] = KeyMaster.createKey(validationPrivateKey, validationPublicKey, keyPath);
   if (!account.validationKeys.includes(validationKeyHash)) {
     account.validationKeys.push(validationKeyHash);
   }
@@ -305,37 +233,21 @@ const getValidationKeys = async (wallet, account, startIndex, endIndex) => {
       const currentKey = await _generateValidationKey(wallet, account, i);
       keys[currentKey.publicKey] = currentKey;
 
-      const legacyKey4 = await _generateLegacy4ValidationKey(
-        wallet,
-        account,
-        i,
-      );
+      const legacyKey4 = await _generateLegacy4ValidationKey(wallet, account, i);
       keys[legacyKey4.publicKey] = legacyKey4;
 
-      const legacyKey3 = await _generateLegacy3ValidationKey(
-        wallet,
-        account,
-        i,
-      );
+      const legacyKey3 = await _generateLegacy3ValidationKey(wallet, account, i);
       keys[legacyKey3.publicKey] = legacyKey3;
 
-      const legacyKey2 = await _generateLegacy2ValidationKey(
-        wallet,
-        account,
-        i,
-      );
+      const legacyKey2 = await _generateLegacy2ValidationKey(wallet, account, i);
       keys[legacyKey2.publicKey] = legacyKey2;
 
-      const legacyKey1 = await _generateLegacy1ValidationKey(
-        wallet,
-        account,
-        i,
-      );
+      const legacyKey1 = await _generateLegacy1ValidationKey(wallet, account, i);
       keys[legacyKey1.publicKey] = legacyKey1;
     }
   } catch (error) {
     FlashNotification.show(
-      `problem encountered creating object of validation public and private keys: ${error.message}`,
+      `problem encountered creating object of validation public and private keys: ${error.message}`
     );
     throw error;
   }
@@ -366,14 +278,8 @@ const getValidationKeys = async (wallet, account, startIndex, endIndex) => {
  * @returns {Key} key genereated
  */
 const recoveryValidationKey = async (wallet, account, validationKeys) => {
-  if (
-    validationKeys &&
-    account.validationKeys &&
-    account.validationKeys.length === 0
-  ) {
-    LogStore.log(
-      `Attempting to find the private key for the public validation key we have...`,
-    );
+  if (validationKeys && account.validationKeys && account.validationKeys.length === 0) {
+    LogStore.log(`Attempting to find the private key for the public validation key we have...`);
     LogStore.log(`This is for ${wallet.walletId} address ${account.address}`);
     for (const validationKey of validationKeys) {
       let startIndex = AppConfig.VALIDATION_KEY_SEARCH_START_INDEX;
@@ -383,19 +289,8 @@ const recoveryValidationKey = async (wallet, account, validationKeys) => {
       let counter = 0;
 
       do {
-        let validationKeys = await getValidationKeys(
-          wallet,
-          account,
-          startIndex,
-          endIndex,
-        );
-        found = _checkValidationKeys(
-          wallet,
-          account,
-          validationKeys,
-          validationKey,
-          found,
-        );
+        let validationKeys = await getValidationKeys(wallet, account, startIndex, endIndex);
+        found = _checkValidationKeys(wallet, account, validationKeys, validationKey, found);
 
         startIndex += AppConfig.NUMBER_OF_KEYS_TO_GRAB_ON_RECOVERY;
         endIndex += AppConfig.NUMBER_OF_KEYS_TO_GRAB_ON_RECOVERY;
@@ -410,13 +305,7 @@ const recoveryValidationKey = async (wallet, account, validationKeys) => {
   }
 };
 
-const _checkValidationKeys = (
-  wallet,
-  account,
-  validationKeys,
-  validationKey,
-  found,
-) => {
+const _checkValidationKeys = (wallet, account, validationKeys, validationKey, found) => {
   const validationPublicKeys = Object.keys(validationKeys);
   for (const validationPublicKey of validationPublicKeys) {
     if (validationKey === validationPublicKey) {
@@ -426,7 +315,7 @@ const _checkValidationKeys = (
         wallet,
         validationKeys[validationPublicKey].privateKey,
         validationPublicKey,
-        validationKeys[validationPublicKey].path,
+        validationKeys[validationPublicKey].path
       );
       found = true;
       break;
