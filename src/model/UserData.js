@@ -17,29 +17,31 @@ import NdauStore from '../stores/NdauStore';
 // IF YOU WOULD LIKE TO TEST LOG USER DATA UNCOMMENT THIS
 // import UserTestData from '../helpers/UserTestData'
 
-const loadUserData = async user => {
+const loadUserData = async (user) => {
   if (!user) return;
 
   const walletKeys = Object.keys(user.wallets);
 
-  NdauStore.setMarketPrice(await OrderAPI.getMarketPrice(user));
-  // if marketPrice is falsey then we should use the one we have
-  // stored within the user.defaults object
-  if (
-    !NdauStore.getMarketPrice() &&
-    user.defaults &&
-    user.defaults.marketPrice
-  ) {
+  try {
+    NdauStore.setMarketPrice(await OrderAPI.getMarketPrice(user));
+    // if marketPrice is falsey then we should use the one we have
+    // stored within the user.defaults object
+    if (!NdauStore.getMarketPrice() && user.defaults && user.defaults.marketPrice) {
+      NdauStore.setMarketPrice(user.defaults.marketPrice);
+    }
+  } catch (e) {
     NdauStore.setMarketPrice(user.defaults.marketPrice);
   }
-
+  console.log('loadUserData...................');
   for (const walletKey of walletKeys) {
-    const wallet = user.wallets[walletKey];
-    // if (wallet.type == "ERC") continue;
-    const dataFound = await AccountAPIHelper.populateWalletWithAddressData(
-      wallet,
-    );
-
+    let dataFound;
+    try {
+      const wallet = user.wallets[walletKey];
+      // if (wallet.type == "ERC") continue;
+      dataFound = await AccountAPIHelper.populateWalletWithAddressData(wallet);
+    } catch (e) {
+      console.log('Error connect to the blockchain, should fix me later');
+    }
     // after the data is loaded successfully then save the user
     const password = await UserStore.getPassword();
     // double check that both are truthy, user should be if password is

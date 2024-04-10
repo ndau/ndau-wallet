@@ -8,158 +8,137 @@
  * - -- --- ---- -----
  */
 
-import APIAddressHelper from '../helpers/APIAddressHelper'
-import DataFormatHelper from '../helpers/DataFormatHelper'
-import BlockchainAPIError from '../errors/BlockchainAPIError'
-import APICommunicationHelper from '../helpers/APICommunicationHelper'
-import AsyncStorageHelper from '../model/AsyncStorageHelper'
-import LogStore from '../stores/LogStore'
-import UserStore from '../stores/UserStore'
+import APIAddressHelper from '../helpers/APIAddressHelper';
+import DataFormatHelper from '../helpers/DataFormatHelper';
+import BlockchainAPIError from '../errors/BlockchainAPIError';
+import APICommunicationHelper from '../helpers/APICommunicationHelper';
+import AsyncStorageHelper from '../model/AsyncStorageHelper';
+import LogStore from '../stores/LogStore';
+import UserStore from '../stores/UserStore';
 
-const getAddressData = async addresses => {
-  const accountAPI = await APIAddressHelper.getAccountsAPIAddress()
+const getAddressData = async (addresses) => {
   try {
-    const accountData = await APICommunicationHelper.post(
-      accountAPI,
-      JSON.stringify(addresses)
-    )
-    
-    const user = UserStore.getUser()
+    const accountAPI = await APIAddressHelper.getAccountsAPIAddress();
+    const accountData = await APICommunicationHelper.post(accountAPI, JSON.stringify(addresses));
+
+    const user = UserStore.getUser();
     if (user) {
       // Get all account
-      const accounts = Object.values(user.wallets).map((wallet) => Object.keys(wallet.accounts)).reduce((previous, current) => previous.concat(current))
-      await AsyncStorageHelper.setAccountAddresses(accounts)
-      
-      await updateLastAccountData(accounts, accountData)
-    }
-    return accountData
-  } catch (error) {
-    LogStore.log(error)
-    throw error
-  }
-}
+      const accounts = Object.values(user.wallets)
+        .map((wallet) => Object.keys(wallet.accounts))
+        .reduce((previous, current) => previous.concat(current));
+      await AsyncStorageHelper.setAccountAddresses(accounts);
 
-const isAddressDataNew = async accountAddresses => {
+      await updateLastAccountData(accounts, accountData);
+    }
+    return accountData;
+  } catch (error) {
+    LogStore.log(error);
+    throw error;
+  }
+};
+
+const isAddressDataNew = async (accountAddresses) => {
   // If there are no addresses passed then try to get it
   // out of the store
-  let addresses = accountAddresses
+  let addresses = accountAddresses;
   if (!addresses) {
-    addresses = await AsyncStorageHelper.getAccountAddresses()
+    addresses = await AsyncStorageHelper.getAccountAddresses();
   }
 
   // If not in the store then we shortcut false
-  if (!addresses) return false
+  if (!addresses) return false;
 
-  const accountAPI = await APIAddressHelper.getAccountsAPIAddress()
+  const accountAPI = await APIAddressHelper.getAccountsAPIAddress();
   try {
-    const lastAccountData = await AsyncStorageHelper.getLastAccountData()
+    const lastAccountData = await AsyncStorageHelper.getLastAccountData();
 
     // If we do not have any data yet, shortcircuit
-    if (!lastAccountData) return false
+    if (!lastAccountData) return false;
 
-    const accountData = await APICommunicationHelper.post(
-      accountAPI,
-      JSON.stringify(addresses)
-    )
+    const accountData = await APICommunicationHelper.post(accountAPI, JSON.stringify(addresses));
 
-    const current = Object.entries(accountData)
+    const current = Object.entries(accountData);
 
     // Return true if numbers of entries are different
     if (Object.entries(lastAccountData).length != current.length) {
-      await updateLastAccountData(addresses, accountData)
-      return true
+      await updateLastAccountData(addresses, accountData);
+      return true;
     }
 
-    // Return if something's different 
-    const misMatched = current.filter(([key, value]) => 
-      ((lastAccountData[key]?.balance ?? 0) < value.balance)
-    )
+    // Return if something's different
+    const misMatched = current.filter(([key, value]) => (lastAccountData[key]?.balance ?? 0) < value.balance);
 
     if (misMatched.length > 0) {
-      await updateLastAccountData(addresses, accountData)
+      await updateLastAccountData(addresses, accountData);
     }
-    return misMatched.length > 0
-
+    return misMatched.length > 0;
   } catch (error) {
-    LogStore.log(error)
-    throw new BlockchainAPIError(error)
+    LogStore.log(error);
+    throw new BlockchainAPIError(error);
   }
-}
+};
 
 const updateLastAccountData = async (accounts, accountData) => {
-  let lastAccountData = await AsyncStorageHelper.getLastAccountData() ?? {}
+  let lastAccountData = (await AsyncStorageHelper.getLastAccountData()) ?? {};
   // Remove non existing account
   Object.keys(lastAccountData).forEach((key) => {
     if (!accounts.includes(key)) {
-      delete lastAccountData[key]
+      delete lastAccountData[key];
     }
-  })
+  });
   // Update with latest account data
   for (const [key, value] of Object.entries(accountData)) {
-    lastAccountData[key] = { balance: value.balance }
+    lastAccountData[key] = { balance: value.balance };
   }
 
-  await AsyncStorageHelper.setLastAccountData(lastAccountData)
-}
+  await AsyncStorageHelper.setLastAccountData(lastAccountData);
+};
 
-const getNextSequence = async address => {
-  const accountAPI = await APIAddressHelper.getAccountAPIAddress()
+const getNextSequence = async (address) => {
+  const accountAPI = await APIAddressHelper.getAccountAPIAddress();
   try {
-    const accountData = await APICommunicationHelper.get(
-      accountAPI + '/' + address
-    )
-    return accountData[address].sequence ? accountData[address].sequence + 1 : 1
+    const accountData = await APICommunicationHelper.get(accountAPI + '/' + address);
+    return accountData[address].sequence ? accountData[address].sequence + 1 : 1;
   } catch (error) {
-    LogStore.log(error)
-    return 1
+    LogStore.log(error);
+    return 1;
   }
-}
+};
 
-const getEaiRate = async addressData => {
-  const accountEaiRateRequestData = DataFormatHelper.getAccountEaiRateRequest(
-    addressData
-  )
+const getEaiRate = async (addressData) => {
+  const accountEaiRateRequestData = DataFormatHelper.getAccountEaiRateRequest(addressData);
 
-  const eaiRateAddress = await APIAddressHelper.getEaiRateAPIAddress()
+  const eaiRateAddress = await APIAddressHelper.getEaiRateAPIAddress();
   try {
-    return await APICommunicationHelper.post(
-      eaiRateAddress,
-      JSON.stringify(accountEaiRateRequestData)
-    )
+    return await APICommunicationHelper.post(eaiRateAddress, JSON.stringify(accountEaiRateRequestData));
   } catch (error) {
-    LogStore.log(error)
-    throw new BlockchainAPIError(error)
+    LogStore.log(error);
+    throw new BlockchainAPIError(error);
   }
-}
+};
 
-const getLockRates = async account => {
-  const accountEaiRateRequestData = DataFormatHelper.getAccountEaiRateRequestForLock(
-    account
-  )
+const getLockRates = async (account) => {
+  const accountEaiRateRequestData = DataFormatHelper.getAccountEaiRateRequestForLock(account);
 
-  const eaiRateAddress = await APIAddressHelper.getEaiRateAPIAddress()
+  const eaiRateAddress = await APIAddressHelper.getEaiRateAPIAddress();
   try {
-    return await APICommunicationHelper.post(
-      eaiRateAddress,
-      JSON.stringify(accountEaiRateRequestData)
-    )
+    return await APICommunicationHelper.post(eaiRateAddress, JSON.stringify(accountEaiRateRequestData));
   } catch (error) {
-    LogStore.log(error)
-    throw new BlockchainAPIError(error)
+    LogStore.log(error);
+    throw new BlockchainAPIError(error);
   }
-}
+};
 
-const accountHistory = async address => {
-  const accountHistoryAddress = await APIAddressHelper.getAccountHistoryAPIAddress(
-    address
-  )
+const accountHistory = async (address) => {
+  const accountHistoryAddress = await APIAddressHelper.getAccountHistoryAPIAddress(address);
   try {
-    return await APICommunicationHelper.get(accountHistoryAddress)
+    return await APICommunicationHelper.get(accountHistoryAddress);
   } catch (error) {
-    LogStore.log(error)
-    throw new BlockchainAPIError(error)
+    LogStore.log(error);
+    throw new BlockchainAPIError(error);
   }
-}
+};
 
 export default {
   getAddressData,
@@ -167,5 +146,5 @@ export default {
   accountHistory,
   isAddressDataNew,
   getNextSequence,
-  getLockRates
-}
+  getLockRates,
+};
