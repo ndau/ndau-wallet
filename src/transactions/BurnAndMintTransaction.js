@@ -12,7 +12,7 @@ export class BurnAndMintTransaction {
   constructor(wallet, account, qty, ethaddr) {
     this._wallet = wallet;
     this._account = account;
-    this._qty = parseInt(qty);
+    this._qty = Math.trunc(parseFloat(qty) * 10 ** 8);
     this._ethaddr = ethaddr;
 
     this._keys = wallet.keys;
