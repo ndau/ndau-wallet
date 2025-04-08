@@ -373,7 +373,7 @@
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 4;
-				DEVELOPMENT_TEAM = WLR3KCWR54;
+				DEVELOPMENT_TEAM = 52CMB5YQ7W;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -391,7 +391,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.yupdevelop.ndauv2;
+				PRODUCT_BUNDLE_IDENTIFIER = com.oneiro.ndauv2;
 				PRODUCT_NAME = NdauWallet;
 				SWIFT_OBJC_BRIDGING_HEADER = "NdauWallet-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -410,7 +410,7 @@
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 4;
-				DEVELOPMENT_TEAM = WLR3KCWR54;
+				DEVELOPMENT_TEAM = 52CMB5YQ7W;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -427,7 +427,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.yupdevelop.ndauv2;
+				PRODUCT_BUNDLE_IDENTIFIER = com.oneiro.ndauv2;
 				PRODUCT_NAME = NdauWallet;
 				SWIFT_OBJC_BRIDGING_HEADER = "NdauWallet-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
