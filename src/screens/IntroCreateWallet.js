@@ -38,6 +38,7 @@ const IntroCreateWallet = ({ }) => {
           ref={animationRef}
           resizeMode="cover"
           style={{ width: "100%", flex: 1 }}
+          autoPlay
         />
 
         {/* <View style={styles.imageContainer}>
