@@ -69,17 +69,17 @@ const WalletConnect = (props) => {
             rightIcon={<QRCode />}
             buttonContainerStyle={{ flexDirection: 'row' }} />
           {/* For testing */}
-
+          {/*
           <Spacer height={10} />
           <Button
             onPress={() => {
-              const testUri = 'wc:acb458498d21106531e2889a77e785ff07cd462ad989664fb7d8debc1871c372@2?relay-protocol=irn&symKey=88060290c54ec0ede3157aac01a740c63bca897113088ef331dfe3eb76df3853&expiryTimestamp=1744729958';
+              const testUri = 'wc:...';
               scanQR(testUri);
             }}
             label={'Test Connect'}
             buttonContainerStyle={{ backgroundColor: 'orange' }}
           />
-
+          */}
         </View>
         <Spacer height={20} />
         <FlatList
