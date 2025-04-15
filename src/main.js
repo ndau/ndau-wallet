@@ -27,6 +27,7 @@ import Login from './screens/Login';
 import NDAUDetail from './screens/NDAUDetail';
 import ERCDetail from './screens/ERCDetail';
 import { FlashMessage } from './components/common/FlashNotification';
+import WalletConnectModals from './components/wallectConnectModals/WalletConnectModals';
 import SwitchWallet from './screens/SwitchWallet';
 import Send from './screens/Send';
 import AddNdauAccount from './screens/AddNdauAccount';
@@ -38,7 +39,6 @@ import TransactionDetail from './screens/TransactionDetail';
 import Scanner from './screens/Scanner';
 import EditWallet from './screens/EditWallet';
 import WalletConnect from './screens/WalletConnect';
-import SendModal from './components/wallectConnectModals/SendModal';
 import Environments from './screens/Environments';
 import ContactSupport from './screens/components/ContactSupport';
 import NFTList from './screens/NFTList';
@@ -130,7 +130,7 @@ const Main = () => {
         <MainStack />
       </NavigationContainer>
       <FlashMessage />
-      <SendModal />
+      <WalletConnectModals />
     </Provider>
   );
 };
