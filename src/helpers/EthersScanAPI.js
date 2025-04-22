@@ -92,8 +92,9 @@ export const NetworkManager = {
     Alchemy: {
       ethMainnet: "https://eth-mainnet.g.alchemy.com/v2/t3L6Ib7KIIT7FfNbeU6rkhKxHlNtjIWf",
       ethGoerli: "https://eth-goerli.g.alchemy.com/v2/LbVbPhgj9p_f8cND9SYyUyZUq0_L9Bp1",
+      ethSepolia: "https://sepolia.infura.io/v3/2d964329cb8746139ba47fe1ccf3b9e5",
       polygonMainnet: "https://polygon-mainnet.g.alchemy.com/v2/Lqj1T0OqjfRRPhIXL8LXOlkaMFMpRQaJ",
-      polygonMumbai: "https://polygon-mumbai.g.alchemy.com/v2/Z_G5HhyiXdXZ9j0-uJ4B7SZr_oCk4xSN"
+      polygonMumbai: "https://polygon-mumbai.g.alchemy.com/v2/Z_G5HhyiXdXZ9j0-uJ4B7SZr_oCk4xSN",
     }
   },
 
@@ -155,6 +156,7 @@ export const NetworkManager = {
   getEnv: () => {
     const urls = {
       eth: "",
+      ethSepolia: "",
       zkSyncEra: "",
       polygon: ""
     }
@@ -162,10 +164,12 @@ export const NetworkManager = {
     if (NetworkManager.__isTestnet()) {
       urls.zkSyncEra = NetworkManager.__urls.zkGoerli;
       urls.eth = NetworkManager.__providers.Alchemy.ethGoerli;
+      urls.ethSepolia = NetworkManager.__providers.Alchemy.ethSepolia;
       urls.polygon = NetworkManager.__providers.Alchemy.polygonMumbai;
     } else {
       urls.zkSyncEra = NetworkManager.__urls.zkMainnet;
       urls.eth = NetworkManager.__providers.Alchemy.ethMainnet;
+      urls.ethSepolia = NetworkManager.__providers.Alchemy.ethSepolia; // TODO Remove
       urls.polygon = NetworkManager.__providers.Alchemy.polygonMainnet;
     }
 

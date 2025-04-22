@@ -20,8 +20,9 @@ const getRpcUrl = (chainId) => {
   switch (chainId) {
     case 'eip155:1':
     case 'eip155:5':
-    case 'eip155:11155111':
       return networkEnvUrls.eth;
+    case 'eip155:11155111':
+      return networkEnvUrls.ethSepolia;
     case 'eip155:137':
     case 'eip155:80001':
       return networkEnvUrls.polygon;

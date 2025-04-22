@@ -17,14 +17,14 @@ const AuthLoading = ({}) => {
     const userIds = await AsyncStorageHelper.getAllKeys();
     const multiSafes = await MultiSafe.isAMultiSafePresent();
 
-    if (userIds.length > 0 && !multiSafes) {
-      // time for recovery as we need to create real account object for you
-      // this is only done for users < 1.8, after 1.8 this should not happen
-      // again as you will have a MultiSafe
-      // this.props.navigation.replace('Setup', {
-      // 	screen: 'SetupWelcome',
-      // 	params: { mode: AppConstants.GENESIS_MODE }
-      // })
+    // Always go to IntroCreateWallet if MultiSafe is missing
+    if (!multiSafes) {
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 0,
+          routes: [{ name: ScreenNames.IntroCreateWallet }],
+        })
+      );
     } else if (multiSafes) {
       // Wallet is already setup; Let's authenticate user
       // return setTimeout(() => {
