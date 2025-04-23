@@ -1,102 +1,100 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { StyleSheet, Alert, Linking, AppState } from 'react-native';
-import {
-  Camera,
-  useCameraDevice,
-  useCodeScanner,
-} from 'react-native-vision-camera';
+import { Camera, useCameraDevice, useCodeScanner } from 'react-native-vision-camera';
 import { useIsFocused, useNavigation } from '@react-navigation/native';
 
 import ScreenContainer from '../components/Screen';
-import CustomText from '../components/CustomText';
 
 const Scanner = (props) => {
   const { onScan } = props?.route?.params ?? {};
   const navigation = useNavigation();
-
-  const [hasPermission, setHasPermission] = useState(false);
-  const [isScannerActive, setIsScannerActive] = useState(true);
   const isFocused = useIsFocused();
   const device = useCameraDevice('back');
 
+  const [hasPermission, setHasPermission] = useState(false);
+  const [isScannerActive, setIsScannerActive] = useState(false);
+  const scannedRef = useRef(false);
+
   useEffect(() => {
     const checkAndRequestPermission = async () => {
-      let currentStatus = await Camera.getCameraPermissionStatus();
+      try {
+        let currentStatus = await Camera.getCameraPermissionStatus();
 
-      if (currentStatus === 'not-determined') {
-        currentStatus = await Camera.requestCameraPermission();
-      }
+        if (currentStatus !== 'granted') {
+          currentStatus = await Camera.requestCameraPermission();
+        }
 
-      if (currentStatus === 'granted') {
-        setHasPermission(true);
-      } else {
+        if (currentStatus === 'granted') {
+          setHasPermission(true);
+          setTimeout(() => setIsScannerActive(true), 100);
+        } else {
+          setHasPermission(false);
+          Alert.alert(
+            'Camera Permission Required',
+            'Please grant camera permission in settings to scan QR codes.',
+            [
+              { text: 'Cancel', onPress: () => navigation.goBack(), style: 'cancel' },
+              { text: 'Open Settings', onPress: () => Linking.openSettings() },
+            ]
+          );
+        }
+      } catch (error) {
+        console.error('Camera permission error:', error);
         setHasPermission(false);
-        Alert.alert(
-          'Camera Permission Required',
-          'Please grant camera permission in settings to scan QR codes.',
-          [
-            { text: 'Cancel', onPress: () => navigation.goBack(), style: 'cancel' },
-            { text: 'Open Settings', onPress: () => Linking.openSettings() },
-          ]
-        );
       }
     };
 
-    checkAndRequestPermission();
+    if (isFocused) {
+      checkAndRequestPermission();
+      scannedRef.current = false;
+    } else {
+      setIsScannerActive(false);
+    }
 
-    const subscription = AppState.addEventListener('change', async (nextAppState) => {
-      if (nextAppState === 'active') {
-        await checkAndRequestPermission();
+    const subscription = AppState.addEventListener('change', (nextAppState) => {
+      if (nextAppState === 'active' && isFocused) {
+        checkAndRequestPermission();
+      } else if (nextAppState !== 'active') {
+        setIsScannerActive(false);
       }
     });
 
     return () => {
       subscription.remove();
+      setIsScannerActive(false);
     };
-
-  }, [navigation]);
+  }, [isFocused]);
 
   const codeScanner = useCodeScanner({
     codeTypes: ['qr'],
     onCodeScanned: (codes) => {
-      if (isScannerActive && codes.length > 0 && codes[0].value) {
-        const scannedValue = codes[0].value;
-        setIsScannerActive(false);
-        onScan?.(scannedValue);
-        navigation.goBack();
+      if (scannedRef.current || !isScannerActive || !codes.length) {
+        return;
       }
+
+      const scannedValue = codes[0]?.value;
+      if (!scannedValue) {
+        return;
+      }
+
+      scannedRef.current = true;
+      setIsScannerActive(false);
+      onScan?.(scannedValue);
+      navigation.goBack();
     },
   });
 
-  if (!hasPermission) {
-    return (
-      <ScreenContainer>
-        <CustomText style={{ textAlign: 'center', marginTop: 50 }}>
-          Requesting camera permission...
-        </CustomText>
-      </ScreenContainer>
-    );
-  }
-
-  if (device == null) {
-    return (
-      <ScreenContainer>
-        <CustomText style={{textAlign: 'center', marginTop: 50}}>
-          No suitable camera device found.
-        </CustomText>
-      </ScreenContainer>
-    );
+  if (!hasPermission || !device || !isFocused || scannedRef.current) {
+    return <ScreenContainer />;
   }
 
   return (
-    <ScreenContainer>
-      <Camera
-        style={StyleSheet.absoluteFill}
-        device={device}
-        isActive={isFocused && isScannerActive && AppState.currentState === 'active'}
-        codeScanner={codeScanner}
-      />
-    </ScreenContainer>
+    <Camera
+      style={StyleSheet.absoluteFill}
+      device={device}
+      isActive={isScannerActive}
+      codeScanner={codeScanner}
+    />
   );
 };
 
