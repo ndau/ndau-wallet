@@ -70,26 +70,12 @@ converted to a public key first.
  */
 - (KeyaddrAddress* _Nullable)ndauAddress:(NSError* _Nullable* _Nullable)error;
 /**
- * SignEdB64 uses the given ED key to sign a message; the message must be the
+ * Sign uses the given key to sign a message; the message must be the
 standard base64 encoding of the bytes of the message.
 It returns a signature object.
 The key must be a private key.
  */
-- (KeyaddrSignature* _Nullable)signEdB64:(NSString* _Nullable)msgstr error:(NSError* _Nullable* _Nullable)error;
-/**
- * SignEdText uses the given ED key to sign a message; the message must be the
-text encoding of the bytes of the message.
-It returns a signature object.
-The key must be a private key.
- */
-- (KeyaddrSignature* _Nullable)signEdText:(NSString* _Nullable)msgstr error:(NSError* _Nullable* _Nullable)error;
-/**
- * SignSecP uses the given SecP key to sign a message; the message must be the
-standard base64 encoding of the bytes of the message.
-It returns a signature object.
-The key must be a private key.
- */
-- (KeyaddrSignature* _Nullable)signSecP:(NSString* _Nullable)msgstr error:(NSError* _Nullable* _Nullable)error;
+- (KeyaddrSignature* _Nullable)sign:(NSString* _Nullable)msgstr error:(NSError* _Nullable* _Nullable)error;
 // skipped method Key.ToExtended with unsupported parameter or return types
 
 // skipped method Key.ToPrivateKey with unsupported parameter or return types
@@ -102,8 +88,6 @@ It is an error if the key is hardened.
  */
 - (KeyaddrKey* _Nullable)toPublic:(NSError* _Nullable* _Nullable)error;
 // skipped method Key.ToPublicKey with unsupported parameter or return types
-
-// skipped method Key.UnivToPrivateKey with unsupported parameter or return types
 
 @end
 

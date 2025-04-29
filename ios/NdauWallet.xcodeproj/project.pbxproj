@@ -35,8 +35,24 @@
 		E77634A522C644FF9E35AD7C /* ClashDisplay-Semibold.otf in Resources */ = {isa = PBXBuildFile; fileRef = BAFAA29F55C040549E1635E6 /* ClashDisplay-Semibold.otf */; };
 		EF7693BECBE84DBEAD4E3586 /* ClashDisplay-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7F84080B73C74AD39950EAB3 /* ClashDisplay-Medium.ttf */; };
 		F16FC40A2AD82E2800318637 /* KeyaddrManager.m in Sources */ = {isa = PBXBuildFile; fileRef = F16FC4072AD82E2800318637 /* KeyaddrManager.m */; };
+		FBFDDCA92DC0D5D000016C32 /* Keyaddr.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = FBFDDCA82DC0D5D000016C32 /* Keyaddr.xcframework */; };
+		FBFDDCAA2DC0D5D000016C32 /* Keyaddr.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = FBFDDCA82DC0D5D000016C32 /* Keyaddr.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		FF7C65DBB5E445E1935CD697 /* ClashDisplay-Extralight.otf in Resources */ = {isa = PBXBuildFile; fileRef = 40F90CF5650D40AAB05038CE /* ClashDisplay-Extralight.otf */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		FB6CA6502DC0CBC2001E9B92 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				FBFDDCAA2DC0D5D000016C32 /* Keyaddr.xcframework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		07F30B25976949CFACABE3AF /* ClashDisplay-Light.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "ClashDisplay-Light.ttf"; path = "../src/assets/fonts/ClashDisplay-Light.ttf"; sourceTree = "<group>"; };
@@ -72,10 +88,10 @@
 		D86C679FA8D24E919EB871EE /* TitilliumWeb-SemiBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "TitilliumWeb-SemiBold.ttf"; path = "../src/assets/fonts/TitilliumWeb-SemiBold.ttf"; sourceTree = "<group>"; };
 		EA07D1C7E110472585008A2C /* TitilliumWeb-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "TitilliumWeb-Regular.ttf"; path = "../src/assets/fonts/TitilliumWeb-Regular.ttf"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
-		F16FC4052AD82E2800318637 /* Keyaddr.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Keyaddr.framework; sourceTree = "<group>"; };
 		F16FC4062AD82E2800318637 /* KeyaddrManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeyaddrManager.h; sourceTree = "<group>"; };
 		F16FC4072AD82E2800318637 /* KeyaddrManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KeyaddrManager.m; sourceTree = "<group>"; };
 		FB98F1D52DA5512100198F5F /* NdauWallet-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NdauWallet-Bridging-Header.h"; sourceTree = "<group>"; };
+		FBFDDCA82DC0D5D000016C32 /* Keyaddr.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = Keyaddr.xcframework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -83,6 +99,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FBFDDCA92DC0D5D000016C32 /* Keyaddr.xcframework in Frameworks */,
 				0C80B921A6F3F58F76C31292 /* libPods-NdauWallet.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -105,6 +122,7 @@
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				FBFDDCA82DC0D5D000016C32 /* Keyaddr.xcframework */,
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
 				5DCACB8F33CDC322A6C60F78 /* libPods-NdauWallet.a */,
 			);
@@ -121,7 +139,6 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
-				F16FC4052AD82E2800318637 /* Keyaddr.framework */,
 				FB98F1D52DA5512100198F5F /* NdauWallet-Bridging-Header.h */,
 				F16FC4062AD82E2800318637 /* KeyaddrManager.h */,
 				F16FC4072AD82E2800318637 /* KeyaddrManager.m */,
@@ -198,6 +215,7 @@
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
 				E235C05ADACE081382539298 /* [CP] Copy Pods Resources */,
 				82B3436FA3552ACBCC58D1BD /* [CP] Embed Pods Frameworks */,
+				FB6CA6502DC0CBC2001E9B92 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -372,6 +390,8 @@
 				BUILD_LIBRARY_FOR_DISTRIBUTION = NO;
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 6;
 				DEVELOPMENT_TEAM = 52CMB5YQ7W;
 				ENABLE_BITCODE = NO;
@@ -393,6 +413,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.oneiro.ndauv2;
 				PRODUCT_NAME = NdauWallet;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "NdauWallet-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -409,6 +430,8 @@
 				BUILD_LIBRARY_FOR_DISTRIBUTION = NO;
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 6;
 				DEVELOPMENT_TEAM = 52CMB5YQ7W;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -429,6 +452,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.oneiro.ndauv2;
 				PRODUCT_NAME = NdauWallet;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "NdauWallet-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -504,7 +528,10 @@
 					"-DFOLLY_CFG_NO_COROUTINES=1",
 					"-DFOLLY_HAVE_CLOCK_GETTIME=1",
 				);
-				OTHER_LDFLAGS = "$(inherited)  ";
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					" ",
+				);
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) DEBUG";
@@ -573,7 +600,10 @@
 					"-DFOLLY_CFG_NO_COROUTINES=1",
 					"-DFOLLY_HAVE_CLOCK_GETTIME=1",
 				);
-				OTHER_LDFLAGS = "$(inherited)  ";
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					" ",
+				);
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
 				USE_HERMES = true;
